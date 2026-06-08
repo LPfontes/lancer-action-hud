@@ -281,13 +281,21 @@ class LancerSystemAdapter extends BaseSystemAdapter {
 
             // Extract Damage info
             const rawDmg = activeProfile.damage || w.system.damage || [];
-            const dmgArray = Array.isArray(rawDmg) ? rawDmg : [rawDmg];
+            let dmgArray = Array.isArray(rawDmg) ? rawDmg : [rawDmg];
+            
+            // NPC weapons often store damage as an array of arrays (one per Tier)
+            if (dmgArray.length > 0 && Array.isArray(dmgArray[0])) {
+                const tier = actor.system?.tier || 1;
+                const tierIdx = Math.max(0, Math.min(tier - 1, dmgArray.length - 1));
+                dmgArray = dmgArray[tierIdx] || [];
+            }
+            
             const dmgObj = dmgArray[0];
             let dmgVal = "";
             let dmgType = "";
             if (dmgObj) {
                 if (typeof dmgObj === "object") {
-                    const rawVal = dmgObj.val !== undefined ? dmgObj.val : dmgObj.value;
+                    const rawVal = dmgObj.val !== undefined ? dmgObj.val : (dmgObj.value !== undefined ? dmgObj.value : dmgObj.amount);
                     dmgVal = (rawVal !== undefined && rawVal !== null) ? rawVal : "";
                     dmgType = (dmgObj.type || "").toLowerCase();
                 } else {
@@ -300,7 +308,7 @@ class LancerSystemAdapter extends BaseSystemAdapter {
                     const d = dmgArray[i];
                     if (d) {
                         if (typeof d === "object") {
-                            const rawVal = d.val !== undefined ? d.val : d.value;
+                            const rawVal = d.val !== undefined ? d.val : (d.value !== undefined ? d.value : d.amount);
                             if (rawVal !== undefined && rawVal !== null) extraDmgList.push(rawVal);
                         } else {
                             extraDmgList.push(d);
