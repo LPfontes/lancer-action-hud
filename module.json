@@ -1,7 +1,7 @@
 {
-  "id": "stylish-bridge-lancer",
-  "title": "Lancer Action HUD (Standalone)",
-  "description": "HUD de ações e atributos standalone para o sistema de RPG LANCER.",
+  "id": "lancer-action-hud",
+  "title": "Lancer Action HUD",
+  "description": "HUD action for LANCER RPG system.",
   "authors": [
     {
       "name": "LPfontes"
@@ -11,7 +11,7 @@
     "scripts/main.js"
   ],
   "styles": [
-    "styles/lancer-stylish-bridge.css"
+    "styles/lancer-action-hud.css"
   ],
   "version": "1.0.0",
   "compatibility": {
