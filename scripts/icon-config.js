@@ -12,7 +12,7 @@ const BASE_ICONS = {
 
 export const LANCER_ICONS = { ...BASE_ICONS, ...LANCER_CUSTOM_ICONS };
 
-export const ICON_BASE_PATH = 'modules/stylish-bridge-lancer/assets/icons/actions-symbols';
+export const ICON_BASE_PATH = 'modules/lancer-action-hud/assets/icons/actions-symbols';
 
 export const getIconPath = (key) => `${ICON_BASE_PATH}/${LANCER_ICONS[key] || key}.svg`;
 

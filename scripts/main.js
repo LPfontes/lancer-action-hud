@@ -389,8 +389,8 @@ class LancerSystemAdapter extends BaseSystemAdapter {
                 w.system.profiles.forEach((prof, idx) => {
                     const isActiveProfile = idx === profileIndex;
                     const activeClass = isActiveProfile ? "selected-profile la-bckg-secondary -pulse-glow-prmy -pointerdisable la-prmy-header -bold" : "";
-                    const profStyles = "font-family:'Orbitron'; font-size:0.72em; padding:4px 8px; cursor:pointer; border:1px solid rgba(128,41,50,0.2); background:rgba(128,41,50,0.05); color:#802932; border-radius:0px; display:inline-flex; align-items:center;" + 
-                                       (isActiveProfile ? " background:var(--l-accent) !important; color:#ffffff !important; border-color:var(--l-accent) !important; text-shadow:none !important; box-shadow:0 0 6px var(--l-accent) !important;" : "");
+                    const profStyles = "font-family:'Orbitron'; font-size:0.72em; padding:4px 8px; cursor:pointer; border:1px solid rgba(128,41,50,0.2); background:rgba(128,41,50,0.05); color:#802932; border-radius:0px; display:inline-flex; align-items:center;" +
+                        (isActiveProfile ? " background:var(--l-accent) !important; color:#ffffff !important; border-color:var(--l-accent) !important; text-shadow:none !important; box-shadow:0 0 6px var(--l-accent) !important;" : "");
                     const profName = prof.name || `${w.name} (Profile ${idx + 1})`;
                     switcherHtml += `
                         <button type="button" class="la-prmy-primary -glow-prmy-hover gen-control ${activeClass}" 
@@ -843,14 +843,14 @@ class LancerSystemAdapter extends BaseSystemAdapter {
         if (itemId.startsWith("tracker:")) {
             const actionType = itemId.split(":")[1];
             if (actionType === "reset") {
-                await actor.setFlag('stylish-bridge-lancer', 'actionTracker', {
+                await actor.setFlag('lancer-action-hud', 'actionTracker', {
                     move: false, quick1: false, quick2: false, full: false, protocol: false, reaction: false, free: false, overcharge: false, core: false
                 });
             } else {
-                const current = actor.getFlag('stylish-bridge-lancer', 'actionTracker') || {};
+                const current = actor.getFlag('lancer-action-hud', 'actionTracker') || {};
                 const newState = !current[actionType];
                 current[actionType] = newState;
-                
+
                 if (newState === true) {
                     if (actionType === 'quick1' || actionType === 'quick2') {
                         current.full = true;
@@ -868,15 +868,15 @@ class LancerSystemAdapter extends BaseSystemAdapter {
                         }
                     }
                 }
-                
-                await actor.setFlag('stylish-bridge-lancer', 'actionTracker', current);
+
+                await actor.setFlag('lancer-action-hud', 'actionTracker', current);
             }
             return;
         }
         if (!actor) return;
 
         const deductAction = async (isFull = false) => {
-            const current = actor.getFlag('stylish-bridge-lancer', 'actionTracker') || {};
+            const current = actor.getFlag('lancer-action-hud', 'actionTracker') || {};
             const updates = { ...current };
             if (isFull) {
                 updates.full = true;
@@ -885,17 +885,17 @@ class LancerSystemAdapter extends BaseSystemAdapter {
             } else {
                 if (!updates.quick1) updates.quick1 = true;
                 else if (!updates.quick2) updates.quick2 = true;
-                
+
                 updates.full = true;
             }
-            await actor.setFlag('stylish-bridge-lancer', 'actionTracker', updates);
+            await actor.setFlag('lancer-action-hud', 'actionTracker', updates);
         };
 
         const setActionState = async (stateKey) => {
-            const current = actor.getFlag('stylish-bridge-lancer', 'actionTracker') || {};
+            const current = actor.getFlag('lancer-action-hud', 'actionTracker') || {};
             if (!current[stateKey]) {
                 const updates = { ...current, [stateKey]: true };
-                await actor.setFlag('stylish-bridge-lancer', 'actionTracker', updates);
+                await actor.setFlag('lancer-action-hud', 'actionTracker', updates);
             }
         };
 
@@ -1182,7 +1182,7 @@ class LancerSystemAdapter extends BaseSystemAdapter {
             let desc = "";
             let icon = "";
             let tagsHtml = "";
-            
+
             if (action === "brace" || action === "overwatch") {
                 await setActionState("reaction");
             } else if (action === "invade" || action === "lockon" || action === "bolster") {
@@ -1200,7 +1200,7 @@ class LancerSystemAdapter extends BaseSystemAdapter {
                 if (targets.size > 0) {
                     for (let target of targets) {
                         if (target.actor) {
-                            target.actor.toggleStatusEffect("lockon", {active: true});
+                            target.actor.toggleStatusEffect("lockon", { active: true });
                         }
                     }
                 } else {
@@ -1216,7 +1216,7 @@ class LancerSystemAdapter extends BaseSystemAdapter {
                 if (targets.size > 0) {
                     for (let target of targets) {
                         if (target.actor) {
-                            target.actor.toggleStatusEffect("bolster", {active: true});
+                            target.actor.toggleStatusEffect("bolster", { active: true });
                         }
                     }
                 } else {
@@ -1229,7 +1229,7 @@ class LancerSystemAdapter extends BaseSystemAdapter {
                 desc = game.i18n.localize("STYLISH_HUD.Basic.Bolster.Desc");
             } else if (action === "brace") {
                 if (actor) {
-                    actor.toggleStatusEffect("brace", {active: true});
+                    actor.toggleStatusEffect("brace", { active: true });
                 }
                 name = game.i18n.localize("STYLISH_HUD.Basic.Brace.Name");
                 icon = "hull.svg";
@@ -1299,7 +1299,7 @@ class LancerSystemAdapter extends BaseSystemAdapter {
                     const actType = (act.activation || "").toLowerCase();
                     if (actType.includes("full")) await deductAction(true);
                     else if (actType.includes("quick") || actType.includes("reaction")) await deductAction(false);
-                    
+
                     if (actType.includes("reaction")) {
                         await setActionState("reaction");
                     }
@@ -1331,7 +1331,7 @@ class LancerActionHUD extends Application {
     static get defaultOptions() {
         return mergeObject(super.defaultOptions, {
             id: "lancer-action-hud",
-            template: "modules/stylish-bridge-lancer/templates/hud.html",
+            template: "modules/lancer-action-hud/templates/hud.html",
             popOut: false,
             minimizable: false,
             resizable: false
@@ -1455,7 +1455,7 @@ class LancerActionHUD extends Application {
 
         const isStatsTab = this.activeTab === "stats";
 
-        const actionTracker = actor.getFlag('stylish-bridge-lancer', 'actionTracker') || {
+        const actionTracker = actor.getFlag('lancer-action-hud', 'actionTracker') || {
             move: false,
             quick1: false,
             quick2: false,
@@ -1676,10 +1676,10 @@ Hooks.on("canvasReady", () => {
 Hooks.on("createChatMessage", async (msg, options, userId) => {
     // Only process for the user who created the message
     if (userId !== game.user.id) return;
-    
+
     if (!lancerHUDInstance || !lancerHUDInstance.activeToken) return;
     const actor = lancerHUDInstance.activeToken.actor;
-    
+
     // Verify the message belongs to the current actor
     if (!actor || msg.speaker?.actor !== actor.id) return;
 
@@ -1703,7 +1703,7 @@ Hooks.on("createChatMessage", async (msg, options, userId) => {
     }
 
     if (isActionSpent) {
-        const current = actor.getFlag('stylish-bridge-lancer', 'actionTracker') || {};
+        const current = actor.getFlag('lancer-action-hud', 'actionTracker') || {};
         const updates = { ...current };
 
         if (isFullAction) {
@@ -1713,11 +1713,11 @@ Hooks.on("createChatMessage", async (msg, options, userId) => {
         } else if (isQuickAction) {
             if (!updates.quick1) updates.quick1 = true;
             else if (!updates.quick2) updates.quick2 = true;
-            
+
             updates.full = true;
         }
 
-        await actor.setFlag('stylish-bridge-lancer', 'actionTracker', updates);
+        await actor.setFlag('lancer-action-hud', 'actionTracker', updates);
     }
 });
 
@@ -1725,22 +1725,22 @@ Hooks.on("createChatMessage", async (msg, options, userId) => {
 Hooks.on("updateToken", async (tokenDoc, changes, context, userId) => {
     // Only process for the user who moved the token
     if (userId !== game.user.id) return;
-    
+
     // Check if position changed
     if (changes.x === undefined && changes.y === undefined) return;
-    
+
     if (!lancerHUDInstance || !lancerHUDInstance.activeToken) return;
-    
+
     // Check if the moved token is the active token
     if (tokenDoc.id !== lancerHUDInstance.activeToken.id) return;
-    
+
     const actor = lancerHUDInstance.activeToken.actor;
     if (!actor) return;
-    
-    const current = actor.getFlag('stylish-bridge-lancer', 'actionTracker') || {};
+
+    const current = actor.getFlag('lancer-action-hud', 'actionTracker') || {};
     if (!current.move) {
         const updates = { ...current, move: true };
-        await actor.setFlag('stylish-bridge-lancer', 'actionTracker', updates);
+        await actor.setFlag('lancer-action-hud', 'actionTracker', updates);
     }
 });
 
