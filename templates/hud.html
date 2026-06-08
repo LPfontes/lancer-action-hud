@@ -1,0 +1,248 @@
+<div id="lancer-hud-wrapper">
+    <!-- Action Tracker -->
+    <div class="hud-panel">
+        <div class="hud-close-btn" onclick="event.stopPropagation(); StylishAction.closeHUD()" data-tooltip="Fechar HUD" style="position: absolute; top: -15px; right: -15px; background: rgba(128, 41, 50, 0.9); color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 2px solid rgba(255,255,255,0.2); z-index: 1000; pointer-events: auto; font-size: 14px; box-shadow: 0 4px 6px rgba(0,0,0,0.5);">
+            <i class="fas fa-times"></i>
+        </div>
+        
+        <!-- 1. Active Actor Diagnostic Panel (Rightmost) -->
+        <div class="hud-right-panel">
+             <div class="hud-action-tracker">
+            <div class="action-btn action-move {{#if actionTracker.move}}used{{/if}}" onclick="event.stopPropagation(); StylishAction.useItem('tracker:move')" data-tooltip="Movimento"><i class="mdi-arrow-right-bold-hexagon-outline mdi v-icon notranslate v-theme--gms_dark v-icon--size-large"></i></div>
+            <div class="action-btn action-quick {{#if actionTracker.quick1}}used{{/if}}" onclick="event.stopPropagation(); StylishAction.useItem('tracker:quick1')" data-tooltip="Ação Rápida 1"><i class="mdi-hexagon-slice-3 mdi v-icon notranslate v-theme--gms_dark v-icon--size-large"></i></div>
+            <div class="action-btn action-quick {{#if actionTracker.quick2}}used{{/if}}" onclick="event.stopPropagation(); StylishAction.useItem('tracker:quick2')" data-tooltip="Ação Rápida 2"><i class="mdi-hexagon-slice-3 mdi v-icon notranslate v-theme--gms_dark v-icon--size-large"></i></div>
+            <div class="action-btn action-full {{#if actionTracker.full}}used{{/if}}" onclick="event.stopPropagation(); StylishAction.useItem('tracker:full')" data-tooltip="Ação Completa"><i class="mdi-hexagon-slice-6 mdi v-icon notranslate v-theme--gms_dark v-icon--size-large"></i></div>
+            <div class="action-btn action-reaction {{#if actionTracker.reaction}}used{{/if}}" onclick="event.stopPropagation(); StylishAction.useItem('tracker:reaction')" data-tooltip="Reação"><svg xmlns="http://www.w3.org/2000/svg" viewBox="-11.5 780.5 24 24" class="v-icon__svg" style="width:1.2em; height:1.2em; fill:currentColor;"><path d="M1.38,785.95l-0.01,3.98c1.09,0.12,2.16,0.45,3.22,0.97l1.3-1.95l1.45,0.97l-1.25,1.87c0.79,0.53,1.57,1.15,2.35,1.87 l1.28-0.64l0.78,1.56l-2.31,1.15l-0.45-0.44c-1.15-1.15-2.27-2-3.38-2.61c0.31,0.6,0.5,1.27,0.5,1.99c0,2.4-1.96,4.37-4.37,4.37 s-4.37-1.97-4.37-4.37c0-0.72,0.19-1.39,0.5-1.99c-1.1,0.6-2.23,1.46-3.38,2.61l-0.45,0.44l-2.31-1.15l0.78-1.56l1.28,0.64 c0.77-0.72,1.56-1.34,2.35-1.87l-1.25-1.87l1.45-0.97l1.3,1.95c1.06-0.53,2.14-0.86,3.22-0.97l0.01-3.98H1.38z M-1.25,794.68 c0,0.98,0.77,1.75,1.75,1.75s1.75-0.77,1.75-1.75c0-0.97-0.77-1.75-1.75-1.75S-1.25,793.71-1.25,794.68z"></path></svg></div>
+            <div class="action-btn action-overcharge {{#if actionTracker.overcharge}}used{{/if}}" onclick="event.stopPropagation(); StylishAction.useItem('tracker:overcharge')" data-tooltip="Sobrecarga"><svg xmlns="http://www.w3.org/2000/svg" viewBox="-11.5 780.5 24 24" class="v-icon__svg" style="width:1.2em; height:1.2em; fill:currentColor;"><path d="M0.5,782.75l-2.7,4.64l-5.32-0.78l1.95,5.01l-3.93,3.67l5.13,1.6l0.42,5.36l4.45-3.01l4.45,3.01l0.42-5.36l5.13-1.6 l-3.93-3.67l1.95-5.01L3.2,787.4L0.5,782.75z M0.5,786.46l1.72,2.96l3.39-0.5l-1.24,3.2l2.5,2.34l-3.27,1.02l-0.26,3.42l-2.84-1.93 l-2.84,1.93l-0.26-3.42l-3.28-1.02l2.51-2.34l-1.25-3.2l3.39,0.5L0.5,786.46z M2.37,793.01L2.37,793.01c0-1.03-0.84-1.87-1.87-1.87 l0,0c-1.03,0-1.87,0.84-1.87,1.87l0,0c0,1.03,0.84,1.87,1.87,1.87l0,0C1.53,794.87,2.37,794.04,2.37,793.01L2.37,793.01z"></path></svg></div>
+            <div class="action-btn action-core {{#if actionTracker.core}}used{{/if}}" onclick="event.stopPropagation(); StylishAction.useItem('tracker:core')" data-tooltip="Poder de Núcleo"><i class="mdi-battery-high mdi v-icon notranslate v-theme--gms_dark text-core mr-1 v-icon--size-large"></i></div>
+            <div class="action-reset" onclick="event.stopPropagation(); StylishAction.useItem('tracker:reset')" data-tooltip="Resetar Ações"><i class="fas fa-undo"></i></div>
+        </div>
+            <!-- 2. Vertical Navigation Tabs  -->
+            <div class="hud-tabs-vertical">
+                {{#each tabs}}
+                <button class="hud-tab-btn {{#if this.active}}active{{/if}}" data-tab-id="{{this.id}}">
+                    {{{this.label}}}
+                </button>
+                {{/each}}
+            </div>
+            <div class="hud-portrait-container">
+                <img class="hud-diamond-portrait" src="{{actorImg}}" alt="" />
+                <div class="hud-portrait-stats">
+                    <div class="hud-port-stat stat-armor" data-tooltip="{{localize 'STYLISH_HUD.Tooltip.Armor'}}">
+                        <span class="hud-port-stat-val">{{armor}}</span>
+                        <span class="hud-port-stat-lbl">ARM</span>
+                    </div>
+                    <div class="hud-port-stat stat-evasion" data-tooltip="{{localize 'STYLISH_HUD.Tooltip.Evasion'}}">
+                        <span class="hud-port-stat-val">{{evasion}}</span>
+                        <span class="hud-port-stat-lbl">EVA</span>
+                    </div>
+                    <div class="hud-port-stat stat-edef" data-tooltip="{{localize 'STYLISH_HUD.Tooltip.EDefense'}}">
+                        <span class="hud-port-stat-val">{{edef}}</span>
+                        <span class="hud-port-stat-lbl">DEFESA-E</span>
+                    </div>
+                    <div class="hud-port-stat stat-speed" data-tooltip="{{localize 'STYLISH_HUD.Tooltip.Speed'}}">
+                        <span class="hud-port-stat-val">{{speed}}</span>
+                        <span class="hud-port-stat-lbl">VEL</span>
+                    </div>
+                </div>
+            </div>
+            <div class="hud-actor-panel">
+                <div class="hud-actor-row">
+                    <div class="hud-actor-meta">
+                        <span class="ib-name-text">{{actorName}}</span>
+                        <span class="hud-actor-sub">{{localize 'STYLISH_HUD.Label.ActiveMech'}}</span>
+
+                        <!-- Actor Vitals (HP & Heat) -->
+                        <div class="hud-actor-vitals">
+                            <!-- HP Bar -->
+                            <div class="hud-vitals-row">
+                                <div class="hud-vitals-label-row">
+                                    <span class="hud-vitals-label">{{localize 'STYLISH_HUD.Vitals.HP'}}</span>
+                                    <div class="hud-vitals-input-group">
+                                        <input type="number" class="hud-vital-input" data-path="system.hp.value"
+                                            value="{{hp.value}}" />
+                                        <span class="hud-vitals-separator">/</span>
+                                        <input type="number" class="hud-vital-input" data-path="system.hp.max"
+                                            value="{{hp.max}}" />
+                                        
+                                        <span class="hud-vitals-separator" style="margin-left: 8px;">{{localize 'STYLISH_HUD.Badge.OvershieldAbbr'}}:</span>
+                                        <input type="number" class="hud-vital-input" data-path="{{overshieldPath}}"
+                                            value="{{overshield.value}}" />
+                                            
+                                        <span class="hud-vitals-separator" style="margin-left: 8px;">{{localize 'STYLISH_HUD.Vitals.Burn'}}:</span>
+                                        <input type="number" class="hud-vital-input" data-path="{{burnPath}}"
+                                            value="{{burn}}" />
+                                    </div>
+                                </div>
+                                <div class="hud-vitals-bar-bg hp-bg">
+                                    <div class="hud-vitals-bar-fill hp-fill" data-pct="{{hp.pct}}"></div>
+                                </div>
+                            </div>
+
+                            <!-- HEAT Bar -->
+                            <div class="hud-vitals-row">
+                                <div class="hud-vitals-label-row">
+                                    <span class="hud-vitals-label">{{localize 'STYLISH_HUD.Vitals.Heat'}}</span>
+                                    <div class="hud-vitals-input-group">
+                                        <input type="number" class="hud-vital-input" data-path="system.heat.value"
+                                            value="{{heat.value}}" />
+                                        <span class="hud-vitals-separator">/</span>
+                                        <input type="number" class="hud-vital-input" data-path="system.heat.max"
+                                            value="{{heat.max}}" />
+                                    </div>
+                                </div>
+                                <div class="hud-vitals-bar-bg heat-bg">
+                                    <div class="hud-vitals-bar-fill heat-fill" data-pct="{{heat.pct}}"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Badges (Structure, Stress, OS) -->
+                <div class="hud-actor-badges">
+                    {{#if overshield.value}}
+                    <span class="hud-badge os" title="{{localize 'STYLISH_HUD.Badge.Overshield'}}">{{localize 'STYLISH_HUD.Badge.OvershieldAbbr'}}: {{overshield.value}}</span>
+                    {{/if}}
+                    <span class="hud-badge structure" title="{{localize 'STYLISH_HUD.Badge.Structure'}}">{{localize 'STYLISH_HUD.Badge.StructureAbbr'}}:
+                        {{structure.value}}/{{structure.max}}</span>
+                    <span class="hud-badge stress" title="{{localize 'STYLISH_HUD.Badge.Stress'}}">{{localize 'STYLISH_HUD.Badge.StressAbbr'}}: {{stress.value}}/{{stress.max}}</span>
+                </div>
+            </div>
+        </div>
+        <div class="hud-left-panel">
+            <!-- 3. Submenu Action Items Panel  -->
+            <div class="hud-submenu-panel">
+                <div class="hud-submenu-header">
+                    <span class="hud-submenu-title">{{activeTabLabel}}</span>
+                    <div class="hud-search-container">
+                        <span class="material-symbols-outlined search-icon">search</span>
+                        <input type="text" class="hud-search-input"
+                            placeholder="{{localize 'STYLISH_HUD.Label.SearchPlaceholder'}}" />
+                    </div>
+                </div>
+
+                <div class="hud-submenu-content tab-{{activeTab}}">
+                    {{#if isStatsTab}}
+                    <!-- Mech Stats Grid Layout -->
+                    <div class="la-stats-grid">
+                        <!-- Row 1: Red -->
+                        <div class="la-stats-cell row-red">
+                            <span class="la-stats-lbl">{{localize 'STYLISH_HUD.Stats.Size'}}</span>
+                            <span class="la-stats-val">{{mechGridStats.size}}</span>
+                        </div>
+                        <div class="la-stats-cell row-red">
+                            <span class="la-stats-lbl">{{localize 'STYLISH_HUD.Stats.HP'}}</span>
+                            <span class="la-stats-val">{{mechGridStats.hpMax}}</span>
+                        </div>
+                        <div class="la-stats-cell row-red">
+                            <span class="la-stats-lbl">{{localize 'STYLISH_HUD.Stats.Armor'}}</span>
+                            <span class="la-stats-val">{{mechGridStats.armor}}</span>
+                        </div>
+
+                        <!-- Row 2: Green -->
+                        <div class="la-stats-cell row-green">
+                            <span class="la-stats-lbl">{{localize 'STYLISH_HUD.Stats.Speed'}}</span>
+                            <span class="la-stats-val">{{mechGridStats.speed}}</span>
+                        </div>
+                        <div class="la-stats-cell row-green">
+                            <span class="la-stats-lbl{{#if isPilotStats}} text-blue{{/if}}">{{localize 'STYLISH_HUD.Stats.Evasion'}}</span>
+                            <span class="la-stats-val">{{mechGridStats.evasion}}</span>
+                        </div>
+                        <div class="la-stats-cell row-green">
+                            <span class="la-stats-lbl">{{localize 'STYLISH_HUD.Stats.Repairs'}}</span>
+                            <span class="la-stats-val">{{mechGridStats.repairsMax}}</span>
+                        </div>
+
+                        <!-- Row 3: Blue -->
+                        <div class="la-stats-cell row-blue">
+                            <span class="la-stats-lbl{{#if isPilotStats}} text-blue{{/if}}">{{localize 'STYLISH_HUD.Stats.TechAttack'}}</span>
+                            <span class="la-stats-val">{{mechGridStats.techAttack}}</span>
+                        </div>
+                        <div class="la-stats-cell row-blue">
+                            <span class="la-stats-lbl">{{localize 'STYLISH_HUD.Stats.EDefense'}}</span>
+                            <span class="la-stats-val">{{mechGridStats.edef}}</span>
+                        </div>
+                        <div class="la-stats-cell row-blue">
+                            <span class="la-stats-lbl">{{localize 'STYLISH_HUD.Stats.Sensors'}}</span>
+                            <span class="la-stats-val">{{mechGridStats.sensors}}</span>
+                        </div>
+
+                        <!-- Row 4: Orange -->
+                        <div class="la-stats-cell row-orange">
+                            <span class="la-stats-lbl{{#if isPilotStats}} text-blue{{/if}}">{{localize 'STYLISH_HUD.Stats.Save'}}</span>
+                            <span class="la-stats-val">{{mechGridStats.save}}</span>
+                        </div>
+                        <div class="la-stats-cell row-orange">
+                            <span class="la-stats-lbl">{{localize 'STYLISH_HUD.Stats.Heat'}}</span>
+                            <span class="la-stats-val">{{mechGridStats.heatMax}}</span>
+                        </div>
+                        <div class="la-stats-cell row-orange">
+                            <span class="la-stats-lbl">{{localize 'STYLISH_HUD.Stats.SP'}}</span>
+                            <span class="la-stats-val">{{mechGridStats.sp}}</span>
+                        </div>
+                    </div>
+
+                    <!-- HASE Attributes Grid Layout (Buttons) -->
+                    <div class="la-hase-grid">
+                        <div class="la-stats-cell row-red la-stat-roll-btn" data-stat="hull" style="cursor: pointer;" data-tooltip="Clique para rolar teste de Hull">
+                            <span class="la-stats-lbl">{{localize 'STYLISH_HUD.Stats.Hull'}}</span>
+                            <span class="la-stats-val">{{mechGridStats.hull}} <i class="fas fa-dice-d20" style="font-size:0.75em; opacity:0.85; margin-left:2px;"></i></span>
+                        </div>
+                        <div class="la-stats-cell row-green la-stat-roll-btn" data-stat="agi" style="cursor: pointer;" data-tooltip="Clique para rolar teste de Agility">
+                            <span class="la-stats-lbl">{{localize 'STYLISH_HUD.Stats.Agility'}}</span>
+                            <span class="la-stats-val">{{mechGridStats.agi}} <i class="fas fa-dice-d20" style="font-size:0.75em; opacity:0.85; margin-left:2px;"></i></span>
+                        </div>
+                        <div class="la-stats-cell row-blue la-stat-roll-btn" data-stat="sys" style="cursor: pointer;" data-tooltip="Clique para rolar teste de Systems">
+                            <span class="la-stats-lbl">{{localize 'STYLISH_HUD.Stats.Systems'}}</span>
+                            <span class="la-stats-val">{{mechGridStats.sys}} <i class="fas fa-dice-d20" style="font-size:0.75em; opacity:0.85; margin-left:2px;"></i></span>
+                        </div>
+                        <div class="la-stats-cell row-orange la-stat-roll-btn" data-stat="eng" style="cursor: pointer;" data-tooltip="Clique para rolar teste de Engineering">
+                            <span class="la-stats-lbl">{{localize 'STYLISH_HUD.Stats.Engineering'}}</span>
+                            <span class="la-stats-val">{{mechGridStats.eng}} <i class="fas fa-dice-d20" style="font-size:0.75em; opacity:0.85; margin-left:2px;"></i></span>
+                        </div>
+                    </div>
+                    {{/if}}
+
+                    {{#if items.length}}
+                    <div class="hud-items-list">
+                        {{#each items}}
+                        {{#if this.isHeader}}
+                        <div class="hud-item-header">{{this.name}}</div>
+                        {{else}}
+                        <div class="hud-item-row" data-item-id="{{this.id}}" data-item-name="{{this.name}}">
+                            {{#if this.isIcon}}
+                            <div class="hud-item-icon-container">{{{this.img}}}</div>
+                            {{/if}}
+                            <div class="hud-item-details">
+                                <div class="hud-item-name-row">
+                                    <span class="hud-item-name">{{{this.name}}}</span>
+                                    <div class="hud-item-actions">
+                                        {{{this.cost}}}
+                                    </div>
+                                </div>
+                                {{#if this.tags.length}}
+                                <div class="hud-item-tags">
+                                    {{#each this.tags}}
+                                    <span class="hud-item-tag {{this.class}}" {{#if
+                                        this.tooltip}}data-tooltip="{{this.tooltip}}" {{/if}}>{{this.label}}</span>
+                                    {{/each}}
+                                </div>
+                                {{/if}}
+                                {{#if this.description}}
+                                <div class="hud-item-description">{{{this.description}}}</div>
+                                {{/if}}
+                            </div>
+                        </div>
+                        {{/if}}
+                        {{/each}}
+                    </div>
+                    {{else}}
+                    <div class="hud-empty-msg">{{localize 'STYLISH_HUD.Label.NoActions'}}</div>
+                    {{/if}}
+                </div>
+            </div>
+
+        </div>
+
+    </div>
