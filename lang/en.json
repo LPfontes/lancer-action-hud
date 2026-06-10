@@ -93,5 +93,7 @@
   "STYLISH_HUD.Basic.Brace.ShortDesc": "Trigger: Hit by an attack and damage is rolled.<br>Effect: Resistance to the attack and +1 Difficulty to other attacks until end of turn. Lose reactions and restricted to a single Quick Action next turn.",
   "STYLISH_HUD.Basic.Overwatch.Name": "Overwatch",
   "STYLISH_HUD.Basic.Overwatch.Desc": "Trigger: A hostile character starts any movement (including Boost) inside the Threat of one of your weapons.<br><br>Effect: You immediately use a weapon that triggered Overwatch to target the hostile character as a reaction, before they move.",
-  "STYLISH_HUD.Basic.Overwatch.ShortDesc": "Trigger: An enemy starts moving within the Threat of one of your weapons.<br>Effect: Target the enemy with the weapon before they move."
+  "STYLISH_HUD.Basic.Overwatch.ShortDesc": "Trigger: An enemy starts moving within the Threat of one of your weapons.<br>Effect: Target the enemy with the weapon before they move.",
+  "STYLISH_HUD.Keybinding.ToggleHUD": "Toggle Action HUD",
+  "STYLISH_HUD.Keybinding.ToggleHUDHint": "Show or hide the Lancer Action HUD panel."
 }

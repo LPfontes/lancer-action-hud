@@ -1,5 +1,4 @@
 /* scripts/main.js */
-console.log("Lancer Standalone HUD | main.js loaded");
 
 import { BaseSystemAdapter, configProps } from "./base.js";
 import { getIconHtml } from "./icon-config.js";
@@ -282,14 +281,14 @@ class LancerSystemAdapter extends BaseSystemAdapter {
             // Extract Damage info
             const rawDmg = activeProfile.damage || w.system.damage || [];
             let dmgArray = Array.isArray(rawDmg) ? rawDmg : [rawDmg];
-            
+
             // NPC weapons often store damage as an array of arrays (one per Tier)
             if (dmgArray.length > 0 && Array.isArray(dmgArray[0])) {
                 const tier = actor.system?.tier || 1;
                 const tierIdx = Math.max(0, Math.min(tier - 1, dmgArray.length - 1));
                 dmgArray = dmgArray[tierIdx] || [];
             }
-            
+
             const dmgObj = dmgArray[0];
             let dmgVal = "";
             let dmgType = "";
@@ -846,7 +845,6 @@ class LancerSystemAdapter extends BaseSystemAdapter {
      * Executes actions triggered via the Action HUD submenu buttons
      */
     async useItem(actor, itemId, event = null) {
-        console.log(`Lancer Standalone HUD | useItem called for actor: ${actor?.name} (ID: ${actor?.id}), itemId: ${itemId}`);
 
         if (itemId.startsWith("tracker:")) {
             const actionType = itemId.split(":")[1];
@@ -934,13 +932,11 @@ class LancerSystemAdapter extends BaseSystemAdapter {
             if (item) {
                 if (typeof item.beginCoreActiveFlow === "function") return item.beginCoreActiveFlow();
                 if (actor.beginCoreActiveFlow) return actor.beginCoreActiveFlow();
-                console.log(`Lancer Standalone HUD | Activate core system: ${item?.name}`);
             }
         }
         if (itemId.startsWith("activate:")) {
             const id = itemId.replace("activate:", "");
             const item = actor.items.get(id);
-            console.log(`Lancer Standalone HUD | Activate system item: ${item?.name} (ID: ${id})`);
             if (item) {
                 const tagsList = [];
                 if (item.system?.damage) {
@@ -989,7 +985,6 @@ class LancerSystemAdapter extends BaseSystemAdapter {
                 `;
 
                 const speaker = ChatMessage.getSpeaker({ actor: actor });
-                console.log(`Lancer Standalone HUD | Speaker resolved for activate:`, speaker);
 
                 return ChatMessage.create({
                     user: game.user.id,
@@ -1001,7 +996,6 @@ class LancerSystemAdapter extends BaseSystemAdapter {
         if (itemId.startsWith("deploy:")) {
             const id = itemId.replace("deploy:", "");
             const item = actor.items.get(id);
-            console.log(`Lancer Standalone HUD | Deploy item: ${item?.name} (ID: ${id})`);
             if (item) {
                 let deployableId = item.system.deployables?.[0];
                 let deployableActor = game.actors.find(a =>
@@ -1334,6 +1328,31 @@ class LancerActionHUD extends Application {
         this.adapter = adapter;
         this.activeToken = null;
         this.activeTab = "strike";
+        this._hudVisible = true;
+    }
+
+    /**
+     * Toggles the HUD visibility. If no token is active, does nothing.
+     * Uses a CSS class instead of jQuery .hide()/.show() because the wrapper
+     * has display:flex !important which overrides jQuery's inline display:none.
+     */
+    toggleHUD() {
+
+        if (!this.activeToken) {
+            return;
+        }
+
+        if (this._hudVisible) {
+            this._hudVisible = false;
+            this._element?.addClass("lancer-hud-hidden");
+        } else {
+            this._hudVisible = true;
+            if (!this._element || this._element.length === 0) {
+                this.render(true);
+            } else {
+                this._element.removeClass("lancer-hud-hidden");
+            }
+        }
     }
 
     static get defaultOptions() {
@@ -1347,13 +1366,11 @@ class LancerActionHUD extends Application {
     }
 
     _injectHTML(html) {
-        console.log("Lancer Standalone HUD | _injectHTML called with", html);
         $("#board").after(html);
         this._element = html;
     }
 
     async getData() {
-        console.log("Lancer Standalone HUD | getData called, activeToken is:", this.activeToken);
         const token = this.activeToken;
         if (!token || !token.actor) return { active: false };
 
@@ -1618,9 +1635,7 @@ let lancerHUDInstance = null;
 
 // Control Token Selection Hook
 Hooks.on("controlToken", (token, controlled) => {
-    console.log("Lancer Standalone HUD | controlToken Hook fired for:", token?.name, "controlled:", controlled);
     if (!lancerHUDInstance) {
-        console.log("Lancer Standalone HUD | lancerHUDInstance is null, skipping controlToken");
         return;
     }
 
@@ -1754,7 +1769,6 @@ Hooks.on("updateToken", async (tokenDoc, changes, context, userId) => {
 
 // Ready Hooks Initialization
 Hooks.once("ready", () => {
-    console.log("Lancer Standalone HUD | ready Hook fired");
     const adapter = new LancerSystemAdapter();
     lancerHUDInstance = new LancerActionHUD(adapter);
 
@@ -1769,8 +1783,27 @@ Hooks.once("ready", () => {
                 lancerHUDInstance.activeToken = null;
                 lancerHUDInstance.close();
             }
+        },
+        toggleHUD: () => {
+            if (lancerHUDInstance) lancerHUDInstance.toggleHUD();
         }
     };
+
+    // Keyboard shortcut to toggle HUD visibility (default: Z)
+    document.addEventListener("keydown", (event) => {
+        const tag = document.activeElement?.tagName?.toLowerCase();
+        const isEditable = tag === "input" || tag === "textarea" || document.activeElement?.isContentEditable;
+
+        // Ignore if typing in an input, textarea, or contenteditable
+        if (isEditable) {
+            return;
+        }
+
+        if (event.code === "KeyZ" && !event.ctrlKey && !event.altKey && !event.metaKey) {
+            event.preventDefault();
+            if (lancerHUDInstance) lancerHUDInstance.toggleHUD();
+        }
+    });
 
     const controlledTokens = canvas.tokens?.controlled || [];
     if (controlledTokens.length > 0) {
@@ -1780,5 +1813,4 @@ Hooks.once("ready", () => {
             lancerHUDInstance.render(true);
         }
     }
-    console.log("Lancer Standalone HUD | Initialized successfully.");
 });

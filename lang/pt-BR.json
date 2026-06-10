@@ -93,5 +93,7 @@
   "STYLISH_HUD.Basic.Brace.ShortDesc": "Acionamento: Atingido por ataque e o dano é rolado.<br>Efeito: Resistência ao ataque e +1 Dificuldade para outros ataques contra você até o fim do turno. Perde reações e só pode usar Ação Rápida no próximo turno.",
   "STYLISH_HUD.Basic.Overwatch.Name": "Retaliar",
   "STYLISH_HUD.Basic.Overwatch.Desc": "Acionamento: Um personagem hostil começa qualquer movimento (incluindo Impulsionar) dentro da Ameaça de uma das suas armas.<br><br>Efeito: Você imediatamente usa uma arma que acionou Retaliar para alvejar o personagem hostil como uma reação, antes dele se mover.",
-  "STYLISH_HUD.Basic.Overwatch.ShortDesc": "Acionamento: Um inimigo começa movimento dentro da Ameaça de uma de suas armas.<br>Efeito: Use a arma para alvejar o inimigo antes dele se mover."
+  "STYLISH_HUD.Basic.Overwatch.ShortDesc": "Acionamento: Um inimigo começa movimento dentro da Ameaça de uma de suas armas.<br>Efeito: Use a arma para alvejar o inimigo antes dele se mover.",
+  "STYLISH_HUD.Keybinding.ToggleHUD": "Alternar Action HUD",
+  "STYLISH_HUD.Keybinding.ToggleHUDHint": "Mostrar ou ocultar o painel do Lancer Action HUD."
 }
