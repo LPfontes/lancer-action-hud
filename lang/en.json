@@ -95,5 +95,11 @@
   "STYLISH_HUD.Basic.Overwatch.Desc": "Trigger: A hostile character starts any movement (including Boost) inside the Threat of one of your weapons.<br><br>Effect: You immediately use a weapon that triggered Overwatch to target the hostile character as a reaction, before they move.",
   "STYLISH_HUD.Basic.Overwatch.ShortDesc": "Trigger: An enemy starts moving within the Threat of one of your weapons.<br>Effect: Target the enemy with the weapon before they move.",
   "STYLISH_HUD.Keybinding.ToggleHUD": "Toggle Action HUD",
-  "STYLISH_HUD.Keybinding.ToggleHUDHint": "Show or hide the Lancer Action HUD panel."
+  "STYLISH_HUD.Keybinding.ToggleHUDHint": "Show or hide the Lancer Action HUD panel.",
+  "STYLISH_HUD.Settings.EnableHUD.Name": "Enable Automatic HUD",
+  "STYLISH_HUD.Settings.EnableHUD.Hint": "If enabled, the HUD will automatically open when you select a token.",
+  "STYLISH_HUD.Keybinding.ToggleEnableHUD": "Toggle Automatic HUD",
+  "STYLISH_HUD.Keybinding.ToggleEnableHUDHint": "Enables or disables automatically showing the HUD when clicking a token.",
+  "STYLISH_HUD.Settings.HUDEnabled": "Auto-HUD Enabled",
+  "STYLISH_HUD.Settings.HUDDisabled": "Auto-HUD Disabled"
 }

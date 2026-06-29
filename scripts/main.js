@@ -1647,7 +1647,9 @@ Hooks.on("controlToken", (token, controlled) => {
         if (ownedToken) {
             if (lancerHUDInstance.activeToken?.id !== ownedToken.id) {
                 lancerHUDInstance.activeToken = ownedToken;
-                lancerHUDInstance.render(true);
+                if (game.settings.get("lancer-action-hud", "enableHUD")) {
+                    lancerHUDInstance.render(true);
+                }
             }
         } else {
             if (lancerHUDInstance.activeToken) {
@@ -1687,7 +1689,9 @@ Hooks.on("canvasReady", () => {
         const firstToken = controlledTokens[0];
         if (firstToken.actor && (firstToken.actor.isOwner || game.user.isGM)) {
             lancerHUDInstance.activeToken = firstToken;
-            lancerHUDInstance.render(true);
+            if (game.settings.get("lancer-action-hud", "enableHUD")) {
+                lancerHUDInstance.render(true);
+            }
             return;
         }
     }
@@ -1767,6 +1771,51 @@ Hooks.on("updateToken", async (tokenDoc, changes, context, userId) => {
     }
 });
 
+// Init Hooks Initialization
+Hooks.once("init", () => {
+    game.settings.register("lancer-action-hud", "enableHUD", {
+        name: "STYLISH_HUD.Settings.EnableHUD.Name",
+        hint: "STYLISH_HUD.Settings.EnableHUD.Hint",
+        scope: "client",
+        config: true,
+        type: Boolean,
+        default: true,
+        onChange: value => {
+            if (!value && lancerHUDInstance) {
+                lancerHUDInstance.close();
+            } else if (value && lancerHUDInstance && canvas.tokens?.controlled.length > 0) {
+                const first = canvas.tokens.controlled[0];
+                if (first.actor && (first.actor.isOwner || game.user.isGM)) {
+                    lancerHUDInstance.activeToken = first;
+                    lancerHUDInstance.render(true);
+                }
+            }
+        }
+    });
+
+    game.keybindings.register("lancer-action-hud", "toggleEnableHUD", {
+        name: "STYLISH_HUD.Keybinding.ToggleEnableHUD",
+        hint: "STYLISH_HUD.Keybinding.ToggleEnableHUDHint",
+        editable: [{ key: "KeyE", modifiers: ["Control"] }],
+        onDown: () => {
+            const current = game.settings.get("lancer-action-hud", "enableHUD");
+            game.settings.set("lancer-action-hud", "enableHUD", !current);
+            ui.notifications.info(`Lancer Action HUD: ${!current ? game.i18n.localize("STYLISH_HUD.Settings.HUDEnabled") : game.i18n.localize("STYLISH_HUD.Settings.HUDDisabled")}`);
+            return true;
+        }
+    });
+
+    game.keybindings.register("lancer-action-hud", "toggleHUD", {
+        name: "STYLISH_HUD.Keybinding.ToggleHUD",
+        hint: "STYLISH_HUD.Keybinding.ToggleHUDHint",
+        editable: [{ key: "KeyZ" }],
+        onDown: () => {
+            if (lancerHUDInstance) lancerHUDInstance.toggleHUD();
+            return true;
+        }
+    });
+});
+
 // Ready Hooks Initialization
 Hooks.once("ready", () => {
     const adapter = new LancerSystemAdapter();
@@ -1789,28 +1838,14 @@ Hooks.once("ready", () => {
         }
     };
 
-    // Keyboard shortcut to toggle HUD visibility (default: Z)
-    document.addEventListener("keydown", (event) => {
-        const tag = document.activeElement?.tagName?.toLowerCase();
-        const isEditable = tag === "input" || tag === "textarea" || document.activeElement?.isContentEditable;
-
-        // Ignore if typing in an input, textarea, or contenteditable
-        if (isEditable) {
-            return;
-        }
-
-        if (event.code === "KeyZ" && !event.ctrlKey && !event.altKey && !event.metaKey) {
-            event.preventDefault();
-            if (lancerHUDInstance) lancerHUDInstance.toggleHUD();
-        }
-    });
-
     const controlledTokens = canvas.tokens?.controlled || [];
     if (controlledTokens.length > 0) {
         const firstToken = controlledTokens[0];
         if (firstToken.actor && (firstToken.actor.isOwner || game.user.isGM)) {
             lancerHUDInstance.activeToken = firstToken;
-            lancerHUDInstance.render(true);
+            if (game.settings.get("lancer-action-hud", "enableHUD")) {
+                lancerHUDInstance.render(true);
+            }
         }
     }
 });

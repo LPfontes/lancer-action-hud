@@ -95,5 +95,11 @@
   "STYLISH_HUD.Basic.Overwatch.Desc": "Acionamento: Um personagem hostil começa qualquer movimento (incluindo Impulsionar) dentro da Ameaça de uma das suas armas.<br><br>Efeito: Você imediatamente usa uma arma que acionou Retaliar para alvejar o personagem hostil como uma reação, antes dele se mover.",
   "STYLISH_HUD.Basic.Overwatch.ShortDesc": "Acionamento: Um inimigo começa movimento dentro da Ameaça de uma de suas armas.<br>Efeito: Use a arma para alvejar o inimigo antes dele se mover.",
   "STYLISH_HUD.Keybinding.ToggleHUD": "Alternar Action HUD",
-  "STYLISH_HUD.Keybinding.ToggleHUDHint": "Mostrar ou ocultar o painel do Lancer Action HUD."
+  "STYLISH_HUD.Keybinding.ToggleHUDHint": "Mostrar ou ocultar o painel do Lancer Action HUD.",
+  "STYLISH_HUD.Settings.EnableHUD.Name": "Ativar HUD Automático",
+  "STYLISH_HUD.Settings.EnableHUD.Hint": "Se ativo, o HUD abrirá automaticamente ao selecionar um token.",
+  "STYLISH_HUD.Keybinding.ToggleEnableHUD": "Ligar/Desligar HUD Automático",
+  "STYLISH_HUD.Keybinding.ToggleEnableHUDHint": "Ativa ou desativa a exibição automática do HUD ao clicar num token.",
+  "STYLISH_HUD.Settings.HUDEnabled": "Automático Ativado",
+  "STYLISH_HUD.Settings.HUDDisabled": "Automático Desativado"
 }
