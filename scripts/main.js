@@ -597,6 +597,7 @@ class LancerSystemAdapter extends BaseSystemAdapter {
             const isDrone = s.system?.type?.toLowerCase() === "drone" ||
                 s.system?.tags?.some(t => (typeof t === "string" ? t : t.id)?.toLowerCase() === "drone");
             const hasDeployables = s.system?.deployables && s.system.deployables.length > 0;
+            const hasActions = s.system?.actions && Array.isArray(s.system.actions) && s.system.actions.length > 0;
 
             let actionButtons = `
                 <button type="button" class="pf2e-map-btn" onclick="event.stopPropagation(); StylishAction.useItem('activate:${s.id}', event)" data-tooltip="Enviar um card representando este item para o chat"><i class="fas fa-comment-alt"></i></button>
@@ -609,10 +610,10 @@ class LancerSystemAdapter extends BaseSystemAdapter {
                         <button type="button" class="pf2e-dmg-btn" style="background:rgba(88, 180, 52, 0.05) !important; border-color:rgba(88, 180, 52, 0.25) !important; color:#58b434 !important;" onclick="event.stopPropagation(); StylishAction.useItem('deploy:${s.id}', event)" data-tooltip="Posicionar/Deploy Drone no mapa"><i class="fas fa-robot"></i></button>
                     </div>
                 `;
-            } else if (s.system?.actions && Array.isArray(s.system.actions) && s.system.actions.length > 0) {
+            } else if (hasActions) {
                 let actionBtnsHtml = s.system.actions.map((act, index) => {
                     const actType = act.activation || "Ação";
-                    return `<button type="button" class="pf2e-map-btn" style="background:rgba(88, 180, 52, 0.05); border-color:rgba(88, 180, 52, 0.25); color:#58b434;" onclick="event.stopPropagation(); StylishAction.useItem('system-action:${s.id}:${index}', event)" data-tooltip="${act.detail || 'Ativar ação do sistema'}">${actType.toUpperCase()}</button>`;
+                    return `<button type="button" class="pf2e-map-btn" style="background:rgba(88, 180, 52, 0.05); border-color:rgba(88, 180, 52, 0.25); color:#58b434;" onclick="event.stopPropagation(); StylishAction.useItem('system-action:${s.id}:${index}', event)" data-tooltip="${act.detail || act.name || 'Ativar ação do sistema'}">${actType.toUpperCase()}</button>`;
                 }).join("");
                 actionButtons = `
                     <div style="display:inline-flex; gap:4px; align-items:center;">
@@ -627,14 +628,42 @@ class LancerSystemAdapter extends BaseSystemAdapter {
             const nameStyle = isDestroyed ? "text-decoration:line-through; opacity:0.6;" : "";
             const displayName = isDestroyed ? `<span style="${nameStyle}">${s.name}</span>${destroyedLabel}` : s.name;
 
+            const effectText = s.system?.effect || "";
+            const descriptionText = s.system?.description || "";
+            const combinedDescription = [effectText, descriptionText].filter(Boolean).join("<br><br>");
+
             categories.all.push({
                 id: s.id,
                 name: displayName,
                 img: s.img || "systems/lancer/assets/icons/generic_item.svg",
                 cost: actionButtons,
                 tags: this._getItemTags(s),
-                description: s.system?.effect || s.system?.description || ""
+                description: combinedDescription
             });
+
+            if (hasActions) {
+                s.system.actions.forEach((act, index) => {
+                    const actType = (act.activation || "").toUpperCase();
+                    const actName = act.name || `Action ${index + 1}`;
+                    const actDetail = act.detail || "";
+                    if (!actDetail && !actName) return;
+
+                    const activationTags = actType ? [{
+                        label: actType,
+                        class: "tag-system",
+                        tooltip: `${actType} Action`
+                    }] : [];
+
+                    categories.all.push({
+                        id: `system-action-${s.id}-${index}`,
+                        name: `<span style="opacity:0.85; font-size:0.92em; padding-left:12px; border-left:2px solid rgba(88,180,52,0.35);">↳ ${actName}</span>`,
+                        img: s.img || "systems/lancer/assets/icons/generic_item.svg",
+                        cost: `<button type="button" class="pf2e-map-btn" style="background:rgba(88,180,52,0.05); border-color:rgba(88,180,52,0.25); color:#58b434;" onclick="event.stopPropagation(); StylishAction.useItem('system-action:${s.id}:${index}', event)">${actType || "USE"}</button>`,
+                        tags: activationTags,
+                        description: actDetail
+                    });
+                });
+            }
         });
 
         return {
@@ -1337,20 +1366,21 @@ class LancerActionHUD extends Application {
      * has display:flex !important which overrides jQuery's inline display:none.
      */
     toggleHUD() {
-
         if (!this.activeToken) {
             return;
         }
 
         if (this._hudVisible) {
             this._hudVisible = false;
-            this._element?.addClass("lancer-hud-hidden");
+            if (this._element?.length) {
+                this.minimize();
+            }
         } else {
             this._hudVisible = true;
             if (!this._element || this._element.length === 0) {
                 this.render(true);
             } else {
-                this._element.removeClass("lancer-hud-hidden");
+                this.maximize();
             }
         }
     }
@@ -1358,16 +1388,40 @@ class LancerActionHUD extends Application {
     static get defaultOptions() {
         return mergeObject(super.defaultOptions, {
             id: "lancer-action-hud",
+            title: "Lancer Action HUD",
             template: "modules/lancer-action-hud/templates/hud.html",
-            popOut: false,
-            minimizable: false,
-            resizable: false
+            popOut: true,
+            minimizable: true,
+            resizable: false,
+            width: "auto",
+            height: "auto"
         });
     }
 
-    _injectHTML(html) {
-        $("#board").after(html);
-        this._element = html;
+    /** Salva posição ao mover a janela */
+    setPosition(options = {}) {
+        const pos = super.setPosition(options);
+        if (pos && this._element?.length) {
+            const saved = { left: pos.left, top: pos.top };
+            game.settings.set("lancer-action-hud", "hudPosition", saved).catch(() => {});
+        }
+        return pos;
+    }
+
+    /** Restaura posição salva e fecha se não houver token ativo */
+    async _render(force, options = {}) {
+        if (!this.activeToken && !force) {
+            return this.close();
+        }
+        // Injeta posição salva antes de renderizar
+        try {
+            const saved = game.settings.get("lancer-action-hud", "hudPosition");
+            if (saved && !options.left && !options.top) {
+                options.left = saved.left;
+                options.top = saved.top;
+            }
+        } catch (e) { /* setting ainda não registrada */ }
+        return super._render(force, options);
     }
 
     async getData() {
@@ -1773,6 +1827,15 @@ Hooks.on("updateToken", async (tokenDoc, changes, context, userId) => {
 
 // Init Hooks Initialization
 Hooks.once("init", () => {
+    // Persiste a posição da janela popout entre sessões
+    game.settings.register("lancer-action-hud", "hudPosition", {
+        name: "HUD Position",
+        scope: "client",
+        config: false,
+        type: Object,
+        default: { left: 150, top: 100 }
+    });
+
     game.settings.register("lancer-action-hud", "enableHUD", {
         name: "STYLISH_HUD.Settings.EnableHUD.Name",
         hint: "STYLISH_HUD.Settings.EnableHUD.Hint",

@@ -29,36 +29,67 @@
   vertical-align: middle;
 }
 
-/* Standalone HUD Master Container (Positioned bottom-right) */
-#lancer-hud-wrapper {
-  position: absolute !important;
-  z-index: 99999 !important;
+/* Janela Popout do Foundry - estilo Lancer */
+#lancer-action-hud {
+  background: rgba(10, 12, 14, 0.97) !important;
+  border: 1px solid var(--l-accent) !important;
+  border-radius: 0 !important;
+  box-shadow: 0 0 30px rgba(128, 41, 50, 0.35), 0 8px 32px rgba(0, 0, 0, 0.8) !important;
+  font-family: 'Orbitron', sans-serif !important;
+  overflow: visible !important;
+}
+
+/* Barra de título da janela */
+#lancer-action-hud .window-header {
+  background: linear-gradient(90deg, rgba(128, 41, 50, 0.9) 0%, rgba(20, 10, 12, 0.95) 100%) !important;
+  border-bottom: 1px solid rgba(128, 41, 50, 0.6) !important;
+  border-radius: 0 !important;
+  padding: 4px 8px !important;
+  cursor: move !important;
   display: flex !important;
-  flex-direction: row-reverse !important;
-  /* Right to Left flow */
-  align-items: flex-end !important;
-  gap: 12px !important;
-  pointer-events: none !important;
-  box-sizing: border-box !important;
-  width: 100%;
-  height: 100%;
+  align-items: center !important;
+  gap: 6px !important;
+}
+
+#lancer-action-hud .window-title {
+  font-family: 'Orbitron', sans-serif !important;
+  font-size: 0.85em !important;
+  font-weight: 700 !important;
+  color: #ffffff !important;
+  text-transform: uppercase !important;
+  letter-spacing: 2px !important;
+  flex: 1 !important;
+}
+
+#lancer-action-hud .header-button {
+  color: rgba(255,255,255,0.7) !important;
+  border: none !important;
+  background: transparent !important;
+  font-size: 0.85em !important;
+  padding: 2px 4px !important;
+  transition: color 0.2s ease !important;
+}
+
+#lancer-action-hud .header-button:hover {
+  color: var(--l-accent) !important;
+  text-shadow: 0 0 6px rgba(128, 41, 50, 0.8) !important;
+}
+
+#lancer-action-hud .window-content {
+  padding: 0 !important;
+  background: transparent !important;
+  overflow: visible !important;
 }
 
 .hud-panel {
   gap: 8px;
-  position: absolute;
-  left: 22%;
-  bottom: 10%;
-  transform: translateX(-50%);
   display: flex;
   max-width: 95vw;
-  z-index: 100 !important;
 }
 
 .hud-right-panel {
   position: relative;
   max-width: 400px;
-  z-index: 10 !important;
 }
 
 .hud-left-panel {
@@ -67,31 +98,6 @@
   flex-direction: column;
   gap: 10px;
   align-items: flex-end;
-}
-
-/* Media queries for screen size responsiveness */
-@media (max-width: 1400px) {
-  .hud-panel {
-    transform: translateX(-50%) scale(0.9) !important;
-    transform-origin: bottom center;
-  }
-}
-
-@media (max-width: 1024px) {
-  .hud-panel {
-    transform: translateX(-50%) scale(0.8) !important;
-    transform-origin: bottom center;
-  }
-}
-
-@media (max-width: 768px) {
-  .hud-panel {
-    flex-direction: column-reverse !important;
-    align-items: center !important;
-    transform: translateX(-50%) scale(0.7) !important;
-    transform-origin: bottom center;
-    bottom: 5px;
-  }
 }
 
 /* 1. Active Actor Diagnostic Panel (Rightmost) */
@@ -446,7 +452,7 @@
 .hud-submenu-content {
   flex-grow: 1 !important;
   overflow-y: auto !important;
-  max-height: 380px !important;
+  max-height: 550px !important;
   padding-right: 4px !important;
 }
 
@@ -694,6 +700,7 @@
 
 .hud-vital-input[type=number] {
   -moz-appearance: textfield;
+  appearance: textfield;
 }
 
 .hud-vitals-separator {
@@ -898,9 +905,4 @@
 .hud-action-tracker .action-reset {
     border-color: rgba(128, 41, 50, 0.5) !important;
     color: rgba(255,255,255,0.8) !important;
-}
-
-/* HUD visibility toggle */
-#lancer-hud-wrapper.lancer-hud-hidden {
-    display: none !important;
 }
