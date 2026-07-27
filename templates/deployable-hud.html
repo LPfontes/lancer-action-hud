@@ -1,0 +1,52 @@
+<div class="la-deployable-hud">
+    <div class="la-deployable-header">
+        <img src="{{actorImg}}" class="la-deployable-icon" />
+        <div class="la-deployable-title">
+            <span class="la-deployable-name">{{actorName}}</span>
+            <span class="la-deployable-type">DEPLOYABLE</span>
+        </div>
+    </div>
+    <div class="la-deployable-stats">
+        <div class="la-deployable-stat-row">
+            <div class="la-deployable-stat">
+                <span class="la-deployable-stat-lbl">HP</span>
+                <span class="la-deployable-stat-val">{{hp.value}}/{{hp.max}}</span>
+            </div>
+            <div class="la-deployable-stat">
+                <span class="la-deployable-stat-lbl">ARMOR</span>
+                <span class="la-deployable-stat-val">{{armor}}</span>
+            </div>
+            <div class="la-deployable-stat">
+                <span class="la-deployable-stat-lbl">EVA</span>
+                <span class="la-deployable-stat-val">{{evasion}}</span>
+            </div>
+            <div class="la-deployable-stat">
+                <span class="la-deployable-stat-lbl">EDEF</span>
+                <span class="la-deployable-stat-val">{{edef}}</span>
+            </div>
+        </div>
+        <div class="la-deployable-stat-row">
+            <div class="la-deployable-stat">
+                <span class="la-deployable-stat-lbl">SPEED</span>
+                <span class="la-deployable-stat-val">{{speed}}</span>
+            </div>
+            <div class="la-deployable-stat">
+                <span class="la-deployable-stat-lbl">SIZE</span>
+                <span class="la-deployable-stat-val">{{size}}</span>
+            </div>
+            <div class="la-deployable-stat">
+                <span class="la-deployable-stat-lbl">SAVE</span>
+                <span class="la-deployable-stat-val">{{save}}</span>
+            </div>
+            <div class="la-deployable-stat">
+                <span class="la-deployable-stat-lbl">HEAT</span>
+                <span class="la-deployable-stat-val">{{heat.value}}/{{heat.max}}</span>
+            </div>
+        </div>
+    </div>
+    {{#if detail}}
+    <div class="la-deployable-detail">
+        {{{detail}}}
+    </div>
+    {{/if}}
+</div>

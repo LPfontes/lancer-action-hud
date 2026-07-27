@@ -1,0 +1,27 @@
+<div class="la-popup">
+    <div class="la-popup-header">
+        {{#if img}}
+        <img src="{{img}}" class="la-popup-icon" />
+        {{/if}}
+        <h2 class="la-popup-title">{{{name}}}</h2>
+        <i class="fas fa-chevron-up la-popup-toggle-icon"></i>
+    </div>
+
+    <div class="la-popup-body">
+        {{#if tags.length}}
+        <div class="la-popup-tags">
+            {{#each tags}}
+            <span class="hud-item-tag {{this.class}}">{{{this.label}}}</span>
+            {{/each}}
+        </div>
+        {{/if}}
+
+        {{#if description}}
+        <div class="la-popup-description">{{{description}}}</div>
+        {{/if}}
+
+        {{#if cost}}
+        <div class="la-popup-actions">{{{cost}}}</div>
+        {{/if}}
+    </div>
+</div>
