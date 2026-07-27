@@ -4,6 +4,7 @@
   "STYLISH_HUD.Tabs.Systems": "Sistemas",
   "STYLISH_HUD.Tabs.Core": "Núcleo",
   "STYLISH_HUD.Tabs.Talents": "Talentos",
+  "STYLISH_HUD.Tabs.Implementos": "Implementos",
   "STYLISH_HUD.Tabs.Utilities": "Utilitários",
   "STYLISH_HUD.Tabs.Statuses": "Estados",
 
@@ -29,6 +30,15 @@
   "STYLISH_HUD.Dialog.CurrentVal": "Valor Atual: <strong>{value}</strong>",
   "STYLISH_HUD.Dialog.Placeholder": "+10, -5 ou valor exato",
   "STYLISH_HUD.Dialog.Confirm": "Confirmar",
+  "STYLISH_HUD.Dialog.StructureDamage.Title": "Teste de Dano de Estrutura",
+  "STYLISH_HUD.Dialog.StructureDamage.Desc": "Role para resistir a dano de estrutura.",
+  "STYLISH_HUD.Dialog.StructureDamage.Roll": "Rolagem de Salvamento",
+  "STYLISH_HUD.Dialog.StructureDamage.Description": "{actorName} - dano de {damageType}. Role para resistir.",
+  "STYLISH_HUD.Dialog.StressDamage.Title": "Teste de Dano de Estresse",
+  "STYLISH_HUD.Dialog.StressDamage.Desc": "Role para resistir a dano de estresse.",
+  "STYLISH_HUD.Dialog.StressDamage.Roll": "Rolagem de Salvamento",
+  "STYLISH_HUD.Dialog.Submit": "Enviar",
+  "STYLISH_HUD.Dialog.Cancel": "Cancelar",
 
   "STYLISH_HUD.Deploy.Prompt": "Clique no mapa para posicionar o token de: {name} (ou ESC / Botão Direito para cancelar)",
   "STYLISH_HUD.Deploy.Cancelled": "Posicionamento cancelado.",
