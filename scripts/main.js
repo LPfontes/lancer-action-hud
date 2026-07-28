@@ -128,8 +128,8 @@ class LancerSystemAdapter extends BaseSystemAdapter {
                 useSidebar: true,
             },
             {
-                systemId: "utility",
-                label: `${game.i18n.localize("STYLISH_HUD.Tabs.Utilities")}<span class="material-symbols-outlined" style="margin-left: 15px;"></span>`,
+                systemId: "implementos",
+                label: `${game.i18n.localize("STYLISH_HUD.Tabs.Implementos")}<span class="material-symbols-outlined" style="margin-left: 15px;"></span>`,
                 icon: "",
                 type: "submenu",
                 useSidebar: false,
@@ -166,6 +166,8 @@ class LancerSystemAdapter extends BaseSystemAdapter {
                 return { ...this._getCoreData(actor), title: menuData.label };
             case "talent":
                 return { ...this._getTalentData(actor), title: menuData.label };
+            case "implementos":
+                return { ...this._getImplementosData(actor), title: menuData.label };
             case "utility":
                 return { ...this._getUtilityData(actor), title: menuData.label };
             case "status":
@@ -207,7 +209,11 @@ class LancerSystemAdapter extends BaseSystemAdapter {
 
                         let label = game.i18n.has(nameKey) ? game.i18n.localize(nameKey) : id;
                         if (val !== undefined && val !== null) {
-                            label = `${label} ${val}`;
+                            if (label.includes("{VAL}")) {
+                                label = label.replace(/\{VAL\}/g, val);
+                            } else {
+                                label = `${label} ${val}`;
+                            }
                         }
 
                         let tooltip = customTooltip;
@@ -432,7 +438,9 @@ class LancerSystemAdapter extends BaseSystemAdapter {
                 img: w.img || "systems/lancer/assets/icons/generic_item.svg",
                 cost: actionButtons,
                 tags: this._getItemTags(w),
-                description: fullDescription
+                description: fullDescription,
+                canDestroy: true,
+                isDestroyed: isDestroyed
             };
 
             const mountLabel = weaponMountMap[w.id] || "other";
@@ -537,7 +545,9 @@ class LancerSystemAdapter extends BaseSystemAdapter {
 
         techSystems.forEach(s => {
             const actionButtons = `
-                <button type="button" class="pf2e-map-btn" onclick="event.stopPropagation(); StylishAction.useItem('tech:${s.id}', event)">TECH ATTACK</button>
+                <button type="button" class="pf2e-map-btn" onclick="event.stopPropagation(); StylishAction.useItem('tech:${s.id}', event)">
+                    ${game.i18n.localize('STYLISH_HUD.Stats.TechAttack')}
+                </button>
             `;
             items.push({
                 id: s.id,
@@ -555,25 +565,34 @@ class LancerSystemAdapter extends BaseSystemAdapter {
                 id: "basic-invade",
                 name: game.i18n.localize("STYLISH_HUD.Basic.Invade.Name"),
                 img: "systems/lancer/assets/icons/skills/hacker.svg",
-                cost: `<button type="button" class="pf2e-map-btn" onclick="event.stopPropagation(); StylishAction.useItem('basic:invade')">TECH ATTACK</button>`,
-                tags: `<div class="lancer-tags"><span class="lancer-tag damage-tag">2 Heat</span><span class="lancer-tag range-tag">Sensors</span></div>`,
-                description: game.i18n.localize("STYLISH_HUD.Basic.Invade.Desc")
+                cost: `<button type="button" class="pf2e-map-btn" onclick="event.stopPropagation(); StylishAction.useItem('tech:invade')">
+                    ${game.i18n.localize('STYLISH_HUD.Stats.TechAttack')}
+                </button>`,
+                tags: `<div class="lancer-tags"><span class="lancer-tag damage-tag">2 Heat</span><span class="lancer-tag range-tag">${game.i18n.localize('LANCER_HUD.Range.Sensors')}</span></div>`,
+                description: game.i18n.localize("STYLISH_HUD.Basic.Invade.Desc"),
+                isAction: true
             },
             {
                 id: "basic-lockon",
                 name: game.i18n.localize("STYLISH_HUD.Basic.LockOn.Name"),
                 img: "systems/lancer/assets/icons/skills/spotter.svg",
-                cost: `<button type="button" class="pf2e-map-btn" style="background:rgba(88, 180, 52, 0.05); border-color:rgba(88, 180, 52, 0.25); color:#58b434;" onclick="event.stopPropagation(); StylishAction.useItem('basic:lockon')">QUICK TECH</button>`,
-                tags: `<div class="lancer-tags"><span class="lancer-tag range-tag">Sensors</span></div>`,
-                description: game.i18n.localize("STYLISH_HUD.Basic.LockOn.Desc")
+                cost: `<button type="button" class="pf2e-map-btn" style="background:rgba(88, 180, 52, 0.05); border-color:rgba(88, 180, 52, 0.25); color:#58b434;" onclick="event.stopPropagation(); StylishAction.useItem('basic:lockon')">
+                    ${game.i18n.localize('STYLISH_HUD.Checks.QuickTech')}
+                </button>`,
+                tags: `<div class="lancer-tags"><span class="lancer-tag range-tag">${game.i18n.localize('STYLISH_HUD.Range.Sensors')}</span></div>`,
+                description: game.i18n.localize("STYLISH_HUD.Basic.LockOn.Desc"),
+                isAction: true
             },
             {
                 id: "basic-bolster",
                 name: game.i18n.localize("STYLISH_HUD.Basic.Bolster.Name"),
                 img: "systems/lancer/assets/icons/skills/leader.svg",
-                cost: `<button type="button" class="pf2e-map-btn" style="background:rgba(88, 180, 52, 0.05); border-color:rgba(88, 180, 52, 0.25); color:#58b434;" onclick="event.stopPropagation(); StylishAction.useItem('basic:bolster')">QUICK TECH</button>`,
-                tags: `<div class="lancer-tags"><span class="lancer-tag range-tag">Sensors</span></div>`,
-                description: game.i18n.localize("STYLISH_HUD.Basic.Bolster.Desc")
+                cost: `<button type="button" class="pf2e-map-btn" style="background:rgba(88, 180, 52, 0.05); border-color:rgba(88, 180, 52, 0.25); color:#58b434;" onclick="event.stopPropagation(); StylishAction.useItem('basic:bolster')">
+                    ${game.i18n.localize('STYLISH_HUD.Checks.QuickTech')}
+                </button>`,
+                tags: `<div class="lancer-tags"><span class="lancer-tag range-tag">${game.i18n.localize('STYLISH_HUD.Range.Sensors')}</span></div>`,
+                description: game.i18n.localize("STYLISH_HUD.Basic.Bolster.Desc"),
+                isAction: true
             }
         );
 
@@ -638,7 +657,9 @@ class LancerSystemAdapter extends BaseSystemAdapter {
                 img: s.img || "systems/lancer/assets/icons/generic_item.svg",
                 cost: actionButtons,
                 tags: this._getItemTags(s),
-                description: combinedDescription
+                description: combinedDescription,
+                canDestroy: true,
+                isDestroyed: isDestroyed
             });
 
             if (hasActions) {
@@ -660,7 +681,8 @@ class LancerSystemAdapter extends BaseSystemAdapter {
                         img: s.img || "systems/lancer/assets/icons/generic_item.svg",
                         cost: `<button type="button" class="pf2e-map-btn" style="background:rgba(88,180,52,0.05); border-color:rgba(88,180,52,0.25); color:#58b434;" onclick="event.stopPropagation(); StylishAction.useItem('system-action:${s.id}:${index}', event)">${actType || "USE"}</button>`,
                         tags: activationTags,
-                        description: actDetail
+                        description: actDetail,
+                        isAction: true
                     });
                 });
             }
@@ -706,18 +728,78 @@ class LancerSystemAdapter extends BaseSystemAdapter {
         }
 
         const talents = targetActor.items.filter(i => i.type === "talent");
+        const rankGroups = [];
         talents.forEach(t => {
             const currRank = t.system.curr_rank || 1;
-            const rankIndex = Math.max(0, currRank - 1);
-            const rankObj = t.system.ranks?.[rankIndex];
-            const traitDescription = rankObj?.description || rankObj?.desc || rankObj?.text || t.system?.description || "";
+            const ranks = [];
 
-            categories.all.push({
+            for (let i = 0; i < currRank; i++) {
+                const rankObj = t.system.ranks?.[i];
+                const rankNum = i + 1;
+                const traitDescription = rankObj?.description || rankObj?.desc || rankObj?.text || t.system?.description || "";
+                const rankName = rankObj?.name || `Rank ${rankNum}`;
+
+                const actions = rankObj?.actions;
+                let actionsHtml = "";
+                if (actions && Array.isArray(actions) && actions.length > 0) {
+                    const actionBlocks = actions.map((act, actIdx) => {
+                        const actType = act.activation || "";
+
+                        let chipIcon = "";
+                        if (actType.toLowerCase().includes("tech") || actType.toLowerCase().includes("quick")) {
+                            chipIcon = '<i class="cci cci-tech-quick i--3"></i>';
+                        } else if (actType.toLowerCase().includes("full")) {
+                            chipIcon = '<i class="cci cci-tech-quick i--3"></i>';
+                        }
+
+                        const chipLabel = actType ? `USE ${actType.toUpperCase()}` : "USE";
+
+                        return `
+                            <div class="action-wrapper">
+                                <div class="title-wrapper flexrow">
+                                    <i class="cci cci-tech-quick i--4"></i>
+                                    <span class="action-title collapse-trigger">${act.name || `Action ${actIdx + 1}`}</span>
+                                </div>
+                                <div class="action-detail">
+                                    <hr class="hsep">
+                                    <div class="action-flow-container">
+                                        <a class="activation-flow lancer-button activation-chip activation-invade lancer-tech" data-talent-id="${t.id}" data-rank-index="${i}" data-action-index="${actIdx}" draggable="true">
+                                            ${chipIcon}${chipLabel}
+                                        </a><span class="vsep"></span>
+                                    </div>
+                                    ${act.detail || ""}
+                                </div>
+                            </div>`;
+                    });
+                    actionsHtml = `<div class="effect-text" style="display:grid; gap:8px">${actionBlocks.join("\n")}</div>`;
+                }
+
+                let fullDescription = traitDescription;
+                if (actionsHtml) {
+                    fullDescription += "\n" + actionsHtml;
+                }
+
+                categories.all.push({
+                    id: `${t.id}-rank${rankNum}`,
+                    name: `${t.name} (Rank ${rankNum}) - ${rankName}`,
+                    img: t.img || "systems/lancer/assets/icons/generic_item.svg",
+                    cost: "",
+                    description: fullDescription
+                });
+
+                ranks.push({
+                    id: `${t.id}-rank${rankNum}`,
+                    rankNum: rankNum,
+                    name: rankName,
+                    description: fullDescription
+                });
+            }
+
+            rankGroups.push({
                 id: t.id,
-                name: `${t.name} (Rank ${currRank})` + (rankObj?.name ? ` - ${rankObj.name}` : ""),
+                name: t.name,
                 img: t.img || "systems/lancer/assets/icons/generic_item.svg",
-                cost: "",
-                description: traitDescription
+                ranks: ranks
             });
         });
 
@@ -725,6 +807,7 @@ class LancerSystemAdapter extends BaseSystemAdapter {
             hasTabs: true,
             hasSubTabs: false,
             items: categories,
+            rankGroups: rankGroups,
             tabLabels: { all: "Talents" }
         };
     }
@@ -746,50 +829,124 @@ class LancerSystemAdapter extends BaseSystemAdapter {
             const ocNameStr = game.i18n.localize("STYLISH_HUD.Utilities.Overcharge.Name");
             const displayDie = overchargeDie.toString().startsWith('+') ? overchargeDie : `+${overchargeDie}`;
             const ocNameWithDie = `${ocNameStr} <span style="font-family:'Orbitron'; font-size:0.85em; color:#ffaa00; margin-left:8px;">[${displayDie} Heat]</span>`;
+            const ocNamePlain = `${ocNameStr} [${displayDie} Heat]`;
 
             items.push({
                 id: "util-overcharge",
+                actionId: "util:overcharge",
                 name: ocNameWithDie,
-                img: `<i class="cci cci-burn la-dropshadow -fontsize11"></i>`,
-                isIcon: true,
+                tooltip: ocNamePlain,
+                isIcon: false,
                 cost: `<button type="button" class="pf2e-map-btn" onclick="event.stopPropagation(); StylishAction.useItem('util:overcharge')">ACTIVATE</button>`,
                 description: game.i18n.localize("STYLISH_HUD.Utilities.Overcharge.Desc")
             });
+
+            const stabName = game.i18n.localize("STYLISH_HUD.Utilities.Stabilize.Name");
             items.push({
                 id: "util-stabilize",
-                name: game.i18n.localize("STYLISH_HUD.Utilities.Stabilize.Name"),
-                img: `<i class="cci cci-repair la-dropshadow -fontsize11"></i>`,
-                isIcon: true,
+                actionId: "util:stabilize",
+                name: stabName,
+                tooltip: stabName,
+                isIcon: false,
                 cost: `<button type="button" class="pf2e-map-btn" onclick="event.stopPropagation(); StylishAction.useItem('util:stabilize')">ACTIVATE</button>`,
                 description: game.i18n.localize("STYLISH_HUD.Utilities.Stabilize.Desc")
             });
+
+            const repairName = game.i18n.localize("STYLISH_HUD.Utilities.FullRepair.Name");
             items.push({
                 id: "util-full-repair",
-                name: game.i18n.localize("STYLISH_HUD.Utilities.FullRepair.Name"),
-                img: `<i class="cci cci-health la-dropshadow -fontsize11"></i>`,
-                isIcon: true,
+                actionId: "util:full-repair",
+                name: repairName,
+                tooltip: repairName,
+                isIcon: false,
                 cost: `<button type="button" class="pf2e-map-btn" onclick="event.stopPropagation(); StylishAction.useItem('util:full-repair')">ACTIVATE</button>`,
                 description: game.i18n.localize("STYLISH_HUD.Utilities.FullRepair.Desc")
             });
 
             // Add basic Reactions
+            const braceName = game.i18n.localize("STYLISH_HUD.Basic.Brace.Name");
+            const overwatchName = game.i18n.localize("STYLISH_HUD.Basic.Overwatch.Name");
             items.push(
                 {
                     id: "basic-brace",
-                    name: game.i18n.localize("STYLISH_HUD.Basic.Brace.Name"),
-                    img: "systems/lancer/assets/icons/skills/hull.svg",
+                    actionId: "basic:brace",
+                    name: braceName,
+                    tooltip: braceName,
                     cost: `<button type="button" class="pf2e-map-btn" style="background:rgba(215, 60, 50, 0.05); border-color:rgba(215, 60, 50, 0.25); color:#d73c32;" onclick="event.stopPropagation(); StylishAction.useItem('basic:brace')">REACTION</button>`,
                     description: game.i18n.localize("STYLISH_HUD.Basic.Brace.ShortDesc")
                 },
                 {
                     id: "basic-overwatch",
-                    name: game.i18n.localize("STYLISH_HUD.Basic.Overwatch.Name"),
-                    img: "systems/lancer/assets/icons/skills/vanguard.svg",
+                    actionId: "basic:overwatch",
+                    name: overwatchName,
+                    tooltip: overwatchName,
                     cost: `<button type="button" class="pf2e-map-btn" style="background:rgba(215, 60, 50, 0.05); border-color:rgba(215, 60, 50, 0.25); color:#d73c32;" onclick="event.stopPropagation(); StylishAction.useItem('basic:overwatch')">REACTION</button>`,
                     description: game.i18n.localize("STYLISH_HUD.Basic.Overwatch.ShortDesc")
                 }
             );
         }
+
+        return { items };
+    }
+
+    _getImplementosData(actor) {
+        const items = [];
+        if (!actor) return { items };
+
+        const deployableItems = actor.items.filter(i =>
+            i.system?.deployables && Array.isArray(i.system.deployables) && i.system.deployables.length > 0
+        );
+        
+        deployableItems.forEach(s => {
+            const isDrone = s.system?.type?.toLowerCase() === "drone" ||
+                s.system?.tags?.some(t => (typeof t === "string" ? t : t.id)?.toLowerCase() === "drone");
+            const hasDeployables = s.system?.deployables && s.system.deployables.length > 0;
+            const hasActions = s.system?.actions && Array.isArray(s.system.actions) && s.system.actions.length > 0;
+
+            let actionButtons = `
+                <button type="button" class="pf2e-map-btn" onclick="event.stopPropagation(); StylishAction.useItem('activate:${s.id}', event)" data-tooltip="Enviar um card representando este item para o chat"><i class="fas fa-comment-alt"></i></button>
+            `;
+
+            if (isDrone && hasDeployables) {
+                actionButtons = `
+                    <div style="display:inline-flex; gap:4px; align-items:center;">
+                        <button type="button" class="pf2e-map-btn" onclick="event.stopPropagation(); StylishAction.useItem('activate:${s.id}', event)" data-tooltip="Enviar um card representando este item para o chat"><i class="fas fa-comment-alt"></i></button>
+                        <button type="button" class="pf2e-dmg-btn" style="background:rgba(88, 180, 52, 0.05) !important; border-color:rgba(88, 180, 52, 0.25) !important; color:#58b434 !important;" onclick="event.stopPropagation(); StylishAction.useItem('deploy:${s.id}', event)" data-tooltip="Posicionar/Deploy Drone no mapa"><i class="fas fa-robot"></i></button>
+                    </div>
+                `;
+            } else if (hasDeployables) {
+                actionButtons = `
+                    <div style="display:inline-flex; gap:4px; align-items:center;">
+                        <button type="button" class="pf2e-map-btn" onclick="event.stopPropagation(); StylishAction.useItem('activate:${s.id}', event)" data-tooltip="Enviar um card representando este item para o chat"><i class="fas fa-comment-alt"></i></button>
+                        <button type="button" class="pf2e-dmg-btn" style="background:rgba(88, 180, 52, 0.05) !important; border-color:rgba(88, 180, 52, 0.25) !important; color:#58b434 !important;" onclick="event.stopPropagation(); StylishAction.useItem('deploy:${s.id}', event)" data-tooltip="Posicionar/Deploy no mapa"><i class="fas fa-box"></i></button>
+                    </div>
+                `;
+            } else if (hasActions) {
+                let actionBtnsHtml = s.system.actions.map((act, index) => {
+                    const actType = act.activation || "Ação";
+                    return `<button type="button" class="pf2e-map-btn" style="background:rgba(88, 180, 52, 0.05); border-color:rgba(88, 180, 52, 0.25); color:#58b434;" onclick="event.stopPropagation(); StylishAction.useItem('system-action:${s.id}:${index}', event)" data-tooltip="${act.detail || act.name || 'Ativar ação do sistema'}">${actType.toUpperCase()}</button>`;
+                }).join("");
+                actionButtons = `
+                    <div style="display:inline-flex; gap:4px; align-items:center;">
+                        <button type="button" class="pf2e-map-btn" onclick="event.stopPropagation(); StylishAction.useItem('activate:${s.id}', event)" data-tooltip="Enviar um card representando este item para o chat"><i class="fas fa-comment-alt"></i></button>
+                        ${actionBtnsHtml}
+                    </div>
+                `;
+            }
+
+            const effectText = s.system?.effect || "";
+            const descriptionText = s.system?.description || "";
+            const combinedDescription = [effectText, descriptionText].filter(Boolean).join("<br><br>");
+
+            items.push({
+                id: s.id,
+                name: s.name,
+                img: s.img || "systems/lancer/assets/icons/generic_item.svg",
+                cost: actionButtons,
+                tags: this._getItemTags(s),
+                description: combinedDescription || (s.system?.deployables?.join(", ") || "")
+            });
+        });
 
         return { items };
     }
@@ -831,7 +988,7 @@ class LancerSystemAdapter extends BaseSystemAdapter {
             const toggleBtn = `<button type="button" class="pf2e-map-btn ${isActive ? 'active' : ''}" style="${isActive ? 'background:#802932 !important; color:#fff !important;' : ''}" onclick="event.stopPropagation(); StylishAction.useItem('status:${cond.id}')">${toggleLabel}</button>`;
 
             const targetBtn = `<button type="button" class="pf2e-dmg-btn" style="margin-left:4px;" onclick="event.stopPropagation(); StylishAction.useItem('target-status:${cond.id}')">${game.i18n.localize('STYLISH_HUD.Label.ApplyTarget')}</button>`;
-            const costHtml = `<div style="display:inline-flex; gap:4px; align-items:center;">${toggleBtn}${targetBtn}</div>`;
+            const costHtml = `<div style="display:inline-flex; gap:4px; align-items:center;"> ${toggleBtn}${targetBtn}</div>`;
 
             const capId = cond.id === "lockon" ? "Lockon" :
                 cond.id === "shutdown" ? "Shutdown" :
@@ -879,7 +1036,7 @@ class LancerSystemAdapter extends BaseSystemAdapter {
             const actionType = itemId.split(":")[1];
             if (actionType === "reset") {
                 await actor.setFlag('lancer-action-hud', 'actionTracker', {
-                    move: false, quick1: false, quick2: false, full: false, protocol: false, reaction: false, free: false, overcharge: false, core: false
+                    move: false, quick1: false, quick2: false, full: false, protocol: false, reaction: false, free: false, overcharge: false
                 });
             } else {
                 const current = actor.getFlag('lancer-action-hud', 'actionTracker') || {};
@@ -958,49 +1115,107 @@ class LancerSystemAdapter extends BaseSystemAdapter {
         if (itemId.startsWith("core-active:")) {
             const id = itemId.replace("core-active:", "");
             const item = actor.items.get(id);
+            
+            // Tenta disparar o fluxo nativo do Lancer
+            if (typeof actor.beginCoreActiveFlow === "function") {
+                return actor.beginCoreActiveFlow();
+            }
+            
+            const CoreActiveFlow = game.lancer?.CoreActiveFlow || CONFIG?.LANCER?.flows?.CoreActiveFlow;
+            if (CoreActiveFlow) {
+                const flow = new CoreActiveFlow(actor);
+                return flow.begin();
+            }
+
             if (item) {
                 if (typeof item.beginCoreActiveFlow === "function") return item.beginCoreActiveFlow();
-                if (actor.beginCoreActiveFlow) return actor.beginCoreActiveFlow();
             }
         }
-        if (itemId.startsWith("activate:")) {
+       if (itemId.startsWith("activate:")) {
             const id = itemId.replace("activate:", "");
             const item = actor.items.get(id);
+            console.log("ativar item", item);
+
             if (item) {
                 const tagsList = [];
+
+                // 1. Processa Danos
                 if (item.system?.damage) {
                     const damages = Array.isArray(item.system.damage) ? item.system.damage : [item.system.damage];
                     damages.forEach(d => {
-                        if (d && (d.val || d.value)) {
-                            tagsList.push(`<span class="lancer-tag damage-tag">${d.val || d.value} ${d.type || ''}</span>`);
+                        if (d && (d.val !== undefined || d.value !== undefined)) {
+                            const val = d.val ?? d.value;
+                            tagsList.push(`<span class="lancer-tag damage-tag">${val} ${d.type || ''}</span>`);
                         }
                     });
                 }
+
+                // 2. Processa Alcances
                 if (item.system?.range) {
                     const ranges = Array.isArray(item.system.range) ? item.system.range : [item.system.range];
                     ranges.forEach(r => {
-                        if (r && (r.val || r.value || r.type)) {
-                            tagsList.push(`<span class="lancer-tag range-tag">${r.type || 'Range'}: ${r.val || r.value || ''}</span>`);
+                        if (r && (r.val !== undefined || r.value !== undefined || r.type)) {
+                            const val = r.val ?? r.value ?? '';
+                            tagsList.push(`<span class="lancer-tag range-tag">${r.type || 'Range'}: ${val}</span>`);
                         }
                     });
                 }
+
+                // 3. Processa Tags do Sistema
                 if (item.system?.tags) {
                     const wTags = Array.isArray(item.system.tags) ? item.system.tags : [item.system.tags];
                     wTags.forEach(t => {
                         if (!t) return;
-                        let id = typeof t === "string" ? t : (t.id || t.name || "");
+                        let rawId = typeof t === "string" ? t : (t.id || t.lid || t.name || "");
                         let val = typeof t === "object" ? (t.val !== undefined ? t.val : t.value) : null;
-                        if (id) {
-                            const capId = typeof id.capitalize === "function" ? id.capitalize() : (id.charAt(0).toUpperCase() + id.slice(1));
+                        
+                        if (rawId) {
+                            const cleanId = rawId.replace(/^tg_/, "");
+                            const capId = typeof cleanId.capitalize === "function" ? cleanId.capitalize() : (cleanId.charAt(0).toUpperCase() + cleanId.slice(1));
                             const nameKey = `LANCER.Tag${capId}`;
-                            let lbl = game.i18n.has(nameKey) ? game.i18n.localize(nameKey) : id;
-                            if (val !== undefined && val !== null) lbl = `${lbl} ${val}`;
+                            let lbl = game.i18n.has(nameKey) ? game.i18n.localize(nameKey) : capId;
+                            if (val !== undefined && val !== null && val !== "") lbl = `${lbl} ${val}`;
                             tagsList.push(`<span class="lancer-tag">${lbl}</span>`);
                         }
                     });
                 }
 
                 const tagsHtml = tagsList.length ? `<div class="lancer-tags" style="margin-top:4px; margin-bottom:8px;">${tagsList.join('')}</div>` : "";
+
+                // 4. Texto Principal (Effect com fallback para Description)
+                const mainText = item.system?.effect || item.system?.description || "";
+
+                // 5. Mapeia Ações e Injeta Botões Interativos no Card
+                let actionsHtml = "";
+                if (item.system?.actions && Array.isArray(item.system.actions) && item.system.actions.length > 0) {
+                    const actionBlocks = item.system.actions.map((act, index) => {
+                        const actType = act.activation ? act.activation.toUpperCase() : "USAR";
+                        const actName = act.name ? `<strong>${act.name}</strong>` : `Ação ${index + 1}`;
+                        
+                        const rawTooltip = act.detail || act.name || 'Executar Ação';
+                        const safeTooltip = rawTooltip.replace(/"/g, '&quot;');
+
+                        return `
+                            <div style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed rgba(255,255,255,0.15);">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                    <div>${actName}</div>
+                                    <button type="button" class="pf2e-map-btn lancer-chat-action-btn" 
+                                            style="background: rgba(88,180,52,0.1); border-color: rgba(88,180,52,0.3); color: #58b434; font-size: 0.8em; padding: 2px 8px; width: auto; cursor: pointer;" 
+                                            data-action="system-action:${item.id}:${index}"
+                                            data-actor-id="${actor.id}"
+                                            data-tooltip="${safeTooltip}">
+                                        <i class="fas fa-play" style="font-size:0.8em; margin-right:4px;"></i>${actType}
+                                    </button>
+                                </div>
+                                <div style="font-size: 0.9em; opacity: 0.85; line-height: 1.3;">${act.detail || ""}</div>
+                            </div>
+                        `;
+                    }).join("");
+
+                    actionsHtml = `<div class="lancer-actions-block" style="margin-top: 8px;">${actionBlocks}</div>`;
+                }
+
+                // 6. Template Final do Card no Chat
                 const content = `
                     <div class="card clipped-bot" style="margin:0px">
                       <div class="lancer-header lancer-system">
@@ -1008,7 +1223,8 @@ class LancerSystemAdapter extends BaseSystemAdapter {
                       </div>
                       <div class="effect-text">
                         ${tagsHtml}
-                        ${item.system.description || item.system.effect || ""}
+                        ${mainText ? `<div style="margin-bottom:6px;">${mainText}</div>` : ""}
+                        ${actionsHtml}
                       </div>
                     </div>
                 `;
@@ -1156,7 +1372,9 @@ class LancerSystemAdapter extends BaseSystemAdapter {
                                           </div>
                                           <div class="effect-text">
                                             <strong>${deployableActor.name}</strong> foi posicionado no campo de batalha.<br><br>
-                                            ${item.system.description || item.system.effect || ""}
+                                            ${item.system.effect}
+                                            ${item.system.actions}
+                                            ${item.system.tags}
                                           </div>
                                         </div>
                                     `;
@@ -1186,7 +1404,9 @@ class LancerSystemAdapter extends BaseSystemAdapter {
                       </div>
                       <div class="effect-text">
                         <strong>Deployable(s):</strong> ${item.system.deployables?.join(", ") || item.name}<br><br>
-                        ${item.system.description || item.system.effect || ""}
+                        ${item.system.effect}
+                        ${item.system.actions}
+                        ${item.system.tags}
                       </div>
                     </div>
                 `;
@@ -1289,9 +1509,29 @@ class LancerSystemAdapter extends BaseSystemAdapter {
                 content: content
             });
         }
+        if (itemId.startsWith("test:")) {
+            const action = itemId.replace("test:", "");
+            if (action === "stress-damage") {
+                if (lancerHUDInstance) await lancerHUDInstance._showStructStressDialog(actor, "stress");
+                return;
+            }
+            if (action === "structure-damage") {
+                if (lancerHUDInstance) await lancerHUDInstance._showStructStressDialog(actor, "structure");
+                return;
+            }
+        }
         if (itemId.startsWith("status:")) {
             const statusId = itemId.replace("status:", "");
-            return actor.toggleStatusEffect(statusId);
+            
+            // Alterna o status no ator e aguarda a conclusão
+            await actor.toggleStatusEffect(statusId);
+
+            // Re-renderiza o HUD mantendo a aba e a posição atual
+            const { instance } = getActiveHUD();
+            if (instance) {
+                instance.render(false);
+            }
+            return;
         }
         if (itemId.startsWith("target-status:")) {
             const statusId = itemId.replace("target-status:", "");
@@ -1338,6 +1578,43 @@ class LancerSystemAdapter extends BaseSystemAdapter {
                 return item.beginActivationFlow(`system.actions.${idx}`);
             }
         }
+        if (itemId.startsWith("talent-rank-action:")) {
+            const parts = itemId.split(":");
+            const talentId = parts[1];
+            const rankIdx = parseInt(parts[2]);
+            const actionIdx = parseInt(parts[3]);
+
+            let targetActor = actor;
+            if (actor.type === "mech") {
+                const pilotActorObj = actor.system.pilot?.value;
+                if (pilotActorObj) {
+                    targetActor = pilotActorObj;
+                } else {
+                    const pilotId = actor.system.pilot?.id || actor.system.pilot_id || actor.system.pilot;
+                    if (pilotId && typeof pilotId === "string") {
+                        const pilotActor = game.actors.get(pilotId);
+                        if (pilotActor) targetActor = pilotActor;
+                    }
+                }
+            }
+
+            const item = targetActor.items.get(talentId);
+            if (item && !isNaN(rankIdx) && !isNaN(actionIdx) && typeof item.beginActivationFlow === "function") {
+                return item.beginActivationFlow(`system.ranks.${rankIdx}.actions.${actionIdx}`);
+            }
+            return;
+        }
+        if (itemId.startsWith("destroy-toggle:")) {
+            const id = itemId.replace("destroy-toggle:", "");
+            const item = actor.items.get(id);
+            if (item) {
+                const current = item.system?.destroyed || false;
+                await item.update({ "system.destroyed": !current });
+                if (lancerHUDInstance) lancerHUDInstance.render(false);
+            }
+            return;
+        }
+
         if (itemId.startsWith("stats-roll:")) {
             const stat = itemId.replace("stats-roll:", "");
             const path = `system.${stat}`;
@@ -1358,6 +1635,101 @@ class LancerActionHUD extends Application {
         this.activeToken = null;
         this.activeTab = "strike";
         this._hudVisible = true;
+    }
+
+    /**
+     * Opens a dialog for Stress Damage test
+     */
+    async rollStressDamage() {
+        const actor = this.activeToken?.actor;
+        if (!actor) return;
+
+        return this._showStructStressDialog(actor, "stress");
+    }
+
+    /**
+     * Opens a dialog for Structure Damage test
+     */
+    async rollStructureDamage() {
+        const actor = this.activeToken?.actor;
+        if (!actor) return;
+
+        return new Promise((resolve) => {
+            new Dialog({
+                title: game.i18n.localize("STYLISH_HUD.Dialog.StructureDamage.Title") || "Structure Damage Test",
+                content: `
+                    <div class="lancer-dialog">
+                        <p>${game.i18n.localize("STYLISH_HUD.Dialog.StructureDamage.Desc") || "Roll to resist Structure damage."}</p>
+                        <div class="dialog-buttons">
+                            <button type="button" data-action="roll">
+                                <i class="fas fa-dice-d20"></i> ${game.i18n.localize("STYLISH_HUD.Dialog.StructureDamage.Roll") || "Roll Save"}
+                            </button>
+                            <button type="button" data-action="cancel">
+                                ${game.i18n.localize("STYLISH_HUD.Dialog.Cancel") || "Cancel"}
+                            </button>
+                        </div>
+                    </div>
+                `,
+                buttons: {},
+                default: "roll",
+                render: (html) => {
+                    html.find("[data-action='roll']").click(async () => {
+                        const roll = await actor.rollSave({ flavor: "Structure Damage" });
+                        resolve(roll);
+                    });
+                    html.find("[data-action='cancel']").click(() => resolve(null));
+                },
+                close: () => resolve(null)
+            }).render(true);
+        });
+    }
+
+    /**
+     * Shows the Structure/Stress Damage dialog using Lancer's built-in StructStressHUD
+     * @param {Actor} actor - The actor taking damage
+     * @param {string} type - "stress" or "structure"
+     */
+    async _showStructStressDialog(actor, type) {
+        if (!actor) return;
+
+        // Use Lancer's sliding HUD system to open the StructStressHUD
+        const slidingHUD = game.modules.get("lancer")?.api?.slidingHUD;
+        if (slidingHUD) {
+            slidingHUD.open(type === "stress" ? "stress" : "struct", {
+                title: game.i18n.localize(`STYLISH_HUD.Dialog.${type === "stress" ? "Stress" : "Structure"}Damage.Title`) || `${type === "stress" ? "Stress" : "Structure"} Damage Test`,
+                actorUuid: actor.uuid,
+                stat: type
+            });
+            return;
+        }
+
+        // Fallback to custom dialog if sliding HUD not available
+        const template = "modules/lancer-action-hud/templates/structstress-dialog.html";
+        const html = await renderTemplate(template, {
+            actorName: actor.name,
+            damageType: type === "stress" ? "Stress" : "Structure"
+        });
+
+        return new Promise((resolve) => {
+            new Dialog({
+                title: game.i18n.localize(`STYLISH_HUD.Dialog.${type === "stress" ? "Stress" : "Structure"}Damage.Title`) || `${type === "stress" ? "Stress" : "Structure"} Damage Test`,
+                content: html,
+                buttons: {},
+                render: (dialogHtml) => {
+                    dialogHtml.find("[data-button='submit']").click(async () => {
+                        if (type === "stress") {
+                            const roll = await actor.rollSave({ flavor: "Stress Damage" });
+                            resolve(roll);
+                        } else {
+                            const roll = await actor.rollSave({ flavor: "Structure Damage" });
+                            resolve(roll);
+                        }
+                    });
+                    dialogHtml.find("[data-button='cancel']").click(() => resolve(null));
+                },
+                close: () => resolve(null)
+            }).render(true);
+        });
     }
 
     /**
@@ -1392,8 +1764,8 @@ class LancerActionHUD extends Application {
             template: "modules/lancer-action-hud/templates/hud.html",
             popOut: true,
             minimizable: true,
-            resizable: false,
-            width: "auto",
+            resizable: true,
+            width: "fit-content",
             height: "auto"
         });
     }
@@ -1403,7 +1775,7 @@ class LancerActionHUD extends Application {
         const pos = super.setPosition(options);
         if (pos && this._element?.length) {
             const saved = { left: pos.left, top: pos.top };
-            game.settings.set("lancer-action-hud", "hudPosition", saved).catch(() => {});
+            game.settings.set("lancer-action-hud", "hudPosition", saved).catch(() => { });
         }
         return pos;
     }
@@ -1468,12 +1840,15 @@ class LancerActionHUD extends Application {
             }
         }
 
+        const utilityData = await this.adapter._getUtilityData(actor);
+        const utilityItems = utilityData.items || [];
+
         const tabLabelsMap = {
             "strike": "STYLISH_HUD.Tabs.Weapons",
             "tech": "STYLISH_HUD.Tabs.Tech",
             "system": "STYLISH_HUD.Tabs.Systems",
             "talent": "STYLISH_HUD.Tabs.Talents",
-            "utility": "STYLISH_HUD.Tabs.Utilities",
+            "implementos": "STYLISH_HUD.Tabs.Implementos",
             "status": "STYLISH_HUD.Tabs.Statuses",
             "stats": "STYLISH_HUD.Tabs.Stats"
         };
@@ -1533,7 +1908,9 @@ class LancerActionHUD extends Application {
         };
 
         const isStatsTab = this.activeTab === "stats";
-
+        const isTalentTab = this.activeTab === "talent";
+        const isImplementosTab = this.activeTab === "implementos";
+        const coreAvailable = (actor.system.core_energy ?? 0) > 0;
         const actionTracker = actor.getFlag('lancer-action-hud', 'actionTracker') || {
             move: false,
             quick1: false,
@@ -1543,10 +1920,10 @@ class LancerActionHUD extends Application {
             reaction: false,
             free: false,
             overcharge: false,
-            core: false
+            core: false,
         };
-
         return {
+            core: coreAvailable,
             active: true,
             actorName: actor.name,
             actorImg: actor.img || "systems/lancer/assets/icons/generic_item.svg",
@@ -1584,7 +1961,12 @@ class LancerActionHUD extends Application {
             tabs: tabs,
             activeTab: this.activeTab,
             activeTabLabel: activeTabLabel,
-            items: itemsList
+            items: itemsList,
+            isTalentTab: isTalentTab,
+            isImplementosTab: isImplementosTab,
+            talentGroups: subMenuData.rankGroups || [],
+            utilityItems: utilityItems,
+            hasUtilityItems: utilityItems.length > 0
         };
     }
 
@@ -1605,6 +1987,77 @@ class LancerActionHUD extends Application {
             event.preventDefault();
             this.activeTab = event.currentTarget.dataset.tabId;
             this.render(false);
+        });
+
+        // Left panel collapse toggle
+        const hud = this;
+        html.find(".hud-left-collapse-btn").click(function () {
+            const panel = $(this).siblings(".hud-left-panel");
+            const icon = $(this).find(".fa-chevron-left");
+            panel.toggleClass("collapsed");
+            icon.toggleClass("fa-chevron-left fa-chevron-right");
+            setTimeout(() => hud.setPosition(), 100);
+        });
+
+        // Talent accordion toggles
+        // Implemento accordion toggle
+        html.find(".hud-implemento-item").click(function (event) {
+            event.stopPropagation();
+            const body = $(this).find(".hud-implemento-body");
+            const icon = $(this).find(".hud-implemento-toggle");
+            body.toggleClass("collapsed");
+            icon.toggleClass("collapsed");
+        });
+
+        html.find(".hud-talent-header").click(function () {
+            const ranks = $(this).siblings(".hud-talent-ranks");
+            const icon = $(this).find(".hud-talent-toggle");
+            ranks.slideToggle(200);
+            icon.toggleClass("collapsed");
+        });
+
+        html.find(".hud-talent-rank-header").click(function () {
+            const desc = $(this).siblings(".hud-rank-description");
+            const icon = $(this).find(".hud-rank-toggle");
+            desc.slideToggle(200);
+            icon.toggleClass("collapsed");
+        });
+
+        // Talent rank action buttons
+        html.find(".hud-rank-description .activation-flow").click(function (event) {
+            event.stopPropagation();
+            const el = $(this);
+            const talentId = el.data("talent-id");
+            const rankIndex = el.data("rank-index");
+            const actionIndex = el.data("action-index");
+            if (talentId !== undefined && rankIndex !== undefined && actionIndex !== undefined) {
+                StylishAction.useItem(`talent-rank-action:${talentId}:${rankIndex}:${actionIndex}`);
+            }
+        });
+
+        // Talent rank click opens popup with actions
+        html.find(".hud-talent-rank").click(function (event) {
+            if ($(event.target).closest(".activation-flow, .hud-talent-rank-header, .hud-rank-toggle").length) return;
+            const rank = $(this);
+            const descEl = rank.find(".hud-rank-description");
+            const nameEl = rank.find(".hud-rank-name");
+            const imgEl = rank.closest(".hud-talent-group").find(".hud-talent-img");
+            const name = nameEl.text().trim() || "Talent Rank";
+            const desc = descEl.html() || "";
+            const img = imgEl.attr("src") || "systems/lancer/assets/icons/generic_item.svg";
+            const tags = [];
+            rank.find(".hud-item-tag").each(function () {
+                const el = $(this);
+                tags.push({ label: el.text(), class: el.attr("class")?.replace("hud-item-tag", "").trim() || "" });
+            });
+            new LancerItemPopup({
+                id: "talent-rank-popup",
+                name: name,
+                img: img,
+                description: desc,
+                tags: tags,
+                cost: ""
+            }, { title: name }).render(true);
         });
 
         // Search filtering
@@ -1632,12 +2085,90 @@ class LancerActionHUD extends Application {
             }
         });
 
-        // Toggle full description view on click
-        html.find(".hud-item-description, .hud-item-name").click(event => {
+        // Toggle full description view on click (only on description text)
+        html.find(".hud-item-description").click(function (event) {
             event.preventDefault();
             event.stopPropagation();
-            const row = $(event.currentTarget).closest(".hud-item-row");
-            row.find(".hud-item-description").toggleClass("expanded");
+            $(this).toggleClass("expanded");
+        });
+
+        // Click on item row (except actions and description) opens detail popup
+        html.find(".hud-item-row").click(async function (event) {
+            const target = $(event.target);
+            if (target.closest(".hud-item-actions, .hud-item-description, .hud-search-input").length) return;
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            const row = $(this);
+            const itemId = row.data("item-id");
+            if (!itemId) return;
+
+            const actor = lancerHUDInstance?.activeToken?.actor;
+            if (!actor) return;
+
+            const nameHtml = row.find(".hud-item-name").html() || "";
+            const imgSrc = row.find("img").attr("src") || "";
+            const descHtml = row.find(".hud-item-description").html() || "";
+            const costHtml = row.find(".hud-item-actions").html() || "";
+
+            const tags = [];
+            row.find(".hud-item-tag").each(function () {
+                const el = $(this);
+                tags.push({
+                    label: el.text(),
+                    class: el.attr("class")?.replace("hud-item-tag", "").trim() || ""
+                });
+            });
+
+            // For system-action:{id}:{index}, get parent system data
+            let sourceItem = null;
+            if (itemId.startsWith("system-action:")) {
+                const parentId = itemId.split(":")[1];
+                sourceItem = actor.items.get(parentId);
+            } else if (itemId.startsWith("core-active-") || itemId.startsWith("core-passive-")) {
+                sourceItem = actor.items.find(i => i.type === "mech_frame");
+            } else if (itemId.startsWith("core-")) {
+                sourceItem = actor.items.find(i => i.type === "mech_frame");
+            } else {
+                sourceItem = actor.items.get(itemId);
+            }
+
+            if (sourceItem?.sheet) {
+                const itemData = {
+                    id: sourceItem.id,
+                    name: sourceItem.name,
+                    img: sourceItem.img,
+                    description: sourceItem.system?.description || sourceItem.system?.effect || descHtml,
+                    tags: tags,
+                    cost: costHtml
+                };
+                new LancerItemPopup(itemData, {
+                    title: sourceItem.name
+                }).render(true);
+            } else {
+                new LancerItemPopup({
+                    id: itemId,
+                    name: stripHtml(nameHtml),
+                    img: imgSrc,
+                    description: descHtml,
+                    tags: tags,
+                    cost: costHtml
+                }, {
+                    title: stripHtml(nameHtml)
+                }).render(true);
+            }
+        });
+
+        // Change structure/stress badge inputs
+        html.find(".hud-badge-input").change(async (event) => {
+            const input = $(event.currentTarget);
+            const path = input.data("path");
+            const val = parseInt(input.val());
+            const actor = this.activeToken.actor;
+            if (actor && !isNaN(val)) {
+                await actor.update({ [path]: val });
+            }
         });
 
         // Change HP or Heat directly via input field
@@ -1685,83 +2216,202 @@ class LancerActionHUD extends Application {
     }
 }
 
+/**
+ * Popup Application that displays item details extracted from the HUD row.
+ */
+class LancerItemPopup extends Application {
+    constructor(itemData, options = {}) {
+        super(options);
+        this.itemData = itemData;
+    }
+
+    static get defaultOptions() {
+        return mergeObject(super.defaultOptions, {
+            id: "lancer-item-popup",
+            template: "modules/lancer-action-hud/templates/popup.html",
+            popOut: true,
+            minimizable: true,
+            resizable: true,
+            width: 500,
+            height: "fit-content"
+        });
+    }
+
+    getData() {
+        return this.itemData;
+    }
+
+    activateListeners(html) {
+        super.activateListeners(html);
+
+        html.find(".la-popup-header").click(function () {
+            const body = $(this).siblings(".la-popup-body");
+            const icon = $(this).find(".la-popup-toggle-icon");
+            body.toggleClass("collapsed");
+            icon.toggleClass("fa-chevron-up fa-chevron-down");
+        });
+
+        html.find(".activation-flow").click(function (event) {
+            event.stopPropagation();
+            const el = $(this);
+            const talentId = el.data("talent-id");
+            const rankIndex = el.data("rank-index");
+            const actionIndex = el.data("action-index");
+            if (talentId !== undefined && rankIndex !== undefined && actionIndex !== undefined) {
+                StylishAction.useItem(`talent-rank-action:${talentId}:${rankIndex}:${actionIndex}`);
+            }
+        });
+    }
+}
+
+class LancerDeployableHUD extends Application {
+    constructor() {
+        super();
+        this.activeToken = null;
+    }
+
+    static get defaultOptions() {
+        return mergeObject(super.defaultOptions, {
+            id: "lancer-deployable-hud",
+            title: "Deployable HUD",
+            template: "modules/lancer-action-hud/templates/deployable-hud.html",
+            popOut: true,
+            minimizable: true,
+            resizable: false,
+            width: "auto",
+            height: "auto"
+        });
+    }
+
+    async getData() {
+        const token = this.activeToken;
+        if (!token || !token.actor) return { active: false };
+
+        const actor = token.actor;
+        const hp = actor.system.hp || { value: 0, max: 0 };
+        const heat = actor.system.heat || { value: 0, max: 0 };
+        const data = {
+            active: true,
+            actorName: actor.name,
+            actorImg: actor.img || "icons/svg/mystery-man.svg",
+            hp: { value: hp.value, max: hp.max },
+            heat: { value: heat.value, max: heat.max },
+            armor: actor.system.armor ?? 0,
+            evasion: actor.system.evasion ?? 0,
+            edef: actor.system.edef ?? 0,
+            speed: actor.system.speed ?? 0,
+            size: actor.system.size ?? 1,
+            save: actor.system.save ?? 10,
+            detail: actor.system.detail || ""
+        };
+        return data;
+    }
+}
+
+function stripHtml(html) {
+    const tmp = document.createElement("div");
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || "";
+}
+
 let lancerHUDInstance = null;
+let deployableHUDInstance = null;
+
+function getActiveHUD() {
+    const controlledTokens = canvas.tokens?.controlled || [];
+    const ownedToken = controlledTokens.find(t => t.actor && (t.actor.isOwner || game.user.isGM));
+    if (ownedToken && ownedToken.actor.type === "deployable") {
+        return { instance: deployableHUDInstance, token: ownedToken, isDeployable: true };
+    }
+    return { instance: lancerHUDInstance, token: ownedToken, isDeployable: false };
+}
+
+function refreshHUD() {
+    const { instance, token, isDeployable } = getActiveHUD();
+    const otherInstance = isDeployable ? lancerHUDInstance : deployableHUDInstance;
+
+    if (otherInstance && otherInstance.activeToken) {
+        otherInstance.activeToken = null;
+        otherInstance.close();
+    }
+
+    if (token) {
+        if (instance && instance.activeToken?.id !== token.id) {
+            instance.activeToken = token;
+            if (game.settings.get("lancer-action-hud", "enableHUD")) {
+                instance.render(true);
+            }
+        }
+    } else {
+        if (instance && instance.activeToken) {
+            instance.activeToken = null;
+            instance.close();
+        }
+    }
+}
 
 // Control Token Selection Hook
 Hooks.on("controlToken", (token, controlled) => {
-    if (!lancerHUDInstance) {
-        return;
-    }
-
-    // Defer check to let selection state settle (resolves race conditions between select/deselect hooks)
     setTimeout(() => {
-        const controlledTokens = canvas.tokens?.controlled || [];
-        const ownedToken = controlledTokens.find(t => t.actor && (t.actor.isOwner || game.user.isGM));
-
-        if (ownedToken) {
-            if (lancerHUDInstance.activeToken?.id !== ownedToken.id) {
-                lancerHUDInstance.activeToken = ownedToken;
-                if (game.settings.get("lancer-action-hud", "enableHUD")) {
-                    lancerHUDInstance.render(true);
-                }
-            }
-        } else {
-            if (lancerHUDInstance.activeToken) {
-                lancerHUDInstance.activeToken = null;
-                lancerHUDInstance.close();
-            }
-        }
+        refreshHUD();
     }, 50);
 });
 
 // Update Actor Stats Hook
-Hooks.on("updateActor", (actor, changes) => {
-    if (lancerHUDInstance && lancerHUDInstance.activeToken?.actor.id === actor.id) {
-        lancerHUDInstance.render(false);
+Hooks.on("updateActor", (actor, diff, options, userId) => {
+    const { instance } = getActiveHUD();
+    if (instance && instance.activeToken?.actor?.id === actor.id) {
+        instance.render(false);
     }
 });
 
 // Create/Delete Item Hooks
 Hooks.on("createItem", (item) => {
-    if (lancerHUDInstance && lancerHUDInstance.activeToken?.actor.id === item.parent?.id) {
-        lancerHUDInstance.render(false);
+    const { instance } = getActiveHUD();
+    if (instance && instance.activeToken?.actor.id === item.parent?.id) {
+        instance.render(false);
     }
 });
 
-// Create/Delete Item Hooks
 Hooks.on("deleteItem", (item) => {
-    if (lancerHUDInstance && lancerHUDInstance.activeToken?.actor.id === item.parent?.id) {
-        lancerHUDInstance.render(false);
+    const { instance } = getActiveHUD();
+    if (instance && instance.activeToken?.actor.id === item.parent?.id) {
+        instance.render(false);
     }
 });
+// Ouve renderização de cards no Chat para capturar cliques nos botões
+Hooks.on("renderChatMessage", (message, html, data) => {
+    html.find(".lancer-chat-action-btn").click(async (event) => {
+        event.preventDefault();
+        event.stopPropagation();
 
+        const btn = $(event.currentTarget);
+        const actionId = btn.data("action");
+        const actorId = btn.data("actor-id");
+
+        // Busca o ator dono da ação ou usa o ativo
+        const actor = game.actors.get(actorId) || getActiveHUD().token?.actor;
+        
+        if (actor && actionId) {
+            const adapter = new LancerSystemAdapter();
+            await adapter.useItem(actor, actionId, event);
+        }
+    });
+});
 // Canvas Ready Hook
 Hooks.on("canvasReady", () => {
-    if (!lancerHUDInstance) return;
-    const controlledTokens = canvas.tokens?.controlled || [];
-    if (controlledTokens.length > 0) {
-        const firstToken = controlledTokens[0];
-        if (firstToken.actor && (firstToken.actor.isOwner || game.user.isGM)) {
-            lancerHUDInstance.activeToken = firstToken;
-            if (game.settings.get("lancer-action-hud", "enableHUD")) {
-                lancerHUDInstance.render(true);
-            }
-            return;
-        }
-    }
-    lancerHUDInstance.activeToken = null;
-    lancerHUDInstance.close();
+    refreshHUD();
 });
 
 // Automatically update tracker on attacks or actions
 Hooks.on("createChatMessage", async (msg, options, userId) => {
-    // Only process for the user who created the message
     if (userId !== game.user.id) return;
 
-    if (!lancerHUDInstance || !lancerHUDInstance.activeToken) return;
-    const actor = lancerHUDInstance.activeToken.actor;
+    const { instance } = getActiveHUD();
+    if (!instance || instance instanceof LancerDeployableHUD) return;
+    if (!instance.activeToken) return;
+    const actor = instance.activeToken.actor;
 
-    // Verify the message belongs to the current actor
     if (!actor || msg.speaker?.actor !== actor.id) return;
 
     let isActionSpent = false;
@@ -1804,18 +2454,15 @@ Hooks.on("createChatMessage", async (msg, options, userId) => {
 
 // Automatically update tracker on movement
 Hooks.on("updateToken", async (tokenDoc, changes, context, userId) => {
-    // Only process for the user who moved the token
     if (userId !== game.user.id) return;
-
-    // Check if position changed
     if (changes.x === undefined && changes.y === undefined) return;
 
-    if (!lancerHUDInstance || !lancerHUDInstance.activeToken) return;
+    const { instance } = getActiveHUD();
+    if (!instance || instance instanceof LancerDeployableHUD) return;
+    if (!instance.activeToken) return;
+    if (tokenDoc.id !== instance.activeToken.id) return;
 
-    // Check if the moved token is the active token
-    if (tokenDoc.id !== lancerHUDInstance.activeToken.id) return;
-
-    const actor = lancerHUDInstance.activeToken.actor;
+    const actor = instance.activeToken.actor;
     if (!actor) return;
 
     const current = actor.getFlag('lancer-action-hud', 'actionTracker') || {};
@@ -1844,14 +2491,11 @@ Hooks.once("init", () => {
         type: Boolean,
         default: true,
         onChange: value => {
-            if (!value && lancerHUDInstance) {
-                lancerHUDInstance.close();
-            } else if (value && lancerHUDInstance && canvas.tokens?.controlled.length > 0) {
-                const first = canvas.tokens.controlled[0];
-                if (first.actor && (first.actor.isOwner || game.user.isGM)) {
-                    lancerHUDInstance.activeToken = first;
-                    lancerHUDInstance.render(true);
-                }
+            if (value) {
+                refreshHUD();
+            } else {
+                if (lancerHUDInstance) lancerHUDInstance.close();
+                if (deployableHUDInstance) deployableHUDInstance.close();
             }
         }
     });
@@ -1873,21 +2517,41 @@ Hooks.once("init", () => {
         hint: "STYLISH_HUD.Keybinding.ToggleHUDHint",
         editable: [{ key: "KeyZ" }],
         onDown: () => {
-            if (lancerHUDInstance) lancerHUDInstance.toggleHUD();
+            const { instance } = getActiveHUD();
+            if (instance && typeof instance.toggleHUD === "function") {
+                instance.toggleHUD();
+            } else if (lancerHUDInstance) {
+                lancerHUDInstance.toggleHUD();
+            }
             return true;
         }
     });
 });
+Hooks.on("createActiveEffect", (effect) => {
+    const { instance } = getActiveHUD();
+    if (instance && instance.activeToken?.actor?.id === effect.parent?.id) {
+        instance.render(false);
+    }
+});
 
+// Re-renderiza o HUD quando um efeito/status é removido
+Hooks.on("deleteActiveEffect", (effect) => {
+    const { instance } = getActiveHUD();
+    if (instance && instance.activeToken?.actor?.id === effect.parent?.id) {
+        instance.render(false);
+    }
+});
 // Ready Hooks Initialization
 Hooks.once("ready", () => {
     const adapter = new LancerSystemAdapter();
     lancerHUDInstance = new LancerActionHUD(adapter);
+    deployableHUDInstance = new LancerDeployableHUD();
 
     window.StylishAction = {
         useItem: async (itemId, event) => {
-            if (lancerHUDInstance && lancerHUDInstance.activeToken) {
-                await lancerHUDInstance.adapter.useItem(lancerHUDInstance.activeToken.actor, itemId, event);
+            const { instance } = getActiveHUD();
+            if (instance && instance instanceof LancerActionHUD && instance.activeToken) {
+                await instance.adapter.useItem(instance.activeToken.actor, itemId, event);
             }
         },
         closeHUD: () => {
@@ -1895,20 +2559,20 @@ Hooks.once("ready", () => {
                 lancerHUDInstance.activeToken = null;
                 lancerHUDInstance.close();
             }
+            if (deployableHUDInstance) {
+                deployableHUDInstance.activeToken = null;
+                deployableHUDInstance.close();
+            }
         },
         toggleHUD: () => {
-            if (lancerHUDInstance) lancerHUDInstance.toggleHUD();
+            const { instance } = getActiveHUD();
+            if (instance && typeof instance.toggleHUD === "function") {
+                instance.toggleHUD();
+            } else if (lancerHUDInstance) {
+                lancerHUDInstance.toggleHUD();
+            }
         }
     };
 
-    const controlledTokens = canvas.tokens?.controlled || [];
-    if (controlledTokens.length > 0) {
-        const firstToken = controlledTokens[0];
-        if (firstToken.actor && (firstToken.actor.isOwner || game.user.isGM)) {
-            lancerHUDInstance.activeToken = firstToken;
-            if (game.settings.get("lancer-action-hud", "enableHUD")) {
-                lancerHUDInstance.render(true);
-            }
-        }
-    }
+    refreshHUD();
 });

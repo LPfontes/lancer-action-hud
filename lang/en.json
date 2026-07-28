@@ -1,115 +1,181 @@
 {
-  "STYLISH_HUD.Tabs.Weapons": "Weapons",
-  "STYLISH_HUD.Tabs.Tech": "Tech",
-  "STYLISH_HUD.Tabs.Systems": "Systems",
-  "STYLISH_HUD.Tabs.Core": "Core",
-  "STYLISH_HUD.Tabs.Talents": "Talents",
-  "STYLISH_HUD.Tabs.Implementos": "Implements",
-  "STYLISH_HUD.Tabs.Utilities": "Utilities",
-  "STYLISH_HUD.Tabs.Statuses": "Statuses",
-
-  "STYLISH_HUD.Tooltip.Armor": "Armor reduces all damage received to HP from a single source by an amount equal to its rating, unless stated otherwise (such as Burn and AP). Armor can reduce damage to 0, has a cap of 4, and is resolved after the Exposed status and before Resistance.",
-  "STYLISH_HUD.Tooltip.Evasion": "Evasion determines the target number required to hit a target with ranged or melee attacks.",
-  "STYLISH_HUD.Tooltip.EDefense": "E-Defense determines the target number required to hit a target with Tech Attacks and other electronically guided systems (such as Homing).",
-  "STYLISH_HUD.Tooltip.Overshield": "Overshield: Temporary extra hit points that absorb damage before armor and HP.",
-  "STYLISH_HUD.Tooltip.Burn": "Burn: Persistent damage received at the start of each round until mitigated (typically via Stabilize action).",
-  "STYLISH_HUD.Tooltip.Speed": "Speed: the number of spaces the mech can move with a single Move action.",
-
-  "STYLISH_HUD.Label.ActiveMech": "Active Mech",
-  "STYLISH_HUD.Label.SearchPlaceholder": "Search all...",
-  "STYLISH_HUD.Label.NoActions": "No actions available.",
-
-  "STYLISH_HUD.Utilities.Overcharge.Name": "Overcharge",
-  "STYLISH_HUD.Utilities.Overcharge.Desc": "Gain an extra Quick Action at the cost of escalating Heat.",
-  "STYLISH_HUD.Utilities.Stabilize.Name": "Stabilize",
-  "STYLISH_HUD.Utilities.Stabilize.Desc": "Stabilize systems: Clear Heat/Exposed or reload loading weapons.",
-  "STYLISH_HUD.Utilities.FullRepair.Name": "Full Repair",
-  "STYLISH_HUD.Utilities.FullRepair.Desc": "Rest/Full repair: Reset structure/stress/heat, replenish repair capacity.",
-
-  "STYLISH_HUD.Dialog.AdjustTitle": "Adjust {label}",
-  "STYLISH_HUD.Dialog.CurrentVal": "Current Value: <strong>{value}</strong>",
-  "STYLISH_HUD.Dialog.Placeholder": "+10, -5 or exact value",
-  "STYLISH_HUD.Dialog.Confirm": "Confirm",
-  "STYLISH_HUD.Dialog.StructureDamage.Title": "Structure Damage Test",
-  "STYLISH_HUD.Dialog.StructureDamage.Desc": "Roll to resist Structure damage.",
-  "STYLISH_HUD.Dialog.StructureDamage.Roll": "Roll Save",
-  "STYLISH_HUD.Dialog.StructureDamage.Description": "{actorName} - {damageType} damage. Roll to resist.",
-  "STYLISH_HUD.Dialog.StressDamage.Title": "Stress Damage Test",
-  "STYLISH_HUD.Dialog.StressDamage.Desc": "Roll to resist Stress damage.",
-  "STYLISH_HUD.Dialog.StressDamage.Roll": "Roll Save",
-  "STYLISH_HUD.Dialog.Submit": "Submit",
-  "STYLISH_HUD.Dialog.Cancel": "Cancel",
-
-  "STYLISH_HUD.Deploy.Prompt": "Click on the map to position the token for: {name} (or ESC / Right-Click to cancel)",
-  "STYLISH_HUD.Deploy.Cancelled": "Deployment cancelled.",
-  "STYLISH_HUD.Deploy.Success": "Positioned {name} successfully!",
-  "STYLISH_HUD.Deploy.NotFound": "Deployable sheet (\"{name}\") not found in world or compendiums.",
-  "STYLISH_HUD.Deploy.ChatFallback": "Displaying card in chat...",
-  "STYLISH_HUD.Deploy.Info": "Positioning {name}...",
-
-  "STYLISH_HUD.Tags.DamageTooltip": "Damage: {val} of type {type}",
-  "STYLISH_HUD.Tags.DamageUntyped": "untyped",
-  "STYLISH_HUD.Tags.RangeTooltip": "Range/Area: {type} of {val}",
-  "STYLISH_HUD.Tags.RangeDefault": "Range",
-  "STYLISH_HUD.Tags.StatusToggleTooltip": "Toggle the {cond} status effect on this token.",
-  "STYLISH_HUD.Vitals.HP": "HP",
-  "STYLISH_HUD.Vitals.Heat": "HEAT",
-  "STYLISH_HUD.Warning.NoTarget": "You must target at least one token first.",
-  "STYLISH_HUD.Label.ApplyTarget": "Apply Target",
-  "STYLISH_HUD.Label.Active": "ACTIVE",
-  "STYLISH_HUD.Label.ApplySelf": "Apply to Self",
-  "STYLISH_HUD.Weapon.OnAttack": "On Attack",
-  "STYLISH_HUD.Weapon.OnHit": "On Hit",
-  "STYLISH_HUD.Weapon.OnCrit": "On Critical",
-  "STYLISH_HUD.Tabs.Stats": "Stats",
-  "STYLISH_HUD.Stats.MechHeader": "Mech Statistics",
-  "STYLISH_HUD.Stats.PilotHeader": "Pilot Attributes",
-  "STYLISH_HUD.Stats.Size": "SIZE",
-  "STYLISH_HUD.Stats.HP": "HP",
-  "STYLISH_HUD.Stats.Armor": "ARMOR",
-  "STYLISH_HUD.Stats.Repairs": "REPAIR CAP.",
-  "STYLISH_HUD.Stats.Speed": "SPEED",
-  "STYLISH_HUD.Stats.Evasion": "EVASION",
-  "STYLISH_HUD.Stats.TechAttack": "TECH ATTACK",
-  "STYLISH_HUD.Stats.EDefense": "E-DEFENSE",
-  "STYLISH_HUD.Stats.Sensors": "SENSORS",
-  "STYLISH_HUD.Stats.Save": "SAVE",
-  "STYLISH_HUD.Stats.Heat": "HEAT CAP.",
-  "STYLISH_HUD.Stats.SP": "SP",
-  "STYLISH_HUD.Badge.Overshield": "Overshield",
-  "STYLISH_HUD.Badge.Structure": "Structure",
-  "STYLISH_HUD.Badge.Stress": "Stress",
-  "STYLISH_HUD.Badge.OvershieldAbbr": "OS",
-  "STYLISH_HUD.Badge.StructureAbbr": "STR",
-  "STYLISH_HUD.Badge.StressAbbr": "STRE",
-  "STYLISH_HUD.Vitals.Burn": "BURN",
-  "STYLISH_HUD.Weapon.OtherHeader": "Other Weapons",
-  "STYLISH_HUD.Stats.PilotLL": "LL (PILOT)",
-  "STYLISH_HUD.Stats.PilotGrit": "GRIT (PILOT)",
-  "STYLISH_HUD.Stats.PilotEDef": "E-DEF (PILOT)",
-  "STYLISH_HUD.Stats.PilotArmor": "ARMOR (PILOT)",
-  "STYLISH_HUD.Stats.Hull": "HULL",
-  "STYLISH_HUD.Stats.Agility": "AGILITY",
-  "STYLISH_HUD.Stats.Systems": "SYSTEMS",
-  "STYLISH_HUD.Stats.Engineering": "ENGINEERING",
-  "STYLISH_HUD.Basic.Invade.Name": "Invade",
-  "STYLISH_HUD.Basic.Invade.Desc": "Make a tech attack. On a success, the target takes 2 Heat and you choose an Invade option (e.g. Fragment Signal: Target becomes Impaired and Slowed).",
-  "STYLISH_HUD.Basic.LockOn.Name": "Lock On",
-  "STYLISH_HUD.Basic.LockOn.Desc": "Choose a character within Sensors. They gain the Lock On condition. Any ally can consume Lock On to gain +1 Accuracy on their next attack.",
-  "STYLISH_HUD.Basic.Bolster.Name": "Bolster",
-  "STYLISH_HUD.Basic.Bolster.Desc": "Choose an ally within Sensors. They receive +2 Accuracy on the next skill check or save they make between now and the end of their next turn.",
-  "STYLISH_HUD.Basic.Brace.Name": "Brace",
-  "STYLISH_HUD.Basic.Brace.Desc": "Trigger: You are hit by an attack and damage is rolled.<br><br>Effect: You count as having Resistance to all damage from the triggering attack, and until the end of your turn, all other attacks against you are made with +1 Difficulty. Because of the stress of bracing, you cannot take reactions until the end of your next turn. On that turn, you can only take one quick action (you cannot Overcharge, move normally, take full actions or free actions).",
-  "STYLISH_HUD.Basic.Brace.ShortDesc": "Trigger: Hit by an attack and damage is rolled.<br>Effect: Resistance to the attack and +1 Difficulty to other attacks until end of turn. Lose reactions and restricted to a single Quick Action next turn.",
-  "STYLISH_HUD.Basic.Overwatch.Name": "Overwatch",
-  "STYLISH_HUD.Basic.Overwatch.Desc": "Trigger: A hostile character starts any movement (including Boost) inside the Threat of one of your weapons.<br><br>Effect: You immediately use a weapon that triggered Overwatch to target the hostile character as a reaction, before they move.",
-  "STYLISH_HUD.Basic.Overwatch.ShortDesc": "Trigger: An enemy starts moving within the Threat of one of your weapons.<br>Effect: Target the enemy with the weapon before they move.",
-  "STYLISH_HUD.Keybinding.ToggleHUD": "Toggle Action HUD",
-  "STYLISH_HUD.Keybinding.ToggleHUDHint": "Show or hide the Lancer Action HUD panel.",
-  "STYLISH_HUD.Settings.EnableHUD.Name": "Enable Automatic HUD",
-  "STYLISH_HUD.Settings.EnableHUD.Hint": "If enabled, the HUD will automatically open when you select a token.",
-  "STYLISH_HUD.Keybinding.ToggleEnableHUD": "Toggle Automatic HUD",
-  "STYLISH_HUD.Keybinding.ToggleEnableHUDHint": "Enables or disables automatically showing the HUD when clicking a token.",
-  "STYLISH_HUD.Settings.HUDEnabled": "Auto-HUD Enabled",
-  "STYLISH_HUD.Settings.HUDDisabled": "Auto-HUD Disabled"
+  "STYLISH_HUD": {
+    "Checks": {
+      "Structure": "STRUCTURE CHECK",
+      "Overheat": "OVERHEAT CHECK",
+      "TechAttack": "TECH ATTACK",
+      "QuickTech": "QUICK TECH",
+      "Brace": "BRACE",
+      "Overwatch": "OVERWATCH",
+      "Bolster": "BOLSTER",
+      "LockOn": "LOCK ON",
+      "Invade": "INVADE",
+      "Skirmish": "SKIRMISH",
+      "Assault": "ASSAULT"
+    },
+    "Notifications": {
+      "FlowNotFound": "Lancer {flowName} was not found.",
+      "MacroNotFound": "Macro not found: {uuid}",
+      "ItemNotFound": "Item not found: {id}"
+    },
+    "Tabs": {
+      "Weapons": "Weapons",
+      "Tech": "Tech",
+      "Systems": "Systems",
+      "Core": "Core",
+      "Talents": "Talents",
+      "Implementos": "Implements",
+      "Utilities": "Utilities",
+      "Statuses": "Statuses",
+      "Stats": "Stats"
+    },
+    "Tooltip": {
+      "Armor": "Armor reduces all damage received to HP from a single source by an amount equal to its rating, unless stated otherwise (such as Burn and AP). Armor can reduce damage to 0, has a cap of 4, and is resolved after the Exposed status and before Resistance.",
+      "Evasion": "Evasion determines the target number required to hit a target with ranged or melee attacks.",
+      "EDefense": "E-Defense determines the target number required to hit a target with Tech Attacks and other electronically guided systems (such as Homing).",
+      "Overshield": "Overshield: Temporary extra hit points that absorb damage before armor and HP.",
+      "Burn": "Burn: Persistent damage received at the start of each round until mitigated (typically via Stabilize action).",
+      "Speed": "Speed: the number of spaces the mech can move with a single Move action."
+    },
+    "Label": {
+      "ActiveMech": "Active Mech",
+      "SearchPlaceholder": "Search all...",
+      "NoActions": "No actions available.",
+      "ApplyTarget": "Apply Target",
+      "Active": "ACTIVE",
+      "ApplySelf": "Apply to Self"
+    },
+    "Utilities": {
+      "Overcharge": {
+        "Name": "Overcharge",
+        "Desc": "Gain an extra Quick Action at the cost of escalating Heat."
+      },
+      "Stabilize": {
+        "Name": "Stabilize",
+        "Desc": "Stabilize systems: Clear Heat/Exposed or reload loading weapons."
+      },
+      "FullRepair": {
+        "Name": "Full Repair",
+        "Desc": "Rest/Full repair: Reset structure/stress/heat, replenish repair capacity."
+      }
+    },
+    "Dialog": {
+      "AdjustTitle": "Adjust {label}",
+      "CurrentVal": "Current Value: <strong>{value}</strong>",
+      "Placeholder": "+10, -5 or exact value",
+      "Confirm": "Confirm",
+      "StructureDamage": {
+        "Title": "Structure Damage Test",
+        "Desc": "Roll to resist Structure damage.",
+        "Roll": "Roll Save",
+        "Description": "{actorName} - {damageType} damage. Roll to resist."
+      },
+      "StressDamage": {
+        "Title": "Stress Damage Test",
+        "Desc": "Roll to resist Stress damage.",
+        "Roll": "Roll Save"
+      },
+      "Submit": "Submit",
+      "Cancel": "Cancel"
+    },
+    "Deploy": {
+      "Prompt": "Click on the map to position the token for: {name} (or ESC / Right-Click to cancel)",
+      "Cancelled": "Deployment cancelled.",
+      "Success": "Positioned {name} successfully!",
+      "NotFound": "Deployable sheet (\"{name}\") not found in world or compendiums.",
+      "ChatFallback": "Displaying card in chat...",
+      "Info": "Positioning {name}..."
+    },
+    "Tags": {
+      "DamageTooltip": "Damage: {val} of type {type}",
+      "DamageUntyped": "untyped",
+      "RangeTooltip": "Range/Area: {type} of {val}",
+      "RangeDefault": "Range",
+      "StatusToggleTooltip": "Toggle the {cond} status effect on this token."
+    },
+    "Vitals": {
+      "HP": "HP",
+      "Heat": "HEAT",
+      "Burn": "BURN"
+    },
+    "Warning": {
+      "NoTarget": "You must target at least one token first."
+    },
+    "Weapon": {
+      "OnAttack": "On Attack",
+      "OnHit": "On Hit",
+      "OnCrit": "On Critical",
+      "OtherHeader": "Other Weapons"
+    },
+    "Stats": {
+      "MechHeader": "Mech Statistics",
+      "PilotHeader": "Pilot Attributes",
+      "Size": "SIZE",
+      "HP": "HP",
+      "Armor": "ARMOR",
+      "Repairs": "REPAIR CAP.",
+      "Speed": "SPEED",
+      "Evasion": "EVASION",
+      "TechAttack": "TECH ATTACK",
+      "EDefense": "E-DEFENSE",
+      "Sensors": "SENSORS",
+      "Save": "SAVE",
+      "Heat": "HEAT CAP.",
+      "SP": "SP",
+      "PilotLL": "LL",
+      "PilotGrit": "GRIT",
+      "PilotEDef": "E-DEF",
+      "PilotArmor": "ARMOR",
+      "Hull": "HULL",
+      "Agility": "AGILITY",
+      "Systems": "SYSTEMS",
+      "Engineering": "ENGINEERING"
+    },
+    "Badge": {
+      "Overshield": "Overshield",
+      "Structure": "Structure",
+      "Stress": "Stress",
+      "OvershieldAbbr": "OS",
+      "StructureAbbr": "STR",
+      "StressAbbr": "STRE"
+    },
+    "Basic": {
+      "Invade": {
+        "Name": "Invade",
+        "Desc": "Make a tech attack. On a success, the target takes 2 Heat and you choose an Invade option (e.g. Fragment Signal: Target becomes Impaired and Slowed)."
+      },
+      "LockOn": {
+        "Name": "Lock On",
+        "Desc": "Choose a character within Sensors. They gain the Lock On condition. Any ally can consume Lock On to gain +1 Accuracy on their next attack."
+      },
+      "Bolster": {
+        "Name": "Bolster",
+        "Desc": "Choose an ally within Sensors. They receive +2 Accuracy on the next skill check or save they make between now and the end of their next turn."
+      },
+      "Brace": {
+        "Name": "Brace",
+        "Desc": "Trigger: You are hit by an attack and damage is rolled.<br><br>Effect: You count as having Resistance to all damage from the triggering attack, and until the end of your turn, all other attacks against you are made with +1 Difficulty. Because of the stress of bracing, you cannot take reactions until the end of your next turn. On that turn, you can only take one quick action (you cannot Overcharge, move normally, take full actions or free actions).",
+        "ShortDesc": "Trigger: Hit by an attack and damage is rolled.<br>Effect: Resistance to the attack and +1 Difficulty to other attacks until end of turn. Lose reactions and restricted to a single Quick Action next turn."
+      },
+      "Overwatch": {
+        "Name": "Overwatch",
+        "Desc": "Trigger: A hostile character starts any movement (including Boost) inside the Threat of one of your weapons.<br><br>Effect: You immediately use a weapon that triggered Overwatch to target the hostile character as a reaction, before they move.",
+        "ShortDesc": "Trigger: An enemy starts moving within the Threat of one of your weapons.<br>Effect: Target the enemy with the weapon before they move."
+      }
+    },
+    "Keybinding": {
+      "ToggleHUD": "Toggle Action HUD",
+      "ToggleHUDHint": "Show or hide the Lancer Action HUD panel.",
+      "ToggleEnableHUD": "Toggle Automatic HUD",
+      "ToggleEnableHUDHint": "Enables or disables automatically showing the HUD when clicking a token."
+    },
+    "Settings": {
+      "EnableHUD": {
+        "Name": "Enable Automatic HUD",
+        "Hint": "If enabled, the HUD will automatically open when you select a token."
+      },
+      "HUDEnabled": "Auto-HUD Enabled",
+      "HUDDisabled": "Auto-HUD Disabled"
+    }
+  }
 }
