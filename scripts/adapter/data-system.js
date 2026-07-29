@@ -16,7 +16,7 @@ export function getSystemData(actor) {
         i.type === "mech_system" ||
         i.type === "pilot_gear" ||
         i.type === "pilot_armor" ||
-        (i.type === "npc_feature" && i.system?.type === "System")
+        (i.type === "npc_feature" && i.system?.type?.toLowerCase() !== "weapon")
     );
 
     systems.forEach(s => {

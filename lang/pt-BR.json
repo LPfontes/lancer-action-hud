@@ -99,7 +99,8 @@
       "Burn": "QUEIMA"
     },
     "Warning": {
-      "NoTarget": "Você deve selecionar (target) pelo menos um token primeiro."
+      "NoTarget": "Você deve selecionar (target) pelo menos um token primeiro.",
+      "PermissionDeniedGM": "Você não tem permissão para alterar efeitos de status neste token sem um Mestre (GM) ativo."
     },
     "Weapon": {
       "OnAttack": "Ao Atacar",

@@ -63,6 +63,16 @@ export function getItemTags(w) {
     // Extract from main system object
     extractFromSource(w.system);
 
+    if (w.type === "npc_feature" && w.system?.type) {
+        if (!tags.some(existing => existing.label === w.system.type)) {
+            tags.unshift({
+                label: w.system.type,
+                class: "tag-system",
+                tooltip: `${w.system.type} Feature`
+            });
+        }
+    }
+
     // Also extract from profiles if they exist (standard for Lancer weapons)
     if (w.system.profiles && Array.isArray(w.system.profiles)) {
         w.system.profiles.forEach(profile => {

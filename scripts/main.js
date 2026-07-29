@@ -9,6 +9,7 @@ import { LancerActionHUD } from "./hud/lancer-action-hud.js";
 import { LancerItemPopup } from "./hud/lancer-item-popup.js";
 import { LancerDeployableHUD } from "./hud/lancer-deployable-hud.js";
 import { HUDState, getActiveHUD, refreshHUD, stripHtml } from "./utils.js";
+import { safeToggleStatusEffect, safeDeleteEffect } from "./socket.js";
 import "./hooks.js";
 import "./init.js";
 
@@ -21,5 +22,7 @@ export {
     HUDState,
     getActiveHUD,
     refreshHUD,
-    stripHtml
+    stripHtml,
+    safeToggleStatusEffect,
+    safeDeleteEffect
 };

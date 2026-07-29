@@ -99,7 +99,8 @@
       "Burn": "BURN"
     },
     "Warning": {
-      "NoTarget": "You must target at least one token first."
+      "NoTarget": "You must target at least one token first.",
+      "PermissionDeniedGM": "You do not have permission to modify status effects on this token without an active GM."
     },
     "Weapon": {
       "OnAttack": "On Attack",

@@ -1,5 +1,6 @@
 /* scripts/adapter/use-item.js */
 import { getActiveHUD, HUDState, isSuperheavyWeapon } from "../utils.js";
+import { safeToggleStatusEffect } from "../socket.js";
 
 /**
  * Executa ações disparadas pelos botões do HUD.
@@ -505,7 +506,7 @@ export async function useItem(actor, itemId, event = null) {
             if (targets.size > 0) {
                 for (let target of targets) {
                     if (target.actor) {
-                        target.actor.toggleStatusEffect("lockon", { active: true });
+                        await safeToggleStatusEffect(target.actor, "lockon", { active: true });
                     }
                 }
             } else {
@@ -521,7 +522,7 @@ export async function useItem(actor, itemId, event = null) {
             if (targets.size > 0) {
                 for (let target of targets) {
                     if (target.actor) {
-                        target.actor.toggleStatusEffect("bolster", { active: true });
+                        await safeToggleStatusEffect(target.actor, "bolster", { active: true });
                     }
                 }
             } else {
@@ -534,7 +535,7 @@ export async function useItem(actor, itemId, event = null) {
             desc = game.i18n.localize("STYLISH_HUD.Basic.Bolster.Desc");
         } else if (action === "brace") {
             if (actor) {
-                actor.toggleStatusEffect("brace", { active: true });
+                await safeToggleStatusEffect(actor, "brace", { active: true });
             }
             name = game.i18n.localize("STYLISH_HUD.Basic.Brace.Name");
             icon = "hull.svg";
@@ -578,7 +579,7 @@ export async function useItem(actor, itemId, event = null) {
         const statusId = itemId.replace("status:", "");
 
         // Alterna o status no ator e aguarda a conclusão
-        await actor.toggleStatusEffect(statusId);
+        await safeToggleStatusEffect(actor, statusId);
 
         // Re-renderiza o HUD mantendo a aba e a posição atual
         const { instance } = getActiveHUD();
@@ -597,7 +598,7 @@ export async function useItem(actor, itemId, event = null) {
         for (let target of targets) {
             const targetActor = target.actor;
             if (targetActor) {
-                await targetActor.toggleStatusEffect(statusId);
+                await safeToggleStatusEffect(targetActor, statusId);
             }
         }
         return;

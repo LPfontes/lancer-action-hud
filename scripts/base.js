@@ -1,5 +1,6 @@
 /* scripts/systems/base.js */
 import { defaultRegistry } from "./defaults.js";
+import { safeDeleteEffect } from "./socket.js";
 
 export function configProps(attr) {
 	const o = {
@@ -320,7 +321,7 @@ export class BaseSystemAdapter {
 		}
 
 		if (effect) {
-			await effect.delete();
+			await safeDeleteEffect(actor, effect);
 			if (game.user.isGM) {
 				ui.notifications.info(
 					`Removed condition '${effect.label || effect.name}' from ${actor.name}`,

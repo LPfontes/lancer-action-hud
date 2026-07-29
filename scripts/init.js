@@ -3,9 +3,11 @@ import { LancerSystemAdapter } from "./adapter/lancer-adapter.js";
 import { LancerActionHUD } from "./hud/lancer-action-hud.js";
 import { LancerDeployableHUD } from "./hud/lancer-deployable-hud.js";
 import { HUDState, getActiveHUD, refreshHUD } from "./utils.js";
+import { registerSocketListeners } from "./socket.js";
 
 // Ready Hooks Initialization
 Hooks.once("ready", () => {
+    registerSocketListeners();
     const adapter = new LancerSystemAdapter();
     HUDState.lancerHUD = new LancerActionHUD(adapter);
     HUDState.deployableHUD = new LancerDeployableHUD();
