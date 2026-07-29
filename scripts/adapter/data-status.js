@@ -44,23 +44,41 @@ export function getStatusData(actor) {
         const targetBtn = `<button type="button" class="pf2e-dmg-btn" onclick="event.stopPropagation(); StylishAction.useItem('target-status:${cond.id}')">${game.i18n.localize('STYLISH_HUD.Label.ApplyTarget')}</button>`;
         const costHtml = `<div style="display:grid; gap:4px; align-items:center;"> ${toggleBtn}${targetBtn}</div>`;
 
-        const capId = cond.id === "lockon" ? "Lockon" :
-            cond.id === "shutdown" ? "Shutdown" :
-                (cond.id.charAt(0).toUpperCase() + cond.id.slice(1));
+        // Strip prefix "status-" for lookup if present
+        const cleanId = cond.id ? cond.id.replace(/^status-/, '') : '';
 
-        const nameKey = `LANCER.Status${capId}`;
-        const descKey = `LANCER.Status${capId}Desc`;
+        const capId = cleanId === "lockon" ? "Lockon" :
+            cleanId === "shutdown" ? "Shutdown" :
+            cleanId === "downandout" ? "DownAndOut" :
+            cleanId === "dangerzone" ? "DangerZone" :
+            cleanId === "slow" ? "Slow" :
+            cleanId === "slowed" ? "Slow" :
+            (cleanId.charAt(0).toUpperCase() + cleanId.slice(1));
+
+        const hudNameKey = `STYLISH_HUD.statusNames.${cleanId}`;
+        const lancerNameKey = `LANCER.Status${capId}`;
 
         let displayName = cond.name;
-        if (game.i18n.has(nameKey)) {
-            displayName = game.i18n.localize(nameKey);
+        if (game.i18n.has(hudNameKey)) {
+            displayName = game.i18n.localize(hudNameKey);
+        } else if (game.i18n.has(lancerNameKey)) {
+            displayName = game.i18n.localize(lancerNameKey);
+        } else if (game.i18n.has(cond.name)) {
+            displayName = game.i18n.localize(cond.name);
         }
 
+        const hudDescKey = `STYLISH_HUD.statusDescs.${cleanId}`;
+        const lancerDescKey = `LANCER.Status${capId}Desc`;
+
         let description = "";
-        if (cond.sysDesc) {
-            description = game.i18n.has(cond.sysDesc) ? game.i18n.localize(cond.sysDesc) : cond.sysDesc;
-        } else if (game.i18n.has(descKey)) {
-            description = game.i18n.localize(descKey);
+        if (game.i18n.has(hudDescKey)) {
+            description = game.i18n.localize(hudDescKey);
+        } else if (game.i18n.has(lancerDescKey)) {
+            description = game.i18n.localize(lancerDescKey);
+        } else if (cond.sysDesc && game.i18n.has(cond.sysDesc)) {
+            description = game.i18n.localize(cond.sysDesc);
+        } else if (cond.sysDesc) {
+            description = cond.sysDesc;
         } else {
             description = game.i18n.format("STYLISH_HUD.Tags.StatusToggleTooltip", { cond: displayName });
         }
