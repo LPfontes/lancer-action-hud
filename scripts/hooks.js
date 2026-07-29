@@ -2,6 +2,7 @@
 import { getActiveHUD, refreshHUD, HUDState, isSuperheavyWeapon } from "./utils.js";
 import { LancerSystemAdapter } from "./adapter/lancer-adapter.js";
 import { LancerDeployableHUD } from "./hud/lancer-deployable-hud.js";
+import { safeToggleStatusEffect } from "./socket.js";
 
 // Control Token Selection Hook
 Hooks.on("controlToken", (token, controlled) => {
@@ -50,6 +51,45 @@ Hooks.on("renderChatMessage", (message, html, data) => {
             const adapter = new LancerSystemAdapter();
             await adapter.useItem(actor, actionId, event);
         }
+    });
+
+    html.find(".lancer-chat-apply-status-btn").click(async (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+
+        const btn = $(event.currentTarget);
+        const statusId = btn.data("status-id");
+        const targetsStr = btn.data("targets");
+
+        if (!statusId) return;
+
+        let targetUuids = [];
+        if (targetsStr) {
+            targetUuids = String(targetsStr).split(",").filter(Boolean);
+        }
+
+        if (targetUuids.length === 0) {
+            const currentTargets = Array.from(game.user.targets);
+            if (currentTargets.length > 0) {
+                targetUuids = currentTargets.map(t => t.actor?.uuid || t.document?.uuid).filter(Boolean);
+            }
+        }
+
+        if (targetUuids.length === 0) {
+            ui.notifications.warn(game.i18n.localize("STYLISH_HUD.Warning.NoTarget") || "Selecione pelo menos um token como alvo.");
+            return;
+        }
+
+        let count = 0;
+        for (const uuid of targetUuids) {
+            const doc = await fromUuid(uuid);
+            const targetActor = doc?.actor || (doc instanceof Actor ? doc : null);
+            if (targetActor) {
+                await safeToggleStatusEffect(targetActor, statusId, { active: true });
+                count++;
+            }
+        }
+        ui.notifications.info(`Efeito '${statusId}' processado em ${count} token(s).`);
     });
 });
 

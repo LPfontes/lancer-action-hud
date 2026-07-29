@@ -496,11 +496,24 @@ export async function useItem(actor, itemId, event = null) {
         }
 
 
+        let applyButtonHtml = "";
+        const targetUuids = Array.from(game.user.targets).map(t => t.actor?.uuid || t.document?.uuid).filter(Boolean);
+
         if (action === "invade") {
             name = game.i18n.localize("STYLISH_HUD.Basic.Invade.Name");
             icon = "hacker.svg";
             tagsHtml = `<div class="lancer-tags"><span class="lancer-tag damage-tag">2 Heat</span><span class="lancer-tag range-tag">Sensors</span></div>`;
             desc = game.i18n.localize("STYLISH_HUD.Basic.Invade.Desc");
+            applyButtonHtml = `
+                <div style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed rgba(255,255,255,0.15); display: flex; flex-direction: column; gap: 4px;">
+                    <button type="button" class="pf2e-map-btn lancer-chat-apply-status-btn" data-status-id="impaired" data-targets="${targetUuids.join(',')}" style="background: rgba(88,180,52,0.15); border: 1px solid #58b434; color: #58b434; padding: 4px 8px; font-size: 0.8em; cursor: pointer; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; width: 100%;">
+                        <i class="fas fa-biohazard"></i> Aplicar Impaired no Alvo
+                    </button>
+                    <button type="button" class="pf2e-map-btn lancer-chat-apply-status-btn" data-status-id="slowed" data-targets="${targetUuids.join(',')}" style="background: rgba(88,180,52,0.15); border: 1px solid #58b434; color: #58b434; padding: 4px 8px; font-size: 0.8em; cursor: pointer; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; width: 100%;">
+                        <i class="fas fa-hourglass-half"></i> Aplicar Slowed no Alvo
+                    </button>
+                </div>
+            `;
         } else if (action === "lockon") {
             const targets = game.user.targets;
             if (targets.size > 0) {
@@ -517,6 +530,13 @@ export async function useItem(actor, itemId, event = null) {
             icon = "spotter.svg";
             tagsHtml = `<div class="lancer-tags"><span class="lancer-tag range-tag">Sensors</span></div>`;
             desc = game.i18n.localize("STYLISH_HUD.Basic.LockOn.Desc");
+            applyButtonHtml = `
+                <div style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed rgba(255,255,255,0.15); text-align: center;">
+                    <button type="button" class="pf2e-map-btn lancer-chat-apply-status-btn" data-status-id="lockon" data-targets="${targetUuids.join(',')}" style="background: rgba(88,180,52,0.15); border: 1px solid #58b434; color: #58b434; padding: 4px 10px; font-size: 0.85em; cursor: pointer; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; width: 100%;">
+                        <i class="fas fa-crosshairs"></i> Aplicar Lock On no Alvo
+                    </button>
+                </div>
+            `;
         } else if (action === "bolster") {
             const targets = game.user.targets;
             if (targets.size > 0) {
@@ -533,6 +553,13 @@ export async function useItem(actor, itemId, event = null) {
             icon = "leader.svg";
             tagsHtml = `<div class="lancer-tags"><span class="lancer-tag range-tag">Sensors</span></div>`;
             desc = game.i18n.localize("STYLISH_HUD.Basic.Bolster.Desc");
+            applyButtonHtml = `
+                <div style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed rgba(255,255,255,0.15); text-align: center;">
+                    <button type="button" class="pf2e-map-btn lancer-chat-apply-status-btn" data-status-id="bolster" data-targets="${targetUuids.join(',')}" style="background: rgba(88,180,52,0.15); border: 1px solid #58b434; color: #58b434; padding: 4px 10px; font-size: 0.85em; cursor: pointer; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; width: 100%;">
+                        <i class="fas fa-shield-alt"></i> Aplicar Bolster no Alvo
+                    </button>
+                </div>
+            `;
         } else if (action === "brace") {
             if (actor) {
                 await safeToggleStatusEffect(actor, "brace", { active: true });
@@ -540,6 +567,13 @@ export async function useItem(actor, itemId, event = null) {
             name = game.i18n.localize("STYLISH_HUD.Basic.Brace.Name");
             icon = "hull.svg";
             desc = game.i18n.localize("STYLISH_HUD.Basic.Brace.Desc");
+            applyButtonHtml = `
+                <div style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed rgba(255,255,255,0.15); text-align: center;">
+                    <button type="button" class="pf2e-map-btn lancer-chat-apply-status-btn" data-status-id="brace" data-targets="${actor.uuid}" style="background: rgba(88,180,52,0.15); border: 1px solid #58b434; color: #58b434; padding: 4px 10px; font-size: 0.85em; cursor: pointer; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; width: 100%;">
+                        <i class="fas fa-user-shield"></i> Aplicar Brace em Si
+                    </button>
+                </div>
+            `;
         } else if (action === "overwatch") {
             name = game.i18n.localize("STYLISH_HUD.Basic.Overwatch.Name");
             icon = "vanguard.svg";
@@ -555,6 +589,7 @@ export async function useItem(actor, itemId, event = null) {
                 <div class="effect-text">
                     ${tagsHtml}
                     ${desc}
+                    ${applyButtonHtml}
                 </div>
             </div>
         `;
@@ -581,6 +616,28 @@ export async function useItem(actor, itemId, event = null) {
         // Alterna o status no ator e aguarda a conclusão
         await safeToggleStatusEffect(actor, statusId);
 
+        const label = statusId.toUpperCase();
+        const content = `
+            <div class="card clipped-bot" style="margin:0px">
+                <div class="lancer-header lancer-system" style="background:#1e1e1e !important; border-bottom: 2px solid #58b434;">
+                    <span style="vertical-align:middle;">// STATUS :: ${label} //</span>
+                </div>
+                <div class="effect-text">
+                    Status <strong>${label}</strong> acionado em <strong>${actor.name}</strong>.
+                    <div style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed rgba(255,255,255,0.15);">
+                        <button type="button" class="pf2e-map-btn lancer-chat-apply-status-btn" data-status-id="${statusId}" data-targets="${actor.uuid}" style="background: rgba(88,180,52,0.15); border: 1px solid #58b434; color: #58b434; padding: 4px 10px; font-size: 0.85em; cursor: pointer; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; width: 100%;">
+                            <i class="fas fa-magic"></i> Alternar / Aplicar ${label}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+        await ChatMessage.create({
+            user: game.user.id,
+            speaker: ChatMessage.getSpeaker({ actor: actor }),
+            content: content
+        });
+
         // Re-renderiza o HUD mantendo a aba e a posição atual
         const { instance } = getActiveHUD();
         if (instance) {
@@ -595,12 +652,36 @@ export async function useItem(actor, itemId, event = null) {
             ui.notifications.warn(game.i18n.localize("STYLISH_HUD.Warning.NoTarget"));
             return;
         }
+        const targetUuids = [];
         for (let target of targets) {
             const targetActor = target.actor;
             if (targetActor) {
                 await safeToggleStatusEffect(targetActor, statusId);
+                targetUuids.push(targetActor.uuid);
             }
         }
+
+        const label = statusId.toUpperCase();
+        const content = `
+            <div class="card clipped-bot" style="margin:0px">
+                <div class="lancer-header lancer-system" style="background:#1e1e1e !important; border-bottom: 2px solid #58b434;">
+                    <span style="vertical-align:middle;">// TARGET STATUS :: ${label} //</span>
+                </div>
+                <div class="effect-text">
+                    Aplicando status <strong>${label}</strong> no(s) alvo(s).
+                    <div style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed rgba(255,255,255,0.15);">
+                        <button type="button" class="pf2e-map-btn lancer-chat-apply-status-btn" data-status-id="${statusId}" data-targets="${targetUuids.join(',')}" style="background: rgba(88,180,52,0.15); border: 1px solid #58b434; color: #58b434; padding: 4px 10px; font-size: 0.85em; cursor: pointer; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; width: 100%;">
+                            <i class="fas fa-magic"></i> Alternar / Aplicar ${label} no(s) Alvo(s)
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+        await ChatMessage.create({
+            user: game.user.id,
+            speaker: ChatMessage.getSpeaker({ actor: actor }),
+            content: content
+        });
         return;
     }
     if (itemId.startsWith("change-profile:")) {
