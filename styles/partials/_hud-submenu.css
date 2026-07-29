@@ -1,0 +1,605 @@
+/* styles/partials/_hud-submenu.css */
+/* Painel de lista de itens, search bar, itens de ação e accordion de talents/implementos */
+
+/* 3. Submenu Action Items Panel (Leftmost) */
+.hud-submenu-panel {
+  pointer-events: auto !important;
+  background: rgba(13, 13, 15, 0.85) !important;
+  border: 1px solid var(--l-border) !important;
+  border-radius: 0px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.7), inset 0 0 12px rgba(255, 255, 255, 0.02) !important;
+  padding: 12px !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex-direction: column !important;
+  backdrop-filter: blur(10px) !important;
+  width: 30vw;
+  height: 100%;
+}
+
+
+.hud-submenu-header {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  padding-bottom: 8px !important;
+  margin-bottom: 8px !important;
+}
+
+.hud-submenu-title {
+  
+  font-size: 1em !important;
+  font-weight: 700 !important;
+  color: #ffffff !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1.5px !important;
+}
+
+/* Search bar styling */
+.hud-search-container {
+  display: flex !important;
+  align-items: center !important;
+  background: rgba(0, 0, 0, 0.4) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  padding: 2px 8px !important;
+  gap: 6px !important;
+}
+
+.hud-search-container .search-icon {
+  font-size: 1.1em !important;
+  color: rgba(255, 255, 255, 0.35) !important;
+  pointer-events: none !important;
+}
+
+.hud-search-input {
+  background: none !important;
+  border: none !important;
+  color: #ffffff !important;
+  
+  font-size: 0.8em !important;
+  width: 100% !important;
+  padding: 2px 0 !important;
+  box-shadow: none !important;
+  height: auto !important;
+}
+
+.hud-search-input:focus {
+  outline: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Scrollable submenu list */
+.hud-submenu-content {
+  flex-grow: 1 !important;
+  overflow-y: auto !important;
+  max-height: 550px !important;
+  padding-right: 4px !important;
+  gap: 8px !important;
+}
+
+/* Custom Scrollbar */
+.hud-submenu-content::-webkit-scrollbar {
+  width: 4px;
+}
+
+.hud-submenu-content::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.hud-submenu-content::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 0px;
+}
+
+.hud-submenu-content::-webkit-scrollbar-thumb:hover {
+  background: var(--l-accent);
+}
+
+.hud-items-list {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+}
+.tab-status .hud-items-list {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 8px !important;
+  padding:0 !important;
+}
+.hud-item-header {
+  font-family: monospace !important;
+  font-size: 0.75em !important;
+  color: var(--l-warning) !important;
+  border-bottom: 1px solid rgba(255, 170, 0, 0.18) !important;
+  padding: 3px 0 !important;
+  margin-top: 4px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+}
+
+.hud-item-row {
+  display: flex !important;
+  align-items: flex-start !important;
+  background: rgba(0, 0, 0, 0.2) !important;
+  border: 1px solid rgba(255, 255, 255, 0.04) !important;
+  padding: 6px !important;
+  transition: all 0.2s ease !important;
+}
+.action-item{
+  background: rgba(0, 140, 20, 0.4) !important;
+  margin-left: 8px !important;
+}
+.hud-item-row:hover {
+  border-color: rgba(128, 41, 50, 0.4) !important;
+  background: rgba(128, 41, 50, 0.08) !important;
+  box-shadow: 0 0 6px rgba(128, 41, 50, 0.2) !important;
+}
+
+.hud-item-row {
+  cursor: pointer !important;
+  position: relative !important;
+}
+
+.hud-item-row::after {
+  content: "\\2197";
+  position: absolute;
+  right: 6px;
+  top: 6px;
+  font-size: 0.7em;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  color: rgba(128, 41, 50, 0.6);
+  pointer-events: none;
+}
+
+.hud-item-row:hover::after {
+  opacity: 1;
+}
+
+.hud-item-img {
+  width: 28px !important;
+  height: 28px !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  object-fit: cover !important;
+  margin-right: 8px !important;
+}
+
+.hud-item-icon-container {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 28px !important;
+  height: 28px !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  margin-right: 8px !important;
+  background: rgba(0, 0, 0, 0.2) !important;
+  flex-shrink: 0 !important;
+}
+
+.hud-item-details {
+  display: flex !important;
+  flex-direction: column !important;
+  flex-grow: 1 !important;
+  overflow: hidden !important;
+}
+
+.hud-item-name-row {
+  display: flex !important;
+  flex-direction: row;
+  justify-content: space-between !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+.hud-submenu-content.tab-status .hud-item-name-row {
+  flex-direction: column !important;
+  align-items: flex-start !important;
+}
+
+.hud-item-name-row.action-item {
+  border-left: 2px solid rgba(88, 180, 52, 0.3) !important;
+  border-radius: 2px !important;
+  margin: 0 !important;
+}
+
+/* ===== Regra Especial para Weapons (tab-strike) ===== */
+.tab-strike .hud-item-row {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  padding: 8px 10px !important;
+  background: rgba(0, 0, 0, 0.25) !important;
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+  border-radius: 3px !important;
+  margin-bottom: 4px !important;
+  transition: all 0.2s ease !important;
+}
+
+.tab-strike .hud-item-row:hover {
+  border-color: var(--l-accent) !important;
+  background: rgba(128, 41, 50, 0.12) !important;
+  box-shadow: 0 0 8px rgba(128, 41, 50, 0.25) !important;
+}
+
+.tab-strike .hud-item-name {
+  font-family: 'Orbitron', sans-serif !important;
+  font-size: 1.1em !important;
+  font-weight: bold !important;
+  color: #ffffff !important;
+}
+
+.tab-strike .hud-item-tags {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  width: 100% !important;
+  margin-top: 4px !important;
+  gap: 6px !important;
+}
+
+.tab-strike .hud-item-actions {
+  margin-left: auto !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  flex-shrink: 0 !important;
+}
+
+.tab-strike .roll-damage {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  background: rgba(0, 0, 0, 0.3) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 3px !important;
+  padding: 3px 8px !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+.tab-strike .roll-damage:hover {
+  background: rgba(128, 41, 50, 0.3) !important;
+  border-color: var(--l-accent) !important;
+  box-shadow: 0 0 6px var(--l-accent) !important;
+}
+
+.tab-strike .roll-damage .range {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  color: #3399ff !important;
+  font-size: 1em !important;
+  font-weight: 600 !important;
+}
+
+.tab-strike .roll-damage .damage {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  color: #ff3333 !important;
+  font-size: 1em !important;
+  font-weight: 600 !important;
+}
+
+/* Implementos accordion */
+.hud-implementos-list {
+  padding: 4px 0 !important;
+}
+
+.hud-implemento-item {
+  background: rgba(0, 0, 0, 0.2) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 4px !important;
+  padding: 8px 8px !important;
+  width: 100% !important;
+  text-align: left !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+.hud-implemento-item:hover {
+  border-color: var(--l-accent) !important;
+  background: rgba(128, 41, 50, 0.08) !important;
+  box-shadow: 0 0 6px rgba(128, 41, 50, 0.2) !important;
+}
+
+.hud-implemento-header {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  margin-bottom: 4px !important;
+}
+
+.hud-implemento-name {
+  font-family: 'Orbitron', sans-serif !important;
+  font-size: 1.4em !important;
+  font-weight: 600 !important;
+  color: #e0e0e0 !important;
+}
+
+.hud-implemento-description {
+  font-size: 1.5em !important;
+  color: #b0b0b0 !important;
+  line-height: 1.4 !important;
+  margin-top: 4px !important;
+  padding: 4px 0 !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+
+.hud-implemento-toggle {
+  font-size: 1em !important;
+  color: var(--l-accent) !important;
+  transition: transform 0.2s ease !important;
+}
+
+.hud-implemento-toggle.collapsed {
+  transform: rotate(-90deg) !important;
+}
+
+.hud-implemento-body {
+  overflow: hidden !important;
+  max-height: 0 !important;
+  opacity: 0 !important;
+  transition: max-height 0.25s ease, opacity 0.2s ease !important;
+}
+
+.hud-implemento-body:not(.collapsed) {
+  max-height: fit-content !important;
+  opacity: 1 !important;
+}
+
+.hud-item-destroy-btn {
+  font-size: 1em !important;
+  background: none !important;
+  color: #ff3333 !important;
+  border-radius: 0px !important;
+  cursor: pointer !important;
+  padding: 0px 0px !important;
+  transition: all 0.2s ease !important;
+}
+
+.hud-item-destroy-btn:hover {
+  background: rgba(255,51,51,0.15) !important;
+  box-shadow: 0 0 8px rgba(255,51,51,0.3) !important;
+  color: #ff6666 !important;
+}
+
+.hud-item-name {
+  font-size: 1.5em !important;
+  font-weight: bold !important;
+  color: #ffffff !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  cursor: pointer !important;
+}
+
+.hud-item-actions {
+  display: flex !important;
+  gap: 4px !important;
+  flex-shrink: 0 !important;
+  align-items: center !important;
+
+}
+
+.hud-item-actions button {
+  font-size: 1em !important;
+  padding: 2px 6px !important;
+  background: transparent;
+  border: none;
+  display: flex;
+  white-space: nowrap;
+}
+
+.hud-item-description {
+  font-size: 1.2em !important;
+  color: #cacaca !important;
+  margin-top: 4px !important;
+  line-height: 1.3 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  display: none !important;
+  -webkit-line-clamp: 2 !important;
+  line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+  cursor: pointer !important;
+  transition: all 0.25s ease !important;
+}
+
+.hud-item-description:hover {
+  color: #ffffff !important;
+}
+
+.hud-item-description.expanded {
+  display: block !important;
+  -webkit-line-clamp: none !important;
+  line-clamp: none !important;
+  overflow: visible !important;
+}
+
+.hud-empty-msg {
+  text-align: center !important;
+  color: #5b7c65 !important;
+  font-size: 0.8em !important;
+  padding: 24px 0 !important;
+  font-style: italic !important;
+}
+
+/* Talent Accordion */
+.hud-talent-accordion {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 4px;
+}
+
+.hud-talent-group {
+  background: rgba(255,255,255,0.02);
+}
+
+.hud-talent-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  cursor: pointer;
+  font-family: "Orbitron", sans-serif;
+  font-size: 1.2em;
+  color: #fff;
+  background: rgba(128, 41, 50, 0.5);
+  border-bottom: 1px solid rgba(128,41,50,0.3);
+  user-select: none;
+}
+
+.hud-talent-header:hover {
+  background: rgba(128,41,50,0.25);
+}
+
+.hud-talent-toggle {
+  font-size: 0.8em;
+  color: var(--l-accent);
+  transition: transform 0.2s ease;
+}
+
+.hud-talent-toggle.collapsed {
+  transform: rotate(-90deg);
+}
+
+.hud-talent-name {
+  font-weight: bold;
+}
+
+.hud-talent-ranks {
+  display: flex;
+  flex-direction: column;
+}
+
+.hud-talent-rank {
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.hud-talent-rank:last-child {
+  border-bottom: none;
+}
+
+.hud-talent-rank-header {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px 6px 24px;
+  cursor: pointer;
+  font-family: "Orbitron", sans-serif;
+  font-size: 1em;
+  color: #ccc;
+  background: rgba(0, 0, 0, 0.8);
+  user-select: none;
+}
+
+.hud-talent-rank-header:hover {
+  background: rgba(0,0,0,0.3);
+}
+
+.hud-rank-toggle {
+  font-size: 0.75em;
+  color: #888;
+  transition: transform 0.2s ease;
+}
+.hud-rank-name{
+  letter-spacing: 2px;
+}
+.hud-rank-toggle.collapsed {
+  transform: rotate(-90deg);
+}
+
+.hud-rank-description {
+  display: block;
+  font-size: 1.4em;
+  line-height: 1.5;
+  color: #cacaca;
+  padding: 8px 10px 10px 8px;
+  background: rgba(0,0,0,0.05);
+}
+
+.hud-rank-description.collapsed {
+  display: none;
+}
+
+/* Talent rank action blocks (shared com popup) */
+#lancer-item-popup .la-popup-description .action-wrapper,
+.hud-rank-description .action-wrapper {
+  background: rgba(0, 0, 0, 0.15) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 4px !important;
+  margin: 6px 0 !important;
+  padding: 6px 8px !important;
+}
+
+#lancer-item-popup .la-popup-description .title-wrapper,
+.hud-rank-description .title-wrapper {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  margin-bottom: 4px !important;
+}
+
+#lancer-item-popup .la-popup-description .action-title,
+.hud-rank-description .action-title {
+  font-weight: 600 !important;
+  color: #e0e0e0 !important;
+  font-size: 0.9em !important;
+}
+
+#lancer-item-popup .la-popup-description .action-detail,
+.hud-rank-description .action-detail {
+  font-size: 0.85em !important;
+  color: #b0b0b0 !important;
+  line-height: 1.4 !important;
+}
+
+#lancer-item-popup .la-popup-description .hsep,
+.hud-rank-description .hsep {
+  border: none !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.06) !important;
+  margin: 4px 0 !important;
+}
+
+#lancer-item-popup .la-popup-description .action-flow-container,
+.hud-rank-description .action-flow-container {
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  margin: 4px 0 !important;
+}
+
+#lancer-item-popup .la-popup-description .activation-flow,
+.hud-rank-description .activation-flow {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  background: rgba(88, 180, 52, 0.1) !important;
+  border: 1px solid rgba(88, 180, 52, 0.3) !important;
+  color: #58b434 !important;
+  font-family: 'Orbitron', sans-serif !important;
+  font-size: 0.75em !important;
+  padding: 2px 8px !important;
+  border-radius: 2px !important;
+  cursor: pointer !important;
+  text-transform: uppercase !important;
+  transition: all 0.2s ease !important;
+}
+
+#lancer-item-popup .la-popup-description .activation-flow:hover,
+.hud-rank-description .activation-flow:hover {
+  background: rgba(88, 180, 52, 0.2) !important;
+  border-color: #58b434 !important;
+}
+
+#lancer-item-popup .la-popup-description .vsep,
+.hud-rank-description .vsep {
+  display: inline-block !important;
+  width: 4px !important;
+}

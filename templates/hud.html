@@ -12,16 +12,7 @@
             <span class="hud-utility-label">{{{this.name}}}</span>
         </button>
         {{/each}}
-        <button type="button" class="hud-utility-btn"
-            onclick="event.stopPropagation(); StylishAction.useItem('overheat:self', event)"
-            data-tooltip="Teste de Dano de Stress" data-uuid={{actorUuid}} data-flow-type="Stress">
-            <i class="cci cci-heat i--4"></i>
-        </button>
-        <button type="button" class="hud-utility-btn"
-            onclick="event.stopPropagation(); StylishAction.useItem('structure:self', event)"
-            data-tooltip="Teste de Dano de Estrutura" data-uuid={{actorUuid}} data-flow-type="Structure">
-            <i class="cci cci-condition-shredded i--4"></i>
-        </button>
+        
 
     </div>
 </div>
@@ -75,7 +66,6 @@
             {{/each}}
         </div>
         <div class="hud-portrait-container">
-            <img class="hud-diamond-portrait" src="{{actorImg}}" alt="" />
             <div class="hud-portrait-stats">
                 <div class="hud-port-stat stat-armor" data-tooltip="{{localize 'STYLISH_HUD.Tooltip.Armor'}}">
                     <span class="hud-port-stat-val">{{armor}}</span>
@@ -284,22 +274,21 @@
                         <div class="hud-implemento-header">
                             <i class="fas fa-chevron-down hud-implemento-toggle collapsed"></i>
                             <span class="hud-implemento-name">{{{name}}}</span>
-                        </div>
-                        <div class="hud-implemento-body collapsed">
-                            {{#if tags.length}}
-                            <div class="hud-item-tags">
+                             <div class="hud-item-tags">
+                                {{#if tags.length}}
                                 {{#each tags}}
                                 <span class="hud-item-tag {{class}}" data-tooltip="{{tooltip}}">{{label}}</span>
                                 {{/each}}
+                                {{/if}}
+                                <div class="hud-item-actions">
+                                    {{{cost}}}
+                                </div>
                             </div>
-                            {{/if}}
+                        </div>
+                        <div class="hud-implemento-body collapsed">
 
                             <div class="hud-implemento-description">
                                 {{{description}}}
-                            </div>
-
-                            <div class="hud-item-actions">
-                                {{{cost}}}
                             </div>
                         </div>
                     </div>
@@ -319,6 +308,7 @@
                             <div class="hud-talent-rank-header">
                                 <i class="fas fa-chevron-down hud-rank-toggle collapsed"></i>
                                 <span class="hud-rank-name">Rank {{this.rankNum}} - {{this.name}}</span>
+                                <button type="button" class="pf2e-map-btn" style="margin-left: auto;" onclick="event.stopPropagation(); StylishAction.useItem('activate:{{../id}}', event)" data-tooltip="Enviar um card representando este item para o chat"><i class="fas fa-comment-alt"></i></button>
                             </div>
                             <div class="hud-rank-description collapsed">{{{this.description}}}</div>
                         </div>
@@ -341,6 +331,14 @@
                         <div class="hud-item-details">
                             <div class="hud-item-name-row{{#if this.isAction}} action-item{{/if}}">
                                 <span class="hud-item-name">{{{this.name}}}</span>
+                            </div>
+                            <div class="hud-item-tags">
+                                {{#if this.tags.length}}
+                                {{#each this.tags}}
+                                <span class="hud-item-tag {{this.class}}" {{#if
+                                    this.tooltip}}data-tooltip="{{this.tooltip}}" {{/if}}>{{{this.label}}}</span>
+                                {{/each}}
+                                {{/if}}
                                 <div class="hud-item-actions">
                                     {{#if this.canDestroy}}
                                     <button type="button" class="hud-item-destroy-btn"
@@ -353,14 +351,6 @@
                                     {{{this.cost}}}
                                 </div>
                             </div>
-                            {{#if this.tags.length}}
-                            <div class="hud-item-tags">
-                                {{#each this.tags}}
-                                <span class="hud-item-tag {{this.class}}" {{#if
-                                    this.tooltip}}data-tooltip="{{this.tooltip}}" {{/if}}>{{{this.label}}}</span>
-                                {{/each}}
-                            </div>
-                            {{/if}}
                             {{#if this.description}}
                             <div class="hud-item-description">{{{this.description}}}</div>
                             {{/if}}

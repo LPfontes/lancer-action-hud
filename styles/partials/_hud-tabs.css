@@ -1,0 +1,43 @@
+/* styles/partials/_hud-tabs.css */
+/* Abas de navegação verticais */
+
+/* 2. Vertical Navigation Tabs */
+.hud-tabs-vertical {
+
+  pointer-events: auto !important;
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 5px !important;
+}
+
+.hud-tab-btn {
+  
+  font-size: 1.2em !important;
+  font-weight: 700 !important;
+  background: var(--l-bg-dark) !important;
+  border: 1px solid var(--l-border) !important;
+  color: rgba(255, 255, 255, 0.62) !important;
+  border-radius: 0px !important;
+  padding: 4px 8px !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  text-align: right !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5) !important;
+
+}
+
+.hud-tab-btn:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
+}
+
+.hud-tab-btn.active {
+  background: var(--l-accent) !important;
+  color: #ffffff !important;
+  border-color: var(--l-accent) !important;
+  box-shadow: 0 0 10px rgba(128, 41, 50, 0.3) !important;
+  text-shadow: none !important;
+}

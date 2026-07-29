@@ -1,0 +1,200 @@
+/* styles/partials/_hud-stats.css */
+/* Weapon range/damage display, grids de stats/HASE e Action Tracker */
+
+.range {
+  display: flex;
+  align-items: center;
+  font-size: 1.5rem !important;
+  color: #1f8dfc;
+}
+
+.damage {
+  display: flex;
+  align-items: center;
+  font-size: 1.5rem !important;
+  color: #d40707;
+}
+
+/* Mech Stats Grid Layout */
+.la-stats-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 8px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  margin-top: 8px !important;
+  margin-bottom: 16px !important;
+}
+
+/* HASE Stats Grid Layout (4 Columns) */
+.la-hase-grid {
+  display: grid !important;
+  grid-template-columns: repeat(4, 1fr) !important;
+  gap: 8px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  margin-bottom: 16px !important;
+}
+
+.la-stats-cell {
+  background: rgba(13, 13, 15, 0.8) !important;
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+  border-radius: 0px !important;
+  padding: 6px 4px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 52px !important;
+  box-sizing: border-box !important;
+  text-align: center !important;
+  backdrop-filter: blur(5px) !important;
+}
+
+/* Row colors */
+.la-stats-cell.row-red {
+  border-top: 2px solid #ff3333 !important;
+}
+
+.la-stats-cell.row-red .la-stats-val {
+  color: #ff3333 !important;
+}
+
+.la-stats-cell.row-green {
+  border-top: 2px solid #39ff32 !important;
+}
+
+.la-stats-cell.row-green .la-stats-val {
+  color: #39ff32 !important;
+}
+
+.la-stats-cell.row-blue {
+  border-top: 2px solid #1f8dfc !important;
+}
+
+.la-stats-cell.row-blue .la-stats-val {
+  color: #3399ff !important;
+  text-shadow: 0 0 4px #1f8dfc !important;
+}
+
+.la-stats-cell.row-orange {
+  border-top: 2px solid #ffaa00 !important;
+}
+
+.la-stats-cell.row-orange .la-stats-val {
+  color: #ffaa00 !important;
+  text-shadow: 0 0 4px rgba(255, 170, 0, 0.4) !important;
+}
+
+.la-stats-lbl {
+  
+  font-size: 1em !important;
+  color: rgba(255, 255, 255, 0.45) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  margin-bottom: 2px !important;
+  font-weight: 700 !important;
+}
+
+/* Portrait Stats Specific Colors */
+.stat-armor .hud-port-stat-val {
+  color: #ff3333 !important;
+  text-shadow: 0 0 4px rgba(255, 51, 51, 0.4) !important;
+}
+.stat-evasion .hud-port-stat-val {
+  color: #00ff66 !important;
+  text-shadow: 0 0 4px rgba(0, 255, 102, 0.4) !important;
+}
+.stat-edef .hud-port-stat-val {
+  color: #3399ff !important;
+  text-shadow: 0 0 4px rgba(51, 153, 255, 0.4) !important;
+}
+.stat-speed .hud-port-stat-val {
+  color: #ffaa00 !important;
+  text-shadow: 0 0 4px rgba(255, 170, 0, 0.4) !important;
+}
+
+.la-stats-val {
+  
+  font-size: 1.5em !important;
+  font-weight: 700 !important;
+}
+
+/* HASE attribute items styled as interactive button rows */
+.hud-item-row[data-item-id^="mech-hase-"] {
+  cursor: pointer !important;
+  border-radius: 2px !important;
+}
+
+.hud-item-row[data-item-id^="mech-hase-"]:hover {
+  border-color: var(--l-accent) !important;
+  background: rgba(128, 41, 50, 0.08) !important;
+  box-shadow: 0 0 6px rgba(128, 41, 50, 0.25) !important;
+}
+
+/* Grid Roll Buttons styling */
+.la-stat-roll-btn {
+  transition: all 0.2s ease !important;
+}
+
+.la-stat-roll-btn:hover {
+  background: rgba(128, 41, 50, 0.25) !important;
+  border-color: var(--l-accent) !important;
+  box-shadow: 0 0 8px rgba(128, 41, 50, 0.4) !important;
+}
+
+.la-stat-roll-btn:active {
+  transform: scale(0.96) !important;
+}
+
+/* Action Tracker */
+.hud-action-tracker {
+    pointer-events: auto !important;
+    position: relative !important;
+    margin-right: 8px !important;
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 4px !important;
+    background: rgba(13, 13, 15, 0.85) !important;
+    border: 1px solid var(--l-accent) !important;
+    padding: 6px !important;
+    border-radius: 4px !important;
+    z-index: 100 !important;
+}
+.hud-action-tracker .action-btn, .hud-action-tracker .action-reset {
+    width: 34px !important;
+    height: 34px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: rgba(255,255,255,0.1) !important;
+    color: #fff !important;
+    
+    font-size: 1.4em !important;
+    font-weight: bold !important;
+    cursor: pointer !important;
+    border: 1px solid rgba(255,255,255,0.2) !important;
+    border-radius: 2px !important;
+    transition: all 0.2s ease !important;
+}
+.hud-action-tracker .action-btn:hover, .hud-action-tracker .action-reset:hover {
+    background: rgba(128, 41, 50, 0.4) !important;
+    border-color: var(--l-accent) !important;
+}
+
+/* Button Background Colors */
+.hud-action-tracker .action-btn.action-move:not(.used) { background: rgba(255, 51, 51, 0.4) !important; border-color: rgba(255, 51, 51, 0.6) !important; }
+.hud-action-tracker .action-btn.action-quick:not(.used), .hud-action-tracker .action-btn.action-full:not(.used) { background: rgba(51, 153, 255, 0.4) !important; border-color: rgba(51, 153, 255, 0.6) !important; }
+.hud-action-tracker .action-btn.action-reaction:not(.used) { background: rgba(153, 51, 255, 0.4) !important; border-color: rgba(153, 51, 255, 0.6) !important; }
+.hud-action-tracker .action-btn.action-overcharge:not(.used) { background: rgba(255, 170, 0, 0.4) !important; border-color: rgba(255, 170, 0, 0.6) !important; }
+.hud-action-tracker .action-btn.action-core:not(.used) { background: rgba(255, 204, 0, 0.4) !important; border-color: rgba(255, 204, 0, 0.6) !important; color: #000 !important; }
+.hud-action-tracker .action-btn.used {
+    background: rgba(0,0,0,0.6) !important;
+    color: rgba(255,255,255,0.2) !important;
+    text-decoration: line-through !important;
+    border-color: rgba(0,0,0,0.8) !important;
+}
+.hud-action-tracker .action-reset {
+    border-color: rgba(128, 41, 50, 0.5) !important;
+    color: rgba(255,255,255,0.8) !important;
+}

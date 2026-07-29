@@ -22,8 +22,11 @@
 
         {{#if cost}}
         <div class="la-popup-actions">
-            
             {{{cost}}}
+        </div>
+        {{else if id}}
+        <div class="la-popup-actions">
+            <button type="button" class="pf2e-map-btn" onclick="event.stopPropagation(); StylishAction.useItem('activate:{{id}}', event)" data-tooltip="Enviar um card representando este item para o chat"><i class="fas fa-comment-alt"></i></button>
         </div>
         {{/if}}
     </div>

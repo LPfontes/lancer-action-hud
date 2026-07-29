@@ -1,0 +1,372 @@
+/* styles/partials/_hud-window.css */
+/* Janela principal do HUD, actor panel, portrait, vitals e badges */
+
+/* Janela Popout do Foundry - estilo Lancer */
+#lancer-action-hud {
+  background: rgba(10, 12, 14, 0.97) !important;
+  border: 1px solid var(--l-accent) !important;
+  border-radius: 0 !important;
+  box-shadow: 0 0 30px rgba(128, 41, 50, 0.35), 0 8px 32px rgba(0, 0, 0, 0.8) !important;
+  
+  overflow: visible !important;
+  width: fit-content !important;
+}
+
+/* Barra de título da janela */
+#lancer-action-hud .window-header {
+  background: linear-gradient(90deg, rgba(128, 41, 50, 0.9) 0%, rgba(20, 10, 12, 0.95) 100%) !important;
+  border-bottom: 1px solid rgba(128, 41, 50, 0.6) !important;
+  border-radius: 0 !important;
+  padding: 4px 8px !important;
+  cursor: move !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
+
+#lancer-action-hud .window-title {
+  
+  font-size: 0.85em !important;
+  font-weight: 500 !important;
+  color: #ffffff !important;
+  text-transform: uppercase !important;
+  letter-spacing: 2px !important;
+  flex: 1 !important;
+}
+
+#lancer-action-hud .header-button {
+  display: block !important; 
+  color: rgba(255,255,255,0.7) !important;
+  border: none !important;
+  background: transparent !important;
+  font-size: 0.85em !important;
+  padding: 2px 4px !important;
+  transition: color 0.2s ease !important;
+}
+
+#lancer-action-hud .header-button:hover {
+  color: var(--l-accent) !important;
+  text-shadow: 0 0 6px rgba(128, 41, 50, 0.8) !important;
+}
+
+#lancer-action-hud .window-content {
+  padding: 0 !important;
+  background: transparent !important;
+  overflow: visible !important;
+  width: fit-content !important;
+}
+
+.hud-panel {
+  gap: 8px;
+  display: flex;
+  max-width: 95vw;
+  position: relative;
+}
+
+.hud-right-panel {
+  position: relative;
+  max-width: 400px;
+}
+
+.hud-left-panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-end;
+  transition: width 0.25s ease, min-width 0.25s ease, padding 0.25s ease, opacity 0.25s ease;
+}
+
+.hud-left-panel.collapsed {
+  width: 0 !important;
+  min-width: 0 !important;
+  padding: 0 !important;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.hud-left-collapse-btn {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 25;
+  width: 18px;
+  height: 40px;
+  padding: 0;
+  border: none;
+  background: var(--l-accent);
+  color: #fff;
+  cursor: pointer;
+  font-size: 0.75em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px 0 0 4px;
+  opacity: 0.5;
+  transition: opacity 0.2s ease, right 0.25s ease;
+}
+
+.hud-left-collapse-btn:hover {
+  opacity: 1;
+}
+
+.hud-left-collapse-btn .fa-chevron-left,
+.hud-left-collapse-btn .fa-chevron-right {
+  transition: transform 0.25s ease;
+}
+
+/* 1. Active Actor Diagnostic Panel (Rightmost) */
+.hud-actor-panel {
+  pointer-events: auto !important;
+  
+  background: var(--l-bg-dark) !important;
+  border: 1px solid var(--l-border) !important;
+  border-radius: 0px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.7), inset 0 0 12px rgba(255, 255, 255, 0.02) !important;
+  padding: 12px !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex-direction: column !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+.hud-actor-row {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  width: 100% !important;
+  gap: 10px !important;
+}
+
+.hud-actor-meta {
+  display: flex !important;
+  flex-direction: column !important;
+  flex-grow: 1 !important;
+  overflow: hidden !important;
+}
+
+.ib-name-text {
+  color: #ffffff !important;
+  font-weight: 700 !important;
+  font-size: 1.5em !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1px !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.hud-actor-sub {
+  color: var(--l-accent) !important;
+  font-size: 0.8em !important;
+  text-transform: uppercase !important;
+  font-weight: 700 !important;
+  letter-spacing: 1.5px !important;
+  margin-top: 2px !important;
+}
+
+/* Diamond Portrait */
+.hud-portrait-container {
+  position: relative !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  padding: 2px !important;
+  background: rgba(0, 0, 0, 0.5) !important;
+  overflow: hidden !important;
+  flex-shrink: 0 !important;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5) !important;
+  z-index: 10 !important;
+  pointer-events: auto !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.hud-diamond-portrait {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+}
+
+.hud-portrait-stats {
+  position: absolute !important;
+  bottom: 2px !important;
+  left: 2px !important;
+  right: 2px !important;
+  backdrop-filter: blur(8px) !important;
+  border-top: 1px solid rgba(128, 41, 50, 0.25) !important;
+  display: flex !important;
+  justify-content: space-around !important;
+  padding: 6px 0 !important;
+  box-sizing: border-box !important;
+  z-index: 2 !important;
+}
+
+.hud-port-stat {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  
+  flex: 1 !important;
+  cursor: help !important;
+}
+
+.hud-port-stat:not(:last-child) {
+  border-right: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.hud-port-stat-val {
+  font-size: 1.2em !important;
+  font-weight: 700 !important;
+  color: var(--l-accent) !important;
+  text-shadow: 0 0 4px rgba(128, 41, 50, 0.4) !important;
+}
+
+.hud-port-stat-lbl {
+  font-size: 1em !important;
+  font-weight: bold !important;
+  color: #8dbb9c !important;
+  letter-spacing: 0.2px !important;
+  text-transform: uppercase !important;
+  margin-top: 2px !important;
+  text-align: center !important;
+}
+
+.hud-port-stat-val.text-blue {
+  color: var(--l-blue) !important;
+  text-shadow: 0 0 4px rgba(51, 153, 255, 0.5) !important;
+}
+
+.hud-port-stat-val.text-orange {
+  color: var(--l-danger) !important;
+  text-shadow: 0 0 4px rgba(255, 51, 51, 0.5) !important;
+}
+
+.hud-port-stat-lbl.label-blue {
+  color: #8da9bf !important;
+}
+
+.hud-port-stat-lbl.label-orange {
+  color: #bf8d8d !important;
+}
+
+/* HP & Heat vitals inside Actor Panel */
+.hud-actor-vitals {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+  margin-top: 10px !important;
+}
+
+.hud-vitals-row {
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.hud-vitals-label-row {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  font-size: 1em !important;
+  font-weight: bold !important;
+}
+
+.hud-vitals-label {
+  color: #8dbb9c !important;
+  letter-spacing: 0.5px !important;
+}
+
+.hud-vitals-value {
+  color: #ffffff !important;
+}
+
+.hud-attribute-clickable {
+  cursor: pointer !important;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.25) !important;
+  transition: all 0.2s ease !important;
+}
+
+.hud-attribute-clickable:hover {
+  color: var(--l-accent) !important;
+  border-bottom-color: var(--l-accent) !important;
+  text-shadow: 0 0 4px var(--l-accent) !important;
+}
+
+.hud-vitals-bar-bg {
+  height: 5px !important;
+  background: rgba(0, 0, 0, 0.6) !important;
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+  margin-top: 3px !important;
+  position: relative !important;
+}
+
+.hud-vitals-bar-fill {
+  height: 100% !important;
+  transition: width 0.3s ease !important;
+}
+
+.hp-fill {
+  background: linear-gradient(90deg, #00ee55, #00ffaa) !important;
+  box-shadow: 0 0 6px rgba(0, 255, 102, 0.6) !important;
+}
+
+.heat-fill {
+  background: linear-gradient(90deg, #ff5500, #ffaa00) !important;
+  box-shadow: 0 0 6px rgba(255, 170, 0, 0.6) !important;
+}
+
+/* Badges (Structure, Stress, OS) */
+.hud-actor-badges {
+  display: flex !important;
+  gap: 5px !important;
+  margin-top: 10px !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+  padding-top: 10px !important;
+  justify-content: flex-start !important;
+  flex-wrap: wrap !important;
+}
+
+.hud-badge {
+  font-size: 1em !important;
+  font-weight: bold !important;
+  padding: 2px 6px !important;
+  background: rgba(0, 0, 0, 0.4) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  letter-spacing: 0.5px !important;
+}
+
+.hud-badge.structure {
+  border-color: var(--l-warning) !important;
+  color: var(--l-warning) !important;
+}
+
+.hud-badge.stress {
+  border-color: var(--l-danger) !important;
+  color: var(--l-danger) !important;
+}
+
+.hud-badge.os {
+  border-color: var(--l-blue) !important;
+  color: var(--l-blue) !important;
+}
+
+.hud-badge-input {
+  width: 28px !important;
+  background: rgba(0, 0, 0, 0.5) !important;
+  border: none !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important;
+  color: inherit !important;
+  font-family: 'Orbitron', sans-serif !important;
+  font-size: 0.85em !important;
+  text-align: center !important;
+  padding: 0 2px !important;
+  margin: 0 1px !important;
+  -moz-appearance: textfield !important;
+}
+
+.hud-badge-input::-webkit-outer-spin-button,
+.hud-badge-input::-webkit-inner-spin-button {
+  -webkit-appearance: none !important;
+  margin: 0 !important;
+}
