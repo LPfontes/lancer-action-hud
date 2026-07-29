@@ -322,7 +322,7 @@
                 <div class="hud-items-list {{#if (eq activeTab 'statuses')}}hud-statuses-list{{/if}}">
                     {{#each items}}
                     {{#if this.isHeader}}
-                    <div class="hud-item-header">{{this.name}}</div>
+                    <div class="hud-item-header">{{#if this.id}}{{localize (concat "STYLISH_HUD.statusNames." this.id)}}{{else}}{{{this.name}}}{{/if}}</div>
                     {{else}}
                     <div class="hud-item-row" data-item-id="{{this.id}}" data-item-name="{{this.name}}">
                         {{#if this.isIcon}}
