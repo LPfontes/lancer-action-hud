@@ -166,6 +166,47 @@
   margin-bottom: 12px;
 }
 
+.la-popup-effect {
+  font-size: 1.15em;
+  line-height: 1.5;
+  color: #e0e0e0;
+  margin-bottom: 12px;
+  background: rgba(88, 180, 52, 0.08);
+  border: 1px solid rgba(88, 180, 52, 0.25);
+  border-left: 3px solid #58b434;
+  padding: 8px 10px;
+  border-radius: 4px;
+}
+
+.la-popup-effect p {
+  margin: 0 0 8px 0;
+}
+
+.la-popup-on-attack,
+.la-popup-on-hit,
+.la-popup-on-crit {
+  font-size: 1.1em;
+  line-height: 1.5;
+  color: #e0e0e0;
+  margin-bottom: 8px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 6px 10px;
+  border-radius: 4px;
+}
+
+.la-popup-on-attack strong {
+  color: #ffaa00;
+}
+
+.la-popup-on-hit strong {
+  color: #58b434;
+}
+
+.la-popup-on-crit strong {
+  color: #ff3344;
+}
+
 .la-popup-description {
   font-size: 1.2em;
   line-height: 1.6;

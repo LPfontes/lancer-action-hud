@@ -530,6 +530,10 @@
 
 /* Talent rank action blocks (shared com popup) */
 #lancer-item-popup .la-popup-description .action-wrapper,
+#lancer-item-popup .la-popup-effect .action-wrapper,
+#lancer-item-popup .la-popup-on-attack .action-wrapper,
+#lancer-item-popup .la-popup-on-hit .action-wrapper,
+#lancer-item-popup .la-popup-on-crit .action-wrapper,
 .hud-rank-description .action-wrapper {
   background: rgba(0, 0, 0, 0.15) !important;
   border: 1px solid rgba(255, 255, 255, 0.08) !important;
@@ -539,6 +543,10 @@
 }
 
 #lancer-item-popup .la-popup-description .title-wrapper,
+#lancer-item-popup .la-popup-effect .title-wrapper,
+#lancer-item-popup .la-popup-on-attack .title-wrapper,
+#lancer-item-popup .la-popup-on-hit .title-wrapper,
+#lancer-item-popup .la-popup-on-crit .title-wrapper,
 .hud-rank-description .title-wrapper {
   display: flex !important;
   align-items: center !important;
@@ -547,6 +555,10 @@
 }
 
 #lancer-item-popup .la-popup-description .action-title,
+#lancer-item-popup .la-popup-effect .action-title,
+#lancer-item-popup .la-popup-on-attack .action-title,
+#lancer-item-popup .la-popup-on-hit .action-title,
+#lancer-item-popup .la-popup-on-crit .action-title,
 .hud-rank-description .action-title {
   font-weight: 600 !important;
   color: #e0e0e0 !important;
@@ -554,6 +566,10 @@
 }
 
 #lancer-item-popup .la-popup-description .action-detail,
+#lancer-item-popup .la-popup-effect .action-detail,
+#lancer-item-popup .la-popup-on-attack .action-detail,
+#lancer-item-popup .la-popup-on-hit .action-detail,
+#lancer-item-popup .la-popup-on-crit .action-detail,
 .hud-rank-description .action-detail {
   font-size: 0.85em !important;
   color: #b0b0b0 !important;
@@ -561,6 +577,10 @@
 }
 
 #lancer-item-popup .la-popup-description .hsep,
+#lancer-item-popup .la-popup-effect .hsep,
+#lancer-item-popup .la-popup-on-attack .hsep,
+#lancer-item-popup .la-popup-on-hit .hsep,
+#lancer-item-popup .la-popup-on-crit .hsep,
 .hud-rank-description .hsep {
   border: none !important;
   border-top: 1px solid rgba(255, 255, 255, 0.06) !important;
@@ -568,6 +588,10 @@
 }
 
 #lancer-item-popup .la-popup-description .action-flow-container,
+#lancer-item-popup .la-popup-effect .action-flow-container,
+#lancer-item-popup .la-popup-on-attack .action-flow-container,
+#lancer-item-popup .la-popup-on-hit .action-flow-container,
+#lancer-item-popup .la-popup-on-crit .action-flow-container,
 .hud-rank-description .action-flow-container {
   display: flex !important;
   align-items: center !important;
@@ -576,6 +600,10 @@
 }
 
 #lancer-item-popup .la-popup-description .activation-flow,
+#lancer-item-popup .la-popup-effect .activation-flow,
+#lancer-item-popup .la-popup-on-attack .activation-flow,
+#lancer-item-popup .la-popup-on-hit .activation-flow,
+#lancer-item-popup .la-popup-on-crit .activation-flow,
 .hud-rank-description .activation-flow {
   display: inline-flex !important;
   align-items: center !important;
@@ -593,12 +621,20 @@
 }
 
 #lancer-item-popup .la-popup-description .activation-flow:hover,
+#lancer-item-popup .la-popup-effect .activation-flow:hover,
+#lancer-item-popup .la-popup-on-attack .activation-flow:hover,
+#lancer-item-popup .la-popup-on-hit .activation-flow:hover,
+#lancer-item-popup .la-popup-on-crit .activation-flow:hover,
 .hud-rank-description .activation-flow:hover {
   background: rgba(88, 180, 52, 0.2) !important;
   border-color: #58b434 !important;
 }
 
 #lancer-item-popup .la-popup-description .vsep,
+#lancer-item-popup .la-popup-effect .vsep,
+#lancer-item-popup .la-popup-on-attack .vsep,
+#lancer-item-popup .la-popup-on-hit .vsep,
+#lancer-item-popup .la-popup-on-crit .vsep,
 .hud-rank-description .vsep {
   display: inline-block !important;
   width: 4px !important;

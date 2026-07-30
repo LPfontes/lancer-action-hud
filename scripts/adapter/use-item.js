@@ -69,12 +69,62 @@ export async function useItem(actor, itemId, event = null) {
         }
     };
 
+    if (itemId.startsWith("roll:")) {
+        if (HUDState.lancerHUD) {
+            HUDState.lancerHUD._hudVisible = false;
+            HUDState.lancerHUD.minimize();
+        }
+        const action = itemId.replace("roll:", "");
+        if (action === "ram") {
+            await deductAction(false);
+            const BasicAttackFlow = game.lancer?.flows?.get("BasicAttackFlow") || CONFIG?.LANCER?.flows?.BasicAttackFlow;
+            if (BasicAttackFlow) {
+                const flow = new BasicAttackFlow(actor, { action: "ram" });
+                return flow.begin(Array.from(game.user.targets));
+            } else if (typeof actor.beginBasicAttackFlow === "function") {
+                return actor.beginBasicAttackFlow({ action: "ram" });
+            } else if (typeof actor.beginStatFlow === "function") {
+                return actor.beginStatFlow("system.hull");
+            }
+        }
+        if (action === "grapple") {
+            await deductAction(false);
+            const BasicAttackFlow = game.lancer?.flows?.get("BasicAttackFlow") || CONFIG?.LANCER?.flows?.BasicAttackFlow;
+            if (BasicAttackFlow) {
+                const flow = new BasicAttackFlow(actor, { action: "grapple" });
+                return flow.begin(Array.from(game.user.targets));
+            } else if (typeof actor.beginBasicAttackFlow === "function") {
+                return actor.beginBasicAttackFlow({ action: "grapple" });
+            } else if (typeof actor.beginStatFlow === "function") {
+                return actor.beginStatFlow("system.hull");
+            }
+        }
+        if (action === "search") {
+            await deductAction(false);
+            if (typeof actor.beginStatFlow === "function") {
+                return actor.beginStatFlow("system.systems");
+            }
+        }
+    }
+
     if (itemId.startsWith("attack:")) {
         if (HUDState.lancerHUD) {
             HUDState.lancerHUD._hudVisible = false;
             HUDState.lancerHUD.minimize();
         }
         const id = itemId.replace("attack:", "");
+        if (id === "improvised" || id === "basic-improvised") {
+            await deductAction(true);
+            const BasicAttackFlow = game.lancer?.flows?.get("BasicAttackFlow") || CONFIG?.LANCER?.flows?.BasicAttackFlow;
+            if (BasicAttackFlow) {
+                const flow = new BasicAttackFlow(actor, { action: "improvised" });
+                return flow.begin(Array.from(game.user.targets));
+            } else if (typeof actor.beginBasicAttackFlow === "function") {
+                return actor.beginBasicAttackFlow({ action: "improvised" });
+            } else if (typeof actor.beginStatFlow === "function") {
+                return actor.beginStatFlow("system.grit");
+            }
+        }
         const item = actor.items.get(id);
         if (item) {
             const isSuperheavy = isSuperheavyWeapon(item);
@@ -273,7 +323,7 @@ export async function useItem(actor, itemId, event = null) {
                     // SYSTEM :: ${item.name} //
                   </div>
                   <div class="effect-text">
-                    ${tagsHtml}
+                    ${tagsHtml}</br>
                     ${mainText ? `<div style="margin-bottom:6px;">${mainText}</div>` : ""}
                     ${actionsHtml}
                   </div>
@@ -489,29 +539,71 @@ export async function useItem(actor, itemId, event = null) {
         let icon = "";
         let tagsHtml = "";
 
-        if (action === "brace" || action === "overwatch") {
+        const fullActions = ["barrage", "disengage", "stabilize", "full-tech", "boot-up", "skill-check", "dismount", "full-activation"];
+        const reactions = ["brace", "overwatch"];
+
+        if (reactions.includes(action)) {
             await setActionState("reaction");
-        } else if (action === "invade" || action === "lockon" || action === "bolster") {
-            await deductAction();
+        } else if (fullActions.includes(action)) {
+            await deductAction(true);
+        } else {
+            await deductAction(false);
         }
 
 
         let applyButtonHtml = "";
         const targetUuids = Array.from(game.user.targets).map(t => t.actor?.uuid || t.document?.uuid).filter(Boolean);
 
+        const quickActionTag = game.i18n.localize("STYLISH_HUD.Tags.QuickAction") || "Quick Action";
+        const fullActionTag = game.i18n.localize("STYLISH_HUD.Tags.FullAction") || "Full Action";
+        const quickTechTag = game.i18n.localize("STYLISH_HUD.Tags.QuickTech") || "Quick Tech";
+        const fullTechTag = game.i18n.localize("STYLISH_HUD.Tags.FullTech") || "Full Tech";
+        const meleeTag = game.i18n.localize("STYLISH_HUD.Tags.Melee") || "Melee";
+        const sensorsTag = game.i18n.localize("STYLISH_HUD.Tags.Sensors") || "Sensors";
+        const heatTag = game.i18n.format("STYLISH_HUD.Tags.Heat", { amount: 2 }) || "2 Heat";
+        const kineticTag = game.i18n.format("STYLISH_HUD.Tags.Kinetic", { damage: "1d6" }) || "1d6 Kinetic";
+        const threatTag = game.i18n.format("STYLISH_HUD.Tags.Threat", { amount: 1 }) || "Threat 1";
+
+        const applyHeatBtnText = game.i18n.format("STYLISH_HUD.ChatButtons.ApplyHeat", { amount: 2 });
+        const applyFragSignalBtnText = game.i18n.localize("STYLISH_HUD.ChatButtons.ApplyFragmentSignal");
+        const impairedStatusText = game.i18n.localize("STYLISH_HUD.Status.Impaired") || "Impaired";
+        const slowedStatusText = game.i18n.localize("STYLISH_HUD.Status.Slowed") || "Slowed";
+        const applyLockOnBtnText = game.i18n.localize("STYLISH_HUD.ChatButtons.ApplyLockOn");
+        const applyBolsterBtnText = game.i18n.localize("STYLISH_HUD.ChatButtons.ApplyBolster");
+        const applyBraceBtnText = game.i18n.localize("STYLISH_HUD.ChatButtons.ApplyBrace");
+        const rollImprovisedBtnText = game.i18n.localize("STYLISH_HUD.ChatButtons.RollImprovisedAttack");
+        const applyHiddenBtnText = game.i18n.localize("STYLISH_HUD.ChatButtons.ApplyHidden");
+        const rollSearchBtnText = game.i18n.localize("STYLISH_HUD.ChatButtons.RollSearch");
+        const rollRamBtnText = game.i18n.localize("STYLISH_HUD.ChatButtons.RollRam");
+        const applyProneBtnText = game.i18n.localize("STYLISH_HUD.ChatButtons.ApplyProne");
+        const rollGrappleBtnText = game.i18n.localize("STYLISH_HUD.ChatButtons.RollGrapple");
+        const applyGrappleBtnText = game.i18n.localize("STYLISH_HUD.ChatButtons.ApplyGrapple");
+        const shutDownBtnText = game.i18n.localize("STYLISH_HUD.ChatButtons.ShutDown");
+        const overchargeBtnText = game.i18n.localize("STYLISH_HUD.ChatButtons.Overcharge");
+        const stabilizeBtnText = game.i18n.localize("STYLISH_HUD.ChatButtons.Stabilize");
+
         if (action === "invade") {
             name = game.i18n.localize("STYLISH_HUD.Basic.Invade.Name");
             icon = "hacker.svg";
-            tagsHtml = `<div class="lancer-tags"><span class="lancer-tag damage-tag">2 Heat</span><span class="lancer-tag range-tag">Sensors</span></div>`;
+            tagsHtml = `<div class="lancer-tags"><span class="lancer-tag damage-tag">${heatTag}</span><span class="lancer-tag range-tag">${sensorsTag}</span></div>`;
             desc = game.i18n.localize("STYLISH_HUD.Basic.Invade.Desc");
             applyButtonHtml = `
                 <div style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed rgba(255,255,255,0.15); display: flex; flex-direction: column; gap: 4px;">
-                    <button type="button" class="pf2e-map-btn lancer-chat-apply-status-btn" data-status-id="impaired" data-targets="${targetUuids.join(',')}" style="background: rgba(88,180,52,0.15); border: 1px solid #58b434; color: #58b434; padding: 4px 8px; font-size: 0.8em; cursor: pointer; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; width: 100%;">
-                        <i class="fas fa-biohazard"></i> Aplicar Impaired no Alvo
+                    <button type="button" class="pf2e-map-btn lancer-chat-apply-heat-btn" data-heat="2" data-targets="${targetUuids.join(',')}" style="background: rgba(255,100,0,0.15); border: 1px solid #ff6400; color: #ff9d00; padding: 4px 8px; font-size: 0.8em; cursor: pointer; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; width: 100%;">
+                        <i class="fas fa-fire"></i> ${applyHeatBtnText}
                     </button>
-                    <button type="button" class="pf2e-map-btn lancer-chat-apply-status-btn" data-status-id="slowed" data-targets="${targetUuids.join(',')}" style="background: rgba(88,180,52,0.15); border: 1px solid #58b434; color: #58b434; padding: 4px 8px; font-size: 0.8em; cursor: pointer; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; width: 100%;">
-                        <i class="fas fa-hourglass-half"></i> Aplicar Slowed no Alvo
+                    <div style="font-size: 0.75em; font-weight: bold; color: #58b434; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px;">// FRAGMENT SIGNAL //</div>
+                    <button type="button" class="pf2e-map-btn lancer-chat-apply-status-btn" data-status-id="impaired,slowed" data-targets="${targetUuids.join(',')}" style="background: rgba(88,180,52,0.15); border: 1px solid #58b434; color: #58b434; padding: 4px 8px; font-size: 0.8em; cursor: pointer; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; width: 100%;">
+                        <i class="fas fa-bolt"></i> ${applyFragSignalBtnText}
                     </button>
+                    <div style="display: flex; gap: 4px; width: 100%;">
+                        <button type="button" class="pf2e-map-btn lancer-chat-apply-status-btn" data-status-id="impaired" data-targets="${targetUuids.join(',')}" style="background: rgba(88,180,52,0.1); border: 1px solid rgba(88,180,52,0.5); color: #58b434; padding: 3px 6px; font-size: 0.75em; cursor: pointer; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; gap: 4px; flex: 1;">
+                            <i class="fas fa-biohazard"></i> ${impairedStatusText}
+                        </button>
+                        <button type="button" class="pf2e-map-btn lancer-chat-apply-status-btn" data-status-id="slowed" data-targets="${targetUuids.join(',')}" style="background: rgba(88,180,52,0.1); border: 1px solid rgba(88,180,52,0.5); color: #58b434; padding: 3px 6px; font-size: 0.75em; cursor: pointer; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; gap: 4px; flex: 1;">
+                            <i class="fas fa-hourglass-half"></i> ${slowedStatusText}
+                        </button>
+                    </div>
                 </div>
             `;
         } else if (action === "lockon") {
@@ -528,12 +620,12 @@ export async function useItem(actor, itemId, event = null) {
 
             name = game.i18n.localize("STYLISH_HUD.Basic.LockOn.Name");
             icon = "spotter.svg";
-            tagsHtml = `<div class="lancer-tags"><span class="lancer-tag range-tag">Sensors</span></div>`;
+            tagsHtml = `<div class="lancer-tags"><span class="lancer-tag range-tag">${sensorsTag}</span></div>`;
             desc = game.i18n.localize("STYLISH_HUD.Basic.LockOn.Desc");
             applyButtonHtml = `
                 <div style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed rgba(255,255,255,0.15); text-align: center;">
                     <button type="button" class="pf2e-map-btn lancer-chat-apply-status-btn" data-status-id="lockon" data-targets="${targetUuids.join(',')}" style="background: rgba(88,180,52,0.15); border: 1px solid #58b434; color: #58b434; padding: 4px 10px; font-size: 0.85em; cursor: pointer; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; width: 100%;">
-                        <i class="fas fa-crosshairs"></i> Aplicar Lock On no Alvo
+                        <i class="fas fa-crosshairs"></i> ${applyLockOnBtnText}
                     </button>
                 </div>
             `;
@@ -551,12 +643,12 @@ export async function useItem(actor, itemId, event = null) {
 
             name = game.i18n.localize("STYLISH_HUD.Basic.Bolster.Name");
             icon = "leader.svg";
-            tagsHtml = `<div class="lancer-tags"><span class="lancer-tag range-tag">Sensors</span></div>`;
+            tagsHtml = `<div class="lancer-tags"><span class="lancer-tag range-tag">${sensorsTag}</span></div>`;
             desc = game.i18n.localize("STYLISH_HUD.Basic.Bolster.Desc");
             applyButtonHtml = `
                 <div style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed rgba(255,255,255,0.15); text-align: center;">
                     <button type="button" class="pf2e-map-btn lancer-chat-apply-status-btn" data-status-id="bolster" data-targets="${targetUuids.join(',')}" style="background: rgba(88,180,52,0.15); border: 1px solid #58b434; color: #58b434; padding: 4px 10px; font-size: 0.85em; cursor: pointer; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; width: 100%;">
-                        <i class="fas fa-shield-alt"></i> Aplicar Bolster no Alvo
+                        <i class="fas fa-shield-alt"></i> ${applyBolsterBtnText}
                     </button>
                 </div>
             `;
@@ -570,7 +662,7 @@ export async function useItem(actor, itemId, event = null) {
             applyButtonHtml = `
                 <div style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed rgba(255,255,255,0.15); text-align: center;">
                     <button type="button" class="pf2e-map-btn lancer-chat-apply-status-btn" data-status-id="brace" data-targets="${actor.uuid}" style="background: rgba(88,180,52,0.15); border: 1px solid #58b434; color: #58b434; padding: 4px 10px; font-size: 0.85em; cursor: pointer; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; width: 100%;">
-                        <i class="fas fa-user-shield"></i> Aplicar Brace em Si
+                        <i class="fas fa-user-shield"></i> ${applyBraceBtnText}
                     </button>
                 </div>
             `;
@@ -578,6 +670,116 @@ export async function useItem(actor, itemId, event = null) {
             name = game.i18n.localize("STYLISH_HUD.Basic.Overwatch.Name");
             icon = "vanguard.svg";
             desc = game.i18n.localize("STYLISH_HUD.Basic.Overwatch.Desc");
+        } else if (action === "improvised") {
+            name = game.i18n.localize("STYLISH_HUD.Basic.ImprovisedAttack.Name") || "Improvisar Ataque";
+            icon = "brawler.svg";
+            tagsHtml = `<div class="lancer-tags"><span class="lancer-tag damage-tag">${fullActionTag}</span><span class="lancer-tag damage-tag">${kineticTag}</span><span class="lancer-tag range-tag">${threatTag}</span></div>`;
+            desc = game.i18n.localize("STYLISH_HUD.Basic.ImprovisedAttack.Desc");
+            applyButtonHtml = `
+                <div style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed rgba(255,255,255,0.15); text-align: center;">
+                    <button type="button" class="pf2e-map-btn lancer-chat-action-btn" data-action="attack:improvised" data-actor-id="${actor.id}" style="background: rgba(88,180,52,0.15); border: 1px solid #58b434; color: #58b434; padding: 4px 10px; font-size: 0.85em; cursor: pointer; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; width: 100%;">
+                        <i class="fas fa-fist-raised"></i> ${rollImprovisedBtnText}
+                    </button>
+                </div>
+            `;
+        } else if (action === "hide") {
+            name = game.i18n.localize("STYLISH_HUD.Basic.Hide.Name");
+            icon = "tactics.svg";
+            tagsHtml = `<div class="lancer-tags"><span class="lancer-tag range-tag">${quickActionTag}</span></div>`;
+            desc = game.i18n.localize("STYLISH_HUD.Basic.Hide.Desc");
+            applyButtonHtml = `
+                <div style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed rgba(255,255,255,0.15); text-align: center;">
+                    <button type="button" class="pf2e-map-btn lancer-chat-apply-status-btn" data-status-id="hidden" data-targets="${actor.uuid}" style="background: rgba(88,180,52,0.15); border: 1px solid #58b434; color: #58b434; padding: 4px 10px; font-size: 0.85em; cursor: pointer; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; width: 100%;">
+                        <i class="fas fa-eye-slash"></i> ${applyHiddenBtnText}
+                    </button>
+                </div>
+            `;
+        } else if (action === "search") {
+            name = game.i18n.localize("STYLISH_HUD.Basic.Search.Name");
+            icon = "spotter.svg";
+            tagsHtml = `<div class="lancer-tags"><span class="lancer-tag range-tag">${quickActionTag}</span><span class="lancer-tag range-tag">${sensorsTag}</span></div>`;
+            desc = game.i18n.localize("STYLISH_HUD.Basic.Search.Desc");
+            applyButtonHtml = `
+                <div style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed rgba(255,255,255,0.15); text-align: center;">
+                    <button type="button" class="pf2e-map-btn lancer-chat-action-btn" data-action="roll:search" data-actor-id="${actor.id}" style="background: rgba(88,180,52,0.15); border: 1px solid #58b434; color: #58b434; padding: 4px 10px; font-size: 0.85em; cursor: pointer; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; width: 100%;">
+                        <i class="fas fa-dice-d20"></i> ${rollSearchBtnText}
+                    </button>
+                </div>
+            `;
+        } else if (action === "ram") {
+            name = game.i18n.localize("STYLISH_HUD.Basic.Ram.Name");
+            icon = "hull.svg";
+            tagsHtml = `<div class="lancer-tags"><span class="lancer-tag range-tag">${quickActionTag}</span><span class="lancer-tag damage-tag">${meleeTag}</span></div>`;
+            desc = game.i18n.localize("STYLISH_HUD.Basic.Ram.Desc");
+            applyButtonHtml = `
+                <div style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed rgba(255,255,255,0.15); display: flex; flex-direction: column; gap: 4px;">
+                    <button type="button" class="pf2e-map-btn lancer-chat-action-btn" data-action="roll:ram" data-actor-id="${actor.id}" style="background: rgba(88,180,52,0.15); border: 1px solid #58b434; color: #58b434; padding: 4px 10px; font-size: 0.85em; cursor: pointer; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; width: 100%;">
+                        <i class="fas fa-dice-d20"></i> ${rollRamBtnText}
+                    </button>
+                    <button type="button" class="pf2e-map-btn lancer-chat-apply-status-btn" data-status-id="prone" data-targets="${targetUuids.join(',')}" style="background: rgba(88,180,52,0.15); border: 1px solid #58b434; color: #58b434; padding: 4px 10px; font-size: 0.85em; cursor: pointer; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; width: 100%;">
+                        <i class="fas fa-user-slash"></i> ${applyProneBtnText}
+                    </button>
+                </div>
+            `;
+        } else if (action === "grapple") {
+            name = game.i18n.localize("STYLISH_HUD.Basic.Grapple.Name");
+            icon = "hull.svg";
+            tagsHtml = `<div class="lancer-tags"><span class="lancer-tag range-tag">${quickActionTag}</span><span class="lancer-tag damage-tag">${meleeTag}</span></div>`;
+            desc = game.i18n.localize("STYLISH_HUD.Basic.Grapple.Desc");
+            applyButtonHtml = `
+                <div style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed rgba(255,255,255,0.15); display: flex; flex-direction: column; gap: 4px;">
+                    <button type="button" class="pf2e-map-btn lancer-chat-action-btn" data-action="roll:grapple" data-actor-id="${actor.id}" style="background: rgba(88,180,52,0.15); border: 1px solid #58b434; color: #58b434; padding: 4px 10px; font-size: 0.85em; cursor: pointer; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; width: 100%;">
+                        <i class="fas fa-dice-d20"></i> ${rollGrappleBtnText}
+                    </button>
+                    <button type="button" class="pf2e-map-btn lancer-chat-apply-status-btn" data-status-id="engaged,immobilized" data-targets="${targetUuids.join(',')}" style="background: rgba(88,180,52,0.15); border: 1px solid #58b434; color: #58b434; padding: 4px 10px; font-size: 0.85em; cursor: pointer; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; width: 100%;">
+                        <i class="fas fa-lock"></i> ${applyGrappleBtnText}
+                    </button>
+                </div>
+            `;
+        } else if (action === "shutdown") {
+            name = game.i18n.localize("STYLISH_HUD.Basic.ShutDown.Name");
+            icon = "tactics.svg";
+            tagsHtml = `<div class="lancer-tags"><span class="lancer-tag range-tag">${quickActionTag}</span></div>`;
+            desc = game.i18n.localize("STYLISH_HUD.Basic.ShutDown.Desc");
+            applyButtonHtml = `
+                <div style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed rgba(255,255,255,0.15); text-align: center;">
+                    <button type="button" class="pf2e-map-btn lancer-chat-apply-status-btn" data-status-id="shutdown" data-targets="${actor.uuid}" style="background: rgba(255,100,0,0.15); border: 1px solid #ff6400; color: #ff9d00; padding: 4px 10px; font-size: 0.85em; cursor: pointer; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; width: 100%;">
+                        <i class="fas fa-power-off"></i> ${shutDownBtnText}
+                    </button>
+                </div>
+            `;
+        } else if (action === "overcharge") {
+            const freeActionTag = game.i18n.localize("STYLISH_HUD.Tags.FreeAction") || "Free Action";
+            name = game.i18n.localize("STYLISH_HUD.Utilities.Overcharge.Name");
+            icon = "nuclear_fire.svg";
+            tagsHtml = `<div class="lancer-tags"><span class="lancer-tag range-tag">${freeActionTag}</span></div>`;
+            desc = game.i18n.localize("STYLISH_HUD.Utilities.Overcharge.Desc");
+            applyButtonHtml = `
+                <div style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed rgba(255,255,255,0.15); text-align: center;">
+                    <button type="button" class="pf2e-map-btn lancer-chat-action-btn" data-action="util:overcharge" data-actor-id="${actor.id}" style="background: rgba(255,100,0,0.15); border: 1px solid #ff6400; color: #ff9d00; padding: 4px 10px; font-size: 0.85em; cursor: pointer; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; width: 100%;">
+                        <i class="fas fa-bolt"></i> ${overchargeBtnText}
+                    </button>
+                </div>
+            `;
+        } else if (action === "stabilize") {
+            name = game.i18n.localize("STYLISH_HUD.Utilities.Stabilize.Name");
+            icon = "hull.svg";
+            tagsHtml = `<div class="lancer-tags"><span class="lancer-tag damage-tag">${fullActionTag}</span></div>`;
+            desc = game.i18n.localize("STYLISH_HUD.Utilities.Stabilize.Desc");
+            applyButtonHtml = `
+                <div style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed rgba(255,255,255,0.15); text-align: center;">
+                    <button type="button" class="pf2e-map-btn lancer-chat-action-btn" data-action="util:stabilize" data-actor-id="${actor.id}" style="background: rgba(215,60,50,0.15); border: 1px solid #d73c32; color: #d73c32; padding: 4px 10px; font-size: 0.85em; cursor: pointer; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; width: 100%;">
+                        <i class="fas fa-wrench"></i> ${stabilizeBtnText}
+                    </button>
+                </div>
+            `;
+        }
+
+        if (!name) {
+            const keyName = action.split("-").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join("");
+            name = game.i18n.localize(`STYLISH_HUD.Basic.${keyName}.Name`) || action.toUpperCase();
+            desc = game.i18n.localize(`STYLISH_HUD.Basic.${keyName}.Desc`) || "";
+            icon = "tactics.svg";
         }
 
         const content = `
@@ -587,7 +789,7 @@ export async function useItem(actor, itemId, event = null) {
                     <span style="vertical-align:middle;">// ${name.toUpperCase()} //</span>
                 </div>
                 <div class="effect-text">
-                    ${tagsHtml}
+                    ${tagsHtml}</br>
                     ${desc}
                     ${applyButtonHtml}
                 </div>

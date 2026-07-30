@@ -2,6 +2,7 @@
 import { BaseSystemAdapter, configProps } from "../base.js";
 import { getItemTags } from "./item-tags.js";
 import { getStrikeData } from "./data-strike.js";
+import { getActionsData } from "./data-actions.js";
 import { getCoreData } from "./data-core.js";
 import { getTechData } from "./data-tech.js";
 import { getSystemData } from "./data-system.js";
@@ -109,6 +110,13 @@ export class LancerSystemAdapter extends BaseSystemAdapter {
                 useSidebar: false,
             },
             {
+                systemId: "actions",
+                label: `${game.i18n.localize("STYLISH_HUD.Tabs.Actions")}<span class="material-symbols-outlined" style="margin-left: 15px;"></span>`,
+                icon: "",
+                type: "submenu",
+                useSidebar: false,
+            },
+            {
                 systemId: "tech",
                 label: `${game.i18n.localize("STYLISH_HUD.Tabs.Tech")}<span class="material-symbols-outlined" style="margin-left: 15px;"></span>`,
                 icon: "",
@@ -167,6 +175,8 @@ export class LancerSystemAdapter extends BaseSystemAdapter {
         switch (systemId) {
             case "strike":
                 return { ...getStrikeData(actor), title: menuData.label };
+            case "actions":
+                return { ...getActionsData(actor), title: menuData.label };
             case "tech":
                 return { ...getTechData(actor), title: menuData.label };
             case "system":

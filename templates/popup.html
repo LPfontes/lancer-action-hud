@@ -16,6 +16,22 @@
         </div>
         {{/if}}
 
+        {{#if effect}}
+        <div class="la-popup-effect">{{{effect}}}</div>
+        {{/if}}
+
+        {{#if on_attack}}
+        <div class="la-popup-on-attack"><strong>{{localize "STYLISH_HUD.Weapon.OnAttack"}}:</strong> {{{on_attack}}}</div>
+        {{/if}}
+
+        {{#if on_hit}}
+        <div class="la-popup-on-hit"><strong>{{localize "STYLISH_HUD.Weapon.OnHit"}}:</strong> {{{on_hit}}}</div>
+        {{/if}}
+
+        {{#if on_crit}}
+        <div class="la-popup-on-crit"><strong>{{localize "STYLISH_HUD.Weapon.OnCrit"}}:</strong> {{{on_crit}}}</div>
+        {{/if}}
+
         {{#if description}}
         <div class="la-popup-description">{{{description}}}</div>
         {{/if}}

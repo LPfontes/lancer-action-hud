@@ -20,6 +20,7 @@
     },
     "Tabs": {
       "Weapons": "Armas",
+      "Actions": "Ações",
       "Tech": "Tecnologia",
       "Systems": "Sistemas",
       "Core": "Núcleo",
@@ -28,6 +29,11 @@
       "Utilities": "Utilitários",
       "Statuses": "Estados",
       "Stats": "Atributos"
+    },
+    "Header": {
+      "QuickActions": "// AÇÕES RÁPIDAS //",
+      "FullActions": "// AÇÕES COMPLETAS //",
+      "OtherActions": "// REAÇÕES E OUTROS //"
     },
     "Tooltip": {
       "Armor": "Armadura reduz todo o dano recebido aos PVs de uma única fonte por um valor igual à sua classificação, a menos que seja dito o contrário (como Queimadura e PA). Armadura pode reduzir o dano a 0, tem um limite de 4, e é resolvida após o status Exposto e antes da Resistência.",
@@ -91,7 +97,20 @@
       "DamageUntyped": "sem tipo",
       "RangeTooltip": "Alcance/Área: {type} de {val}",
       "RangeDefault": "alcance",
-      "StatusToggleTooltip": "Alternar o efeito de status {cond} neste token."
+      "StatusToggleTooltip": "Alternar o efeito de status {cond} neste token.",
+      "QuickAction": "Ação Rápida",
+      "FullAction": "Ação Completa",
+      "QuickTech": "Tech Rápido",
+      "FullTech": "Tech Completo",
+      "Reaction": "Reação",
+      "FreeAction": "Ação Livre",
+      "Move": "Movimento",
+      "Melee": "Corpo a Corpo",
+      "Sensors": "Sensores",
+      "Heat": "{amount} de Calor",
+      "Kinetic": "{damage} Cinético",
+      "Threat": "Ameaça {amount}",
+      "Burst": "Explosão {amount}"
     },
     "Vitals": {
       "HP": "PV",
@@ -141,27 +160,117 @@
       "StressAbbr": "ESTR"
     },
     "Basic": {
-      "Invade": {
-        "Name": "Invadir",
-        "Desc": "Faça um ataque tecnológico. Em um sucesso, o alvo sofre 2 de Calor e você escolhe uma opção de Invasão (ex: Fragmentar Sinal: Alvo fica Impedido e Lento)."
+      "Move": {
+        "Name": "Movimento",
+        "Desc": "No seu turno, personagens podem se mover um número de espaços igual à sua VELOCIDADE, além de quaisquer outras ações. Um personagem só conta como se movendo se mover 1 ou mais espaços. Personagens podem se mover para qualquer espaço adjacente, mesmo na diagonal, desde que o espaço não esteja ocupado por uma obstrução."
+      },
+      "Boost": {
+        "Name": "Impulsionar",
+        "Desc": "Quando você IMPULSIONA, se move pelo menos 1 espaço, até a sua VELOCIDADE. Isso permite que você faça um movimento extra, além do seu movimento padrão. Certos talentos e sistemas só podem ser usados ao IMPULSIONAR."
+      },
+      "Hide": {
+        "Name": "Esconder",
+        "Desc": "Quando você ESCONDE, oculta a posição do seu mecha para se reposicionar, evitar fogo inimigo, reparar ou emboscar. Para ESCONDER, você não deve estar ENGAJADO e deve estar fora da linha de visão de inimigos, ocultado por cobertura suficiente, ou invisível. Ao cumprir um desses critérios, você ganha o status ESCONDIDO (HIDDEN)."
+      },
+      "Search": {
+        "Name": "Buscar",
+        "Desc": "Quando você BUSCA, tenta identificar personagens escondidos. Escolha um personagem dentro dos seus SENSORES que você suspeita estar ESCONDIDO e faça um teste oposto de SISTEMAS contra a AGILIDADE dele. Ao ser encontrado, ele perde imediatamente o status ESCONDIDO."
+      },
+      "Prepare": {
+        "Name": "Preparar",
+        "Desc": "Quando você PREPARA, se prontifica para realizar uma ação em um momento específico ou quando uma condição for atendida. Como ação rápida, você pode PREPARAR qualquer outra ação rápida e especificar um gatilho 'Quando X, então Y'. Até o início do seu próximo turno, quando disparado, você pode realizar esta ação como reação."
+      },
+      "QuickActivation": {
+        "Name": "Ativação Rápida",
+        "Desc": "Quando você ATIVA, usa um sistema ou equipamento que requer uma ação rápida ou completa. Esses sistemas possuem as tags AÇÃO RÁPIDA ou AÇÃO COMPLETA. Você pode ativar qualquer número de vezes no turno, mas não pode ativar o mesmo sistema mais de uma vez, a menos que seja uma ação livre."
+      },
+      "FullActivation": {
+        "Name": "Ativação Completa",
+        "Desc": "Quando você ATIVA, usa um sistema ou equipamento que requer uma ação rápida ou completa. Esses sistemas possuem as tags AÇÃO RÁPIDA ou AÇÃO COMPLETA."
+      },
+      "Disengage": {
+        "Name": "Desengajar",
+        "Desc": "Quando você DESENGAJA, tenta se desconectar com segurança de uma situação perigosa ou recuar com firmeza. Até o final do seu turno atual, você ignora engajamento e seu movimento não provoca reações."
+      },
+      "SkillCheck": {
+        "Name": "Teste de Perícia",
+        "Desc": "Quando faz um TESTE DE PERÍCIA, você realiza uma atividade não coberta por outras ações, com um objetivo claro e complexidade suficiente para exigir uma rolagem (ação completa)."
+      },
+      "Ram": {
+        "Name": "Empurrar",
+        "Desc": "Quando realiza um Empurrar, faz um ataque corpo a corpo com o objetivo de derrubar ou empurrar um alvo adjacente de TAMANHO igual ou menor. Em um sucesso, o alvo é derrubado (CAÍDO / PRONE) e você pode empurrá-lo 1 espaço."
+      },
+      "QuickTech": {
+        "Name": "Tech Rápido",
+        "Desc": "Quando usa TECH RÁPIDO, realiza guerra eletrônica, contramedidas e outras ações técnicas. Cada vez que realiza esta ação, escolhe uma opção da lista TECH RÁPIDO."
+      },
+      "Scan": {
+        "Name": "Escanear",
+        "Desc": "Quando você ESCANEA, usa os sensores do mecha para realizar uma varredura profunda num inimigo ao alcance dos SENSORES e na linha de visão, obtendo estatísticas completas, informações ocultas ou dados públicos."
+      },
+      "Eject": {
+        "Name": "Ejetar",
+        "Desc": "Você pode EJETAR como ação rápida, voando 6 espaços na direção escolhida. É um sistema de uso único para emergências – deixa seu mecha IMPEDIDO (IMPAIRED) até o próximo Reparo Total."
+      },
+      "ShutDown": {
+        "Name": "Desligar",
+        "Desc": "Quando você DESLIGA, seu mecha desliga completamente e entra em repouso. O mecha limpa todo o calor e EXPOSTO, NHPs em cascata voltam ao normal, condições de ações tech (como Lock On) terminam, e ganha imunidade a ações tech, ficando ATORDOADO indefinidamente até LIGAR (BOOT UP)."
+      },
+      "FullTech": {
+        "Name": "Tech Completo",
+        "Desc": "Quando usa TECH COMPLETO, realiza duas opções de TECH RÁPIDO ou um único sistema que exige AÇÃO COMPLETA TECH."
+      },
+      "ImprovisedAttack": {
+        "Name": "Ataque Improvisado",
+        "Desc": "Quando faz um ATAQUE IMPROVISADO, ataca com a coronha de um rifle, punho ou outra arma corpo a corpo improvisada. Em um acerto contra um alvo adjacente, causa 1d6 de dano cinético."
+      },
+      "Dismount": {
+        "Name": "Desmontar",
+        "Desc": "Quando você DESMONTA, desembarca do mecha (ação completa), sendo colocado em um espaço adjacente livre."
+      },
+      "Skirmish": {
+        "Name": "Alvejar",
+        "Desc": "Quando você ALVEJA, ataca com uma única arma ao alcance. Em adição, pode atacar com uma arma AUXILIAR no mesmo encaixe. Armas SUPERPESADAS não podem ser usadas em Alvejar."
+      },
+      "Grapple": {
+        "Name": "Agarrar",
+        "Desc": "Quando você AGARRA, tenta segurar um alvo adjacente com um ataque corpo a corpo. Em um acerto: ambos ficam ENGAJADOS; nenhum pode IMPULSIONAR ou usar reações; o personagem menor fica IMOBILIZADO e se move junto com o maior."
+      },
+      "Bolster": {
+        "Name": "Reforçar",
+        "Desc": "Quando você REFORÇA, usa o processamento do mecha para aprimorar um aliado ao alcance dos SENSORES, concedendo +2 Precisão no próximo teste de perícia ou salvamento."
       },
       "LockOn": {
         "Name": "Travar Mira",
         "Desc": "Escolha um personagem ao alcance dos Sensores. Ele sofre a condição Travado em Mira. Qualquer aliado pode consumir a trava para +1 Precisão no próximo ataque."
       },
-      "Bolster": {
-        "Name": "Reforçar",
-        "Desc": "Escolha um aliado ao alcance dos Sensores. Ele recebe +2 Precisão no próximo teste de perícia ou salvamento entre agora e o final do próximo turno dele."
+      "SelfDestruct": {
+        "Name": "Autodestruição",
+        "Desc": "Quando você se AUTODESTRÓI, sobrecarrega o reator do mecha (ação rápida). No final do seu próximo turno ou dentro de 2 rodadas, o mecha explode em BURST 2 causando 4d6 de dano explosivo e destruindo o mecha."
+      },
+      "Barrage": {
+        "Name": "Barragem",
+        "Desc": "Quando realiza BARRAGEM (ação completa), ataca com duas armas ou com uma arma SUPERPESADA contra um ou diferentes alvos ao alcance."
+      },
+      "Stabilize": {
+        "Name": "Estabilizar",
+        "Desc": "Quando você ESTABILIZA, ativa protocolos de emergência para resfriar o mecha ou reparar a estrutura, além de recarregar armas com carga ou limpar condições."
+      },
+      "BootUp": {
+        "Name": "Ligar",
+        "Desc": "Você pode LIGAR um mecha que esteja pilotando como ação completa, removendo o status DESLIGADO e restaurando o mecha ao estado energizado."
       },
       "Brace": {
         "Name": "Suportar",
-        "Desc": "Acionamento: Você é atingido por um ataque e o dano foi rolado.<br><br>Efeito: Você conta como tendo Resistência a todo dano do ataque acionador e, até o final do seu turno, todos os outros ataques feitos contra você são feitos com +1 Dificuldade. Devido ao estresse, você não pode usar reações até o final do seu próximo turno. Nesse turno, você só pode usar uma ação rápida (não pode Sobrecarregar, mover-se normalmente, usar ações completas ou livres).",
-        "ShortDesc": "Acionamento: Atingido por ataque e o dano é rolado.<br>Efeito: Resistência ao ataque e +1 Dificuldade para outros ataques contra você até o fim do turno. Perde reações e só pode usar Ação Rápida no próximo turno."
+        "Desc": "Acionamento: Você é atingido por um ataque e o dano foi rolado.<br><br>Efeito: Você conta como tendo Resistência a todo dano do ataque acionador e, até o final do seu turno, todos os outros ataques feitos contra você são feitos com +1 Dificuldade."
+      },
+      "Invade": {
+        "Name": "Invadir",
+        "Desc": "Faça um ataque tecnológico contra um alvo ao alcance dos Sensores. Em um sucesso, o alvo sofre 2 de Calor e você escolhe uma opção de Invasão:<br><br><strong>Fragmentar Sinal:</strong> Você envia informações falsas, mensagens obscenas ou sinais fantasmas para o núcleo de processamento do seu alvo. Ele fica IMPEDIDO (IMPAIRED) e LENTO (SLOWED) até o final do próximo turno dele."
       },
       "Overwatch": {
         "Name": "Retaliar",
-        "Desc": "Acionamento: Um personagem hostil começa qualquer movimento (incluindo Impulsionar) dentro da Ameaça de uma das suas armas.<br><br>Efeito: Você imediatamente usa uma arma que acionou Retaliar para alvejar o personagem hostil como uma reação, antes dele se mover.",
-        "ShortDesc": "Acionamento: Um inimigo começa movimento dentro da Ameaça de uma de suas armas.<br>Efeito: Use a arma para alvejar o inimigo antes dele se mover."
+        "Desc": "Acionamento: Um personagem hostil começa qualquer movimento (incluindo Impulsionar) dentro da Ameaça de uma das suas armas.<br><br>Efeito: Você imediatamente usa uma arma que acionou Retaliar para alvejar o personagem hostil como uma reação, antes dele se mover."
       }
     },
     "Keybinding": {
@@ -321,6 +430,27 @@
       "cover_soft": "Possui ou concede Cobertura Leve (+1 de Dificuldade para ataques recebidos).",
       "flying": "O token está em voo.",
       "burn": "Possui dano persistente de Combustão a ser sofrido no início de cada turno."
+    },
+    "ChatButtons": {
+      "ApplyHeat": "Aplicar {amount} de Calor no Alvo",
+      "ApplyFragmentSignal": "Aplicar Fragment Signal (Impaired & Slowed)",
+      "ApplyLockOn": "Aplicar Lock On no Alvo",
+      "ApplyBolster": "Aplicar Bolster no Alvo",
+      "ApplyBrace": "Aplicar Brace em Si",
+      "RollImprovisedAttack": "Rolar Ataque Improvisado",
+      "ApplyHidden": "Aplicar Status Escondido (Hidden) em Si",
+      "RollSearch": "Rolar Teste de Sistemas",
+      "RollRam": "Rolar Empurrar",
+      "ApplyProne": "Aplicar Caído (Prone) no Alvo",
+      "RollGrapple": "Rolar Agarrar",
+      "ApplyGrapple": "Aplicar Agarrado e Imobilizado",
+      "ShutDown": "Desligar Mecha (Shut Down)",
+      "Overcharge": "Executar Sobrecarga (Overcharge)",
+      "Stabilize": "Executar Estabilizar (Stabilize)"
+    },
+    "Status": {
+      "Impaired": "Impaired",
+      "Slowed": "Slowed"
     }
   }
 }

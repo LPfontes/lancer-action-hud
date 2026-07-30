@@ -33,6 +33,19 @@ export function registerSocketListeners() {
                         await effect.delete();
                     }
                 }
+            } else if (data.type === "applyHeat") {
+                const { actorUuid, heatAmount } = data;
+                if (!actorUuid || typeof heatAmount !== "number") return;
+                const doc = await fromUuid(actorUuid);
+                const targetActor = doc?.actor || (doc instanceof Actor ? doc : null);
+                if (targetActor) {
+                    const heatData = foundry.utils.getProperty(targetActor, "system.heat");
+                    if (heatData !== undefined) {
+                        const currentHeat = Number(heatData.value ?? 0);
+                        const newHeat = currentHeat + heatAmount;
+                        await targetActor.update({ "system.heat.value": newHeat });
+                    }
+                }
             }
         } catch (err) {
             console.error("Lancer Standalone HUD | Error in GM socket handler:", err);
@@ -122,3 +135,55 @@ export async function safeDeleteEffect(actor, effect) {
         ui.notifications.warn(game.i18n.localize("STYLISH_HUD.Warning.PermissionDeniedGM") || "You do not have permission to modify status effects on this token without an active GM.");
     }
 }
+
+/**
+ * Safely applies heat to an actor, delegating to GM via socket if permission is lacking.
+ * @param {Actor} actor 
+ * @param {number} heatAmount 
+ */
+export async function safeApplyHeat(actor, heatAmount) {
+    if (!actor || typeof heatAmount !== "number") return;
+
+    const heatData = foundry.utils.getProperty(actor, "system.heat");
+    if (heatData === undefined) {
+        ui.notifications.warn(`${actor.name} não possui indicador de Calor.`);
+        return;
+    }
+
+    const isUnlinkedTokenActor = actor.isToken || Boolean(actor.token) || actor.constructor.name === "ActorDelta" || actor.parent?.constructor?.name === "TokenDocument";
+    const canModifyDirectly = game.user.isGM || (actor.canUserModify(game.user, "update") && !isUnlinkedTokenActor);
+
+    if (canModifyDirectly) {
+        try {
+            const currentHeat = Number(heatData.value ?? 0);
+            const newHeat = currentHeat + heatAmount;
+            await actor.update({ "system.heat.value": newHeat });
+            return;
+        } catch (err) {
+            console.warn("Lancer Standalone HUD | Direct heat update failed, delegating to GM socket:", err);
+        }
+    }
+
+    const hasActiveGM = game.users.some(u => u.isGM && u.active);
+    if (hasActiveGM) {
+        const actorUuid = actor.uuid || (actor.token ? actor.token.uuid : null);
+        if (actorUuid) {
+            game.socket.emit("module.lancer-action-hud", {
+                type: "applyHeat",
+                actorUuid: actorUuid,
+                heatAmount: heatAmount
+            });
+            return;
+        }
+    }
+
+    try {
+        const currentHeat = Number(heatData.value ?? 0);
+        const newHeat = currentHeat + heatAmount;
+        await actor.update({ "system.heat.value": newHeat });
+    } catch (err) {
+        console.error("Lancer Standalone HUD | Failed to apply heat without active GM:", err);
+        ui.notifications.warn(game.i18n.localize("STYLISH_HUD.Warning.PermissionDeniedGM") || "Você não tem permissão para alterar o calor deste token sem um Mestre ativo.");
+    }
+}
+

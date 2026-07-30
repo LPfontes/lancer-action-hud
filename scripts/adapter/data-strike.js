@@ -250,5 +250,48 @@ export function getStrikeData(actor) {
         items.push(...weaponList);
     }
 
+    // Add Improvised Attack basic action
+    const improvisedTooltip = `
+        <div class="la-tooltip__content">
+            Clique Esquerdo: Rolar Ataque Improvisado<br>
+            Clique Direito: Card no Chat
+        </div>
+    `;
+
+    const improvisedActionButtons = `
+        <button type="button" class="roll-damage" 
+            data-tooltip="${improvisedTooltip.replace(/"/g, '&quot;')}" 
+            data-tooltip-class="clipped-bot la-tooltip la-gmsdark" 
+            data-tooltip-direction="UP" 
+            aria-label="Rolar" 
+            onclick="event.stopPropagation(); StylishAction.useItem('attack:improvised', event)" 
+            oncontextmenu="event.preventDefault(); event.stopPropagation(); StylishAction.useItem('basic:improvised', event)">
+            <span class="range">
+                <span class="la-number-weapon__span">1</span> 
+                <i class="cci cci-melee"></i>
+            </span>
+            <span class="damage">
+                <span class="la-number-weapon__span">1d6</span>
+                <i class="cci cci-kinetic"></i>
+            </span>
+            <i style=""></i>
+        </button>
+    `;
+
+    const improvisedItem = {
+        id: "basic-improvised",
+        name: `<span style="font-weight:bold; vertical-align:middle;">${game.i18n.localize("STYLISH_HUD.Basic.ImprovisedAttack.Name") || "Ataque Improvisado"}</span>`,
+        img: "systems/lancer/assets/icons/skills/brawler.svg",
+        cost: improvisedActionButtons,
+        tags: [
+            { label: "1d6 Kinetic", class: "tag-damage" },
+            { label: "Threat 1", class: "tag-range" }
+        ],
+        description: game.i18n.localize("STYLISH_HUD.Basic.ImprovisedAttack.Desc"),
+        isAction: true
+    };
+
+    items.unshift(improvisedItem);
+
     return { items };
 }

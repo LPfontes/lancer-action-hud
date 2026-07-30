@@ -237,6 +237,7 @@ export class LancerActionHUD extends Application {
 
         const tabLabelsMap = {
             "strike": "STYLISH_HUD.Tabs.Weapons",
+            "actions": "STYLISH_HUD.Tabs.Actions",
             "tech": "STYLISH_HUD.Tabs.Tech",
             "system": "STYLISH_HUD.Tabs.Systems",
             "talent": "STYLISH_HUD.Tabs.Talents",
@@ -527,11 +528,26 @@ export class LancerActionHUD extends Application {
             }
 
             if (sourceItem?.sheet) {
+                const profileIndex = sourceItem.system?.selected_profile_index ?? 0;
+                const activeProfile = sourceItem.system?.profiles?.[profileIndex] || sourceItem.system || {};
+
+                const effectText = activeProfile.effect || sourceItem.system?.effect || "";
+                const descText = sourceItem.system?.description || "";
+                const hasSeparateEffect = effectText && descText && effectText !== descText;
+
+                const onAttack = activeProfile.on_attack || sourceItem.system?.on_attack || "";
+                const onHit = activeProfile.on_hit || sourceItem.system?.on_hit || "";
+                const onCrit = activeProfile.on_crit || sourceItem.system?.on_crit || "";
+
                 const itemData = {
                     id: sourceItem.id,
                     name: sourceItem.name,
                     img: sourceItem.img,
-                    description: sourceItem.system?.description || sourceItem.system?.effect || descHtml,
+                    effect: hasSeparateEffect ? effectText : (!descText ? effectText : ""),
+                    description: descText || (!hasSeparateEffect ? "" : descHtml),
+                    on_attack: onAttack,
+                    on_hit: onHit,
+                    on_crit: onCrit,
                     tags: tags,
                     cost: costHtml
                 };

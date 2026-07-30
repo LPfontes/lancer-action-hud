@@ -50,7 +50,7 @@ export function getTechData(actor) {
                 { label: "2 Heat", class: "tag-damage" },
                 { label: game.i18n.localize("STYLISH_HUD.Stats.Sensors") || "Sensors", class: "tag-range" }
             ],
-            description: game.i18n.localize("STYLISH_HUD.Stats.Invade.Desc"),
+            description: game.i18n.localize("STYLISH_HUD.Basic.Invade.Desc"),
             isAction: true
         },
         {

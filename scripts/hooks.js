@@ -2,7 +2,7 @@
 import { getActiveHUD, refreshHUD, HUDState, isSuperheavyWeapon } from "./utils.js";
 import { LancerSystemAdapter } from "./adapter/lancer-adapter.js";
 import { LancerDeployableHUD } from "./hud/lancer-deployable-hud.js";
-import { safeToggleStatusEffect } from "./socket.js";
+import { safeToggleStatusEffect, safeApplyHeat } from "./socket.js";
 
 // Control Token Selection Hook
 Hooks.on("controlToken", (token, controlled) => {
@@ -36,7 +36,7 @@ Hooks.on("deleteItem", (item) => {
 
 // Ouve renderização de cards no Chat para capturar cliques nos botões
 Hooks.on("renderChatMessage", (message, html, data) => {
-    html.find(".lancer-chat-action-btn").click(async (event) => {
+    html.on("click", ".lancer-chat-action-btn", async (event) => {
         event.preventDefault();
         event.stopPropagation();
 
@@ -53,15 +53,17 @@ Hooks.on("renderChatMessage", (message, html, data) => {
         }
     });
 
-    html.find(".lancer-chat-apply-status-btn").click(async (event) => {
+    html.on("click", ".lancer-chat-apply-status-btn", async (event) => {
         event.preventDefault();
         event.stopPropagation();
 
         const btn = $(event.currentTarget);
-        const statusId = btn.data("status-id");
+        const statusIdStr = btn.data("status-id");
         const targetsStr = btn.data("targets");
 
-        if (!statusId) return;
+        if (!statusIdStr) return;
+
+        const statusIds = String(statusIdStr).split(";").flatMap(s => s.split(",")).map(s => s.trim()).filter(Boolean);
 
         let targetUuids = [];
         if (targetsStr) {
@@ -85,12 +87,102 @@ Hooks.on("renderChatMessage", (message, html, data) => {
             const doc = await fromUuid(uuid);
             const targetActor = doc?.actor || (doc instanceof Actor ? doc : null);
             if (targetActor) {
-                await safeToggleStatusEffect(targetActor, statusId, { active: true });
+                for (const statusId of statusIds) {
+                    await safeToggleStatusEffect(targetActor, statusId, { active: true });
+                }
                 count++;
             }
         }
-        ui.notifications.info(`Efeito '${statusId}' processado em ${count} token(s).`);
+        ui.notifications.info(`Efeito(s) '${statusIds.join(", ")}' processado(s) em ${count} token(s).`);
     });
+
+    html.on("click", ".lancer-chat-apply-heat-btn", async (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+
+        const btn = $(event.currentTarget);
+        const heatAmount = parseInt(btn.data("heat")) || 2;
+        const targetsStr = btn.data("targets");
+
+        let targetUuids = [];
+        if (targetsStr) {
+            targetUuids = String(targetsStr).split(",").filter(Boolean);
+        }
+
+        if (targetUuids.length === 0) {
+            const currentTargets = Array.from(game.user.targets);
+            if (currentTargets.length > 0) {
+                targetUuids = currentTargets.map(t => t.actor?.uuid || t.document?.uuid).filter(Boolean);
+            }
+        }
+
+        if (targetUuids.length === 0) {
+            ui.notifications.warn(game.i18n.localize("STYLISH_HUD.Warning.NoTarget") || "Selecione pelo menos um token como alvo.");
+            return;
+        }
+
+        let count = 0;
+        for (const uuid of targetUuids) {
+            const doc = await fromUuid(uuid);
+            const targetActor = doc?.actor || (doc instanceof Actor ? doc : null);
+            if (targetActor) {
+                await safeApplyHeat(targetActor, heatAmount);
+                count++;
+            }
+        }
+        if (count > 0) {
+            ui.notifications.info(`Aplicado ${heatAmount} de Calor em ${count} token(s).`);
+        }
+    });
+
+    // Injeta os botões de calor e Fragment Signal em cards de Tech Attack / Invade sem botões existentes
+    const contentText = (message.content || "").toLowerCase();
+    const headerText = html.find(".lancer-header, .card-header, header").text().toLowerCase();
+    const flagsLancer = message.flags?.lancer || {};
+
+    const isTechOrInvadeCard = 
+        flagsLancer.flow === "TechAttackFlow" || 
+        flagsLancer.stat === "tech_attack" ||
+        String(flagsLancer.title || "").toLowerCase().includes("invade") ||
+        String(flagsLancer.title || "").toLowerCase().includes("tech") ||
+        String(flagsLancer.item?.name || "").toLowerCase().includes("invade") ||
+        String(flagsLancer.item?.name || "").toLowerCase().includes("tech") ||
+        contentText.includes("tech_attack") ||
+        contentText.includes("tech attack") ||
+        contentText.includes("invade") || 
+        contentText.includes("invadir") ||
+        headerText.includes("tech_attack") ||
+        headerText.includes("tech attack") ||
+        headerText.includes("invade");
+
+    if (isTechOrInvadeCard && html.find(".lancer-hud-injected-buttons, .lancer-chat-apply-heat-btn").length === 0) {
+        const targetUuids = Array.from(game.user.targets).map(t => t.actor?.uuid || t.document?.uuid).filter(Boolean);
+        const injectedButtonsHtml = `
+            <div class="lancer-hud-injected-buttons" style="margin-top: 8px; padding-top: 6px; border-top: 1px dashed rgba(255,255,255,0.15); display: flex; flex-direction: column; gap: 4px;">
+                <button type="button" class="pf2e-map-btn lancer-chat-apply-heat-btn" data-heat="2" data-targets="${targetUuids.join(',')}" style="background: rgba(255,100,0,0.15); border: 1px solid #ff6400; color: #ff9d00; padding: 4px 8px; font-size: 0.8em; cursor: pointer; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; width: 100%;">
+                    <i class="fas fa-fire"></i> Aplicar 2 de Calor no Alvo
+                </button>
+                <div style="font-size: 0.75em; font-weight: bold; color: #58b434; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px;">// FRAGMENT SIGNAL //</div>
+                <button type="button" class="pf2e-map-btn lancer-chat-apply-status-btn" data-status-id="impaired,slowed" data-targets="${targetUuids.join(',')}" style="background: rgba(88,180,52,0.15); border: 1px solid #58b434; color: #58b434; padding: 4px 8px; font-size: 0.8em; cursor: pointer; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; width: 100%;">
+                    <i class="fas fa-bolt"></i> Aplicar Fragment Signal (Impaired & Slowed)
+                </button>
+                <div style="display: flex; gap: 4px; width: 100%;">
+                    <button type="button" class="pf2e-map-btn lancer-chat-apply-status-btn" data-status-id="impaired" data-targets="${targetUuids.join(',')}" style="background: rgba(88,180,52,0.1); border: 1px solid rgba(88,180,52,0.5); color: #58b434; padding: 3px 6px; font-size: 0.75em; cursor: pointer; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; gap: 4px; flex: 1;">
+                        <i class="fas fa-biohazard"></i> Impaired
+                    </button>
+                    <button type="button" class="pf2e-map-btn lancer-chat-apply-status-btn" data-status-id="slowed" data-targets="${targetUuids.join(',')}" style="background: rgba(88,180,52,0.1); border: 1px solid rgba(88,180,52,0.5); color: #58b434; padding: 3px 6px; font-size: 0.75em; cursor: pointer; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; gap: 4px; flex: 1;">
+                        <i class="fas fa-hourglass-half"></i> Slowed
+                    </button>
+                </div>
+            </div>
+        `;
+        const cardBody = html.find(".card, .effect-text, .card-content, .chat-card, .message-content").first();
+        if (cardBody.length > 0) {
+            cardBody.append(injectedButtonsHtml);
+        } else {
+            html.append(injectedButtonsHtml);
+        }
+    }
 });
 
 // Canvas Ready Hook
