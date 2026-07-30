@@ -122,6 +122,7 @@
       "PermissionDeniedGM": "Você não tem permissão para alterar efeitos de status neste token sem um Mestre (GM) ativo."
     },
     "Weapon": {
+      "Unloaded": "DESCARREGADA",
       "OnAttack": "Ao Atacar",
       "OnHit": "Ao Acertar",
       "OnCrit": "No Crítico",
@@ -451,6 +452,11 @@
     "Status": {
       "Impaired": "Impaired",
       "Slowed": "Slowed"
+    },
+    "Button": {
+      "Activate": "ATIVAR",
+      "Active": "ATIVO",
+      "Passive": "PASSIVO"
     }
   }
 }

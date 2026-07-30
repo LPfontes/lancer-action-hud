@@ -16,12 +16,16 @@ export function getCoreData(actor) {
         const corePassiveName = core.passive_name || "Passive";
         const isCoreActive = actor.system?.core_active;
 
+        const activateBtnText = (game.i18n.localize("STYLISH_HUD.Button.Activate") || "ATIVAR").toUpperCase();
+        const activeLabel = game.i18n.localize("STYLISH_HUD.Button.Active") || "ATIVO";
+        const passiveLabel = game.i18n.localize("STYLISH_HUD.Button.Passive") || "PASSIVO";
+
         // Active Power
         items.push({
             id: `core-active-${frame.id}`,
-            name: `<span style="font-weight:bold; vertical-align:middle; ${isCoreActive ? 'color: var(--l-accent); text-shadow: 0 0 5px var(--l-accent);' : ''}">[ACTIVE] ${coreActiveName}</span>`,
+            name: `<span style="font-weight:bold; vertical-align:middle; ${isCoreActive ? 'color: var(--l-accent); text-shadow: 0 0 5px var(--l-accent);' : ''}">[${activeLabel}] ${coreActiveName}</span>`,
             img: frame.img || "systems/lancer/assets/icons/skills/nuclear_fire.svg",
-            cost: `<button type="button" class="pf2e-map-btn" onclick="event.stopPropagation(); StylishAction.useItem('core-active:${frame.id}')">ACTIVATE</button>`,
+            cost: `<button type="button" class="pf2e-map-btn" style="background:rgba(88,180,52,0.05); border-color:rgba(88,180,52,0.25); color:#58b434;" onclick="event.stopPropagation(); StylishAction.useItem('core-active:${frame.id}')">${activateBtnText}</button>`,
             description: core.active_effect || ""
         });
 
@@ -29,7 +33,7 @@ export function getCoreData(actor) {
         if (core.passive_name) {
             items.push({
                 id: `core-passive-${frame.id}`,
-                name: `<span style="font-weight:bold; vertical-align:middle;">[PASSIVE] ${corePassiveName}</span>`,
+                name: `<span style="font-weight:bold; vertical-align:middle;">[${passiveLabel}] ${corePassiveName}</span>`,
                 img: "systems/lancer/assets/icons/skills/tactics.svg",
                 cost: "",
                 description: core.passive_effect || ""

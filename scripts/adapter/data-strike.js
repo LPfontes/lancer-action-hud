@@ -10,16 +10,21 @@ export function getStrikeData(actor) {
     const items = [];
     if (!actor) return { items };
 
-    // Build map of weapons to their mounts
+    // Build map of weapons to their mounts & loaded status from system.loadout.weapon_mounts
     const weaponMountMap = {};
+    const weaponLoadedMap = {};
     if (actor.system.loadout?.weapon_mounts) {
         actor.system.loadout.weapon_mounts.forEach((mount, mountIdx) => {
             const mountType = mount.type || `Mount ${mountIdx + 1}`;
             if (mount.slots) {
                 mount.slots.forEach(slot => {
-                    const weaponId = slot.weapon?.id || slot.weapon?._id || slot.weapon?.value?.id;
+                    const weaponObj = slot.weapon?.value || slot.weapon;
+                    const weaponId = slot.weapon?.id || slot.weapon?._id || slot.weapon?.value?.id || slot.weapon?.value?._id || weaponObj?.id || weaponObj?._id;
                     if (weaponId) {
                         weaponMountMap[weaponId] = mountType;
+                    }
+                    if (weaponObj?.system?.loaded !== undefined) {
+                        if (weaponId) weaponLoadedMap[weaponId] = weaponObj.system.loaded;
                     }
                 });
             }
@@ -188,19 +193,37 @@ export function getStrikeData(actor) {
         }
         const fullDescription = descParts.join("");
 
+        const itemTagsList = getItemTags(w);
+        const isLoadingWeapon = w.system?.loading === true || w.system?.loading_tag === true || itemTagsList.some(t => {
+            const tagStr = (t.id || t.name || t.label || "").toLowerCase();
+            return tagStr.includes("loading") || tagStr.includes("recarga") || tagStr.includes("tg_loading");
+        });
+
+        const isLoaded = isLoadingWeapon
+            ? (w.system?.loaded !== undefined 
+                ? w.system.loaded 
+                : (weaponLoadedMap[w.id] !== undefined ? weaponLoadedMap[w.id] : true))
+            : true;
+
+        const unloadedText = game.i18n.localize("STYLISH_HUD.Weapon.Unloaded") || "DESCARREGADA";
+        const unloadedLabel = (isLoadingWeapon && isLoaded === false) 
+            ? `<span style="font-family:'Orbitron'; font-size:0.85em; color:#ff9d00; margin-left:8px; font-weight:bold;">[${unloadedText}]</span>` 
+            : "";
+
         const isDestroyed = w.system?.destroyed;
         const destroyedLabel = isDestroyed ? `<span style="font-family:'Orbitron'; font-size:0.85em; color:#ff3333; margin-left:8px; font-weight:bold;">[DESTRUÍDO]</span>` : "";
         const nameStyle = isDestroyed ? "font-weight:bold; vertical-align:middle; text-decoration:line-through; opacity:0.6;" : "font-weight:bold; vertical-align:middle;";
 
         const weaponItem = {
             id: w.id,
-            name: `<span style="${nameStyle}">${w.name}</span>${usesLabel}${destroyedLabel}`,
+            name: `<span style="${nameStyle}">${w.name}</span>${usesLabel}${unloadedLabel}${destroyedLabel}`,
             img: w.img || "systems/lancer/assets/icons/generic_item.svg",
             cost: actionButtons,
-            tags: getItemTags(w),
+            tags: itemTagsList,
             description: fullDescription,
             canDestroy: true,
-            isDestroyed: isDestroyed
+            isDestroyed: isDestroyed,
+            isLoaded: isLoaded
         };
 
         const mountLabel = weaponMountMap[w.id] || "other";
@@ -278,14 +301,20 @@ export function getStrikeData(actor) {
         </button>
     `;
 
+    const tf = (key, data, fallback) => game.i18n.format(`STYLISH_HUD.Tags.${key}`, data) || fallback;
+    const fullActionLabel = game.i18n.localize("STYLISH_HUD.Tags.FullAction") || "Ação Completa";
+    const kineticTag = tf("Kinetic", { damage: "1d6" }, "1d6 Cinético");
+    const threatTag = tf("Threat", { amount: 1 }, "Ameaça 1");
+
     const improvisedItem = {
         id: "basic-improvised",
         name: `<span style="font-weight:bold; vertical-align:middle;">${game.i18n.localize("STYLISH_HUD.Basic.ImprovisedAttack.Name") || "Ataque Improvisado"}</span>`,
         img: "systems/lancer/assets/icons/skills/brawler.svg",
         cost: improvisedActionButtons,
         tags: [
-            { label: "1d6 Kinetic", class: "tag-damage" },
-            { label: "Threat 1", class: "tag-range" }
+            { label: fullActionLabel, class: "tag-damage" },
+            { label: kineticTag, class: "tag-damage" },
+            { label: threatTag, class: "tag-range" }
         ],
         description: game.i18n.localize("STYLISH_HUD.Basic.ImprovisedAttack.Desc"),
         isAction: true
