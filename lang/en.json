@@ -311,7 +311,19 @@
     "Button": {
       "Activate": "ACTIVATE",
       "Active": "ACTIVE",
-      "Passive": "PASSIVE"
+      "Passive": "PASSIVE",
+      "PrototypeToken": "Prototype Token"
+    },
+    "Spotter": {
+      "ScanTitle": "Spotter — Target Analysis",
+      "HP": "HP",
+      "Armor": "Armor",
+      "Evasion": "Evasion",
+      "EDefense": "E-Defense",
+      "Speed": "Speed",
+      "Hase": "Mech Skills (HASE)",
+      "NoteTitle": "Spotter Talent Note",
+      "NoteDesc": "If you haven't moved and took the Lock On action this turn, you can Lock On once more at the end of your turn as a Free Action."
     }
   }
 }

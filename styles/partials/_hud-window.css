@@ -7,7 +7,7 @@
   border: 1px solid var(--l-accent) !important;
   border-radius: 0 !important;
   box-shadow: 0 0 30px rgba(128, 41, 50, 0.35), 0 8px 32px rgba(0, 0, 0, 0.8) !important;
-  
+
   overflow: visible !important;
   width: fit-content !important;
 }
@@ -25,7 +25,7 @@
 }
 
 #lancer-action-hud .window-title {
-  
+
   font-size: 0.85em !important;
   font-weight: 500 !important;
   color: #ffffff !important;
@@ -35,8 +35,8 @@
 }
 
 #lancer-action-hud .header-button {
-  display: block !important; 
-  color: rgba(255,255,255,0.7) !important;
+  display: block !important;
+  color: rgba(255, 255, 255, 0.7) !important;
   border: none !important;
   background: transparent !important;
   font-size: 0.85em !important;
@@ -120,7 +120,7 @@
 /* 1. Active Actor Diagnostic Panel (Rightmost) */
 .hud-actor-panel {
   pointer-events: auto !important;
-  
+
   background: var(--l-bg-dark) !important;
   border: 1px solid var(--l-border) !important;
   border-radius: 0px !important;
@@ -181,6 +181,7 @@
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
+  height: 60px;
 }
 
 .hud-diamond-portrait {
@@ -207,7 +208,7 @@
   display: flex !important;
   flex-direction: column !important;
   align-items: center !important;
-  
+
   flex: 1 !important;
   cursor: help !important;
 }

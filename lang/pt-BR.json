@@ -456,7 +456,19 @@
     "Button": {
       "Activate": "ATIVAR",
       "Active": "ATIVO",
-      "Passive": "PASSIVO"
+      "Passive": "PASSIVO",
+      "PrototypeToken": "Protótipo de Token"
+    },
+    "Spotter": {
+      "ScanTitle": "Observador — Análise de Alvo",
+      "HP": "PV",
+      "Armor": "Armadura",
+      "Evasion": "Evasão",
+      "EDefense": "Defesa-E",
+      "Speed": "Velocidade",
+      "Hase": "Perícias de Mecha (HASE)",
+      "NoteTitle": "Observador (Spotter)",
+      "NoteDesc": "Se você não se moveu e fez Travar Mira neste turno, pode Travar Mira novamente no final do turno como Ação Livre."
     }
   }
 }

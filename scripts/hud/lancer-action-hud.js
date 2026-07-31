@@ -159,6 +159,33 @@ export class LancerActionHUD extends Application {
                 this.toggleHUD();
             }
         });
+        const protoTokenLabel = game.i18n.localize("STYLISH_HUD.Button.PrototypeToken") || "Protótipo de Token";
+        buttons.unshift({
+            label: protoTokenLabel,
+            class: "configure-token",
+            icon: "fa-solid fa-circle-user",
+            onclick: (ev) => {
+                ev.preventDefault();
+                const actor = this.activeToken?.actor;
+                if (!actor) {
+                    ui.notifications.warn(game.i18n.localize("STYLISH_HUD.Warning.NoTarget") || "No active token/actor selected.");
+                    return;
+                }
+                const tokenSheet = this.activeToken?.sheet || this.activeToken?.document?.sheet;
+                if (tokenSheet) {
+                    tokenSheet.render(true);
+                } else if (actor.prototypeToken?.sheet) {
+                    actor.prototypeToken.sheet.render(true);
+                } else if (typeof TokenConfig !== "undefined") {
+                    const doc = (actor.prototypeToken instanceof foundry.abstract.Document)
+                        ? actor.prototypeToken
+                        : actor;
+                    new TokenConfig(doc, { configureDefault: true }).render(true);
+                } else {
+                    actor.sheet?.render(true);
+                }
+            }
+        });
         return buttons;
     }
 

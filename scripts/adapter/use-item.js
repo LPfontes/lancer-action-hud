@@ -622,11 +622,79 @@ export async function useItem(actor, itemId, event = null) {
             icon = "spotter.svg";
             tagsHtml = `<div class="lancer-tags"><span class="lancer-tag range-tag">${sensorsTag}</span></div>`;
             desc = game.i18n.localize("STYLISH_HUD.Basic.LockOn.Desc");
+
+            let spotterScanHtml = "";
+            if (targets.size > 0) {
+                for (let target of targets) {
+                    if (!target.actor) continue;
+                    const sys = target.actor.system || {};
+
+                    const hpVal = sys.hp?.value ?? sys.hp ?? "N/A";
+                    const hpMax = sys.hp?.max ?? "N/A";
+                    const hpDisplay = hpMax !== "N/A" ? `${hpVal} / ${hpMax}` : `${hpVal}`;
+
+                    const armor = sys.armor ?? 0;
+                    const speed = sys.speed ?? 0;
+                    const evasion = sys.evasion ?? 0;
+                    const edef = sys.edef ?? 0;
+
+                    const hull = sys.hull ?? sys.hase?.hull ?? 0;
+                    const agi = sys.agi ?? sys.hase?.agi ?? 0;
+                    const sysStat = sys.sys ?? sys.hase?.sys ?? 0;
+                    const eng = sys.eng ?? sys.hase?.eng ?? 0;
+
+                    const titleScan = game.i18n.localize("STYLISH_HUD.Spotter.ScanTitle") || "Observador — Análise de Alvo";
+                    const labelHp = game.i18n.localize("STYLISH_HUD.Spotter.HP") || "PV";
+                    const labelArmor = game.i18n.localize("STYLISH_HUD.Spotter.Armor") || "Armadura";
+                    const labelEvasion = game.i18n.localize("STYLISH_HUD.Spotter.Evasion") || "Evasão";
+                    const labelEdef = game.i18n.localize("STYLISH_HUD.Spotter.EDefense") || "Defesa-E";
+                    const labelSpeed = game.i18n.localize("STYLISH_HUD.Spotter.Speed") || "Velocidade";
+                    const labelHase = game.i18n.localize("STYLISH_HUD.Spotter.Hase") || "Perícias de Mecha (HASE)";
+
+                    spotterScanHtml += `
+                        <div style="margin-top: 8px; border: 1px solid #cc3333; background: #161616; color: #eeeeee; padding: 8px; border-radius: 4px; font-family: monospace; text-align: left;">
+                            <div style="font-weight: bold; color: #ff5555; border-bottom: 1px solid rgba(255,255,255,0.15); padding-bottom: 3px; margin-bottom: 6px; font-size: 0.95em;">
+                                ${titleScan}: ${target.name}
+                            </div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; font-size: 0.85em;">
+                                <div><strong>${labelHp}:</strong> ${hpDisplay}</div>
+                                <div><strong>${labelArmor}:</strong> ${armor}</div>
+                                <div><strong>${labelEvasion}:</strong> ${evasion}</div>
+                                <div><strong>${labelEdef}:</strong> ${edef}</div>
+                                <div><strong>${labelSpeed}:</strong> ${speed}</div>
+                            </div>
+                            <div style="margin-top: 6px; padding-top: 4px; border-top: 1px dashed rgba(255,255,255,0.15); font-size: 1em; color: #cccccc;">
+                                <strong>${labelHase}:</strong><br/>
+                                <span>Hull: +${hull} | Agi: +${agi} | Sys: +${sysStat} | Eng: +${eng}</span>
+                            </div>
+                        </div>`;
+                }
+
+                let pilotActor = actor;
+                if (actor.type === "mech") {
+                    pilotActor = actor.system.pilot?.value || (actor.system.pilot?.id ? game.actors.get(actor.system.pilot.id) : null) || actor;
+                }
+                const hasSpotter = pilotActor?.items?.some(i =>
+                    i.type === "talent" && (
+                        i.name?.toLowerCase().includes("spotter") ||
+                        i.name?.toLowerCase().includes("observador")
+                    )
+                );
+
+                const noteTitle = game.i18n.localize("STYLISH_HUD.Spotter.NoteTitle") || "Observador (Spotter)";
+                const noteDesc = game.i18n.localize("STYLISH_HUD.Spotter.NoteDesc") || "Se você não se moveu e fez Travar Mira neste turno, pode Travar Mira novamente no final do turno como Ação Livre.";
+                spotterScanHtml += `
+                    <div style="margin-top: 6px; padding: 5px 7px; background: rgba(255,170,0,0.12); border-left: 3px solid #ffaa00; font-size: 1em; color: #ffddaa; text-align: left;">
+                        💡 <strong>${noteTitle}:</strong> ${noteDesc}
+                    </div>`;
+            }
+
             applyButtonHtml = `
                 <div style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed rgba(255,255,255,0.15); text-align: center;">
-                    <button type="button" class="pf2e-map-btn lancer-chat-apply-status-btn" data-status-id="lockon" data-targets="${targetUuids.join(',')}" style="background: rgba(88,180,52,0.15); border: 1px solid #58b434; color: #58b434; padding: 4px 10px; font-size: 0.85em; cursor: pointer; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; width: 100%;">
+                    <button type="button" class="pf2e-map-btn lancer-chat-apply-status-btn" data-status-id="lockon" data-targets="${targetUuids.join(',')}" style="background: rgba(88,180,52,0.15); border: 1px solid #58b434; color: #58b434; padding: 4px 10px; font-size: 1em; cursor: pointer; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; width: 100%;">
                         <i class="fas fa-crosshairs"></i> ${applyLockOnBtnText}
                     </button>
+                    ${spotterScanHtml}
                 </div>
             `;
         } else if (action === "bolster") {
