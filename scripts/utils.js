@@ -24,10 +24,16 @@ export function stripHtml(html) {
 export function getActiveHUD() {
     const controlledTokens = canvas.tokens?.controlled || [];
     const ownedToken = controlledTokens.find(t => t.actor && (t.actor.isOwner || game.user.isGM));
-    if (ownedToken && ownedToken.actor.type === "deployable") {
-        return { instance: HUDState.deployableHUD, token: ownedToken, isDeployable: true };
+    if (ownedToken) {
+        if (ownedToken.actor.type === "deployable") {
+            return { instance: HUDState.deployableHUD, token: ownedToken, isDeployable: true };
+        }
+        return { instance: HUDState.lancerHUD, token: ownedToken, isDeployable: false };
     }
-    return { instance: HUDState.lancerHUD, token: ownedToken, isDeployable: false };
+    if (HUDState.deployableHUD?.activeToken) {
+        return { instance: HUDState.deployableHUD, token: HUDState.deployableHUD.activeToken, isDeployable: true };
+    }
+    return { instance: HUDState.lancerHUD, token: HUDState.lancerHUD?.activeToken, isDeployable: false };
 }
 
 /**

@@ -5,9 +5,23 @@ import { LancerDeployableHUD } from "./hud/lancer-deployable-hud.js";
 import { safeToggleStatusEffect, safeApplyHeat } from "./socket.js";
 
 // Control Token Selection Hook
+// A abertura do HUD é feita manualmente pela tecla Z (keybinding "toggleHUD").
+// Aqui apenas fechamos o HUD quando nenhum token está selecionado.
 Hooks.on("controlToken", (token, controlled) => {
     setTimeout(() => {
-        refreshHUD();
+        const controlled = canvas.tokens?.controlled || [];
+        if (controlled.length === 0) {
+            // Nenhum token selecionado: fecha o HUD
+            const { instance } = getActiveHUD();
+            if (instance && instance.activeToken) {
+                instance.activeToken = null;
+                instance.close();
+            }
+            if (HUDState.deployableHUD && HUDState.deployableHUD.activeToken) {
+                HUDState.deployableHUD.activeToken = null;
+                HUDState.deployableHUD.close();
+            }
+        }
     }, 50);
 });
 
@@ -322,15 +336,42 @@ Hooks.once("init", () => {
         hint: "STYLISH_HUD.Keybinding.ToggleHUDHint",
         editable: [{ key: "KeyZ" }],
         onDown: () => {
-            const { instance } = getActiveHUD();
-            if (instance && typeof instance.toggleHUD === "function") {
-                instance.toggleHUD();
-            } else if (HUDState.lancerHUD) {
-                HUDState.lancerHUD.toggleHUD();
+            const controlledTokens = canvas.tokens?.controlled || [];
+            const ownedToken = controlledTokens.find(t => t.actor && (t.actor.isOwner || game.user.isGM));
+
+            if (ownedToken) {
+                const isDeployable = ownedToken.actor.type === "deployable";
+                const instance = isDeployable ? HUDState.deployableHUD : HUDState.lancerHUD;
+                const otherInstance = isDeployable ? HUDState.lancerHUD : HUDState.deployableHUD;
+
+                // Fecha o outro tipo de HUD se estiver aberto
+                if (otherInstance && otherInstance.activeToken) {
+                    otherInstance.activeToken = null;
+                    otherInstance.close();
+                }
+
+                if (instance) {
+                    // Atualiza o token ativo se mudou
+                    if (instance.activeToken?.id !== ownedToken.id) {
+                        instance.activeToken = ownedToken;
+                    }
+                    if (typeof instance.toggleHUD === "function") {
+                        instance.toggleHUD();
+                    }
+                }
+            } else {
+                // Nenhum token selecionado: apenas faz toggle do que estiver aberto
+                const { instance } = getActiveHUD();
+                if (instance && typeof instance.toggleHUD === "function") {
+                    instance.toggleHUD();
+                } else if (HUDState.lancerHUD) {
+                    HUDState.lancerHUD.toggleHUD();
+                }
             }
             return true;
         }
     });
+
 });
 
 Hooks.on("createActiveEffect", (effect) => {
