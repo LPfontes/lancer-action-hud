@@ -317,6 +317,64 @@
                     </div>
                     {{/each}}
                 </div>
+                {{else if isDiceTab}}
+                {{#if items.length}}
+                <div class="hud-counters-grid">
+                    {{#each items}}
+                    <div class="hud-counter-card">
+                        <div class="hud-counter-header">
+                            <img src="{{this.talentImg}}" class="hud-counter-talent-img" />
+                            <div class="hud-counter-info">
+                                <span class="hud-counter-talent-name">{{this.talentName}} (Rank {{this.currRank}})</span>
+                                <span class="hud-counter-title">{{this.name}}</span>
+                            </div>
+                            <button type="button" class="hud-counter-btn btn-info"
+                                data-tooltip="{{this.description}}"
+                                data-talent-name="{{this.talentName}}"
+                                data-counter-title="{{this.name}}">
+                                <i class="fas fa-info-circle"></i>
+                            </button>
+                        </div>
+                        <div class="hud-counter-body">
+                            <div class="hud-counter-die-display">
+                                <i class="fas fa-dice-d6 hud-counter-die-icon"></i>
+                                <span class="hud-counter-value">{{this.value}}</span>
+                            </div>
+                            <div class="hud-counter-controls">
+                                <button type="button" class="hud-counter-btn btn-dec"
+                                    data-action="counter-delta:{{this.talentItemId}}:{{this.id}}:-1"
+                                    onclick="event.stopPropagation(); StylishAction.useItem('counter-delta:{{this.talentItemId}}:{{this.id}}:-1')"
+                                    data-tooltip="Diminuir">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <input type="number" class="hud-counter-val-input"
+                                    data-item-id="{{this.talentItemId}}" data-counter-id="{{this.id}}"
+                                    value="{{this.value}}" min="{{this.min}}" max="{{this.max}}" />
+                                <button type="button" class="hud-counter-btn btn-inc"
+                                    data-action="counter-delta:{{this.talentItemId}}:{{this.id}}:1"
+                                    onclick="event.stopPropagation(); StylishAction.useItem('counter-delta:{{this.talentItemId}}:{{this.id}}:1')"
+                                    data-tooltip="Aumentar">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                                <button type="button" class="hud-counter-btn btn-reset"
+                                    data-action="counter-reset:{{this.talentItemId}}:{{this.id}}"
+                                    onclick="event.stopPropagation(); StylishAction.useItem('counter-reset:{{this.talentItemId}}:{{this.id}}')"
+                                    data-tooltip="Resetar para o padrão ({{this.defaultValue}})">
+                                    <i class="fas fa-undo"></i>
+                                </button>
+                            </div>
+
+                        </div>
+                        <div class="hud-counter-footer">
+                            <span class="hud-counter-range">Min: {{this.min}} | Max: {{this.max}}</span>
+                        </div>
+                    </div>
+                    {{/each}}
+                </div>
+                {{else}}
+                <div class="hud-empty-msg">{{localize 'STYLISH_HUD.Label.NoCounters'}}</div>
+                {{/if}}
+
                 {{else}}
                 {{#if items.length}}
                 <div class="hud-items-list {{#if (eq activeTab 'statuses')}}hud-statuses-list{{/if}}">

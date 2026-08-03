@@ -25,6 +25,7 @@
       "Systems": "Sistemas",
       "Core": "Núcleo",
       "Talents": "Talentos",
+      "Dice": "Dados",
       "Implementos": "Implementos",
       "Utilities": "Utilitários",
       "Statuses": "Estados",
@@ -47,10 +48,12 @@
       "ActiveMech": "Mecha Ativo",
       "SearchPlaceholder": "Buscar...",
       "NoActions": "Nenhuma ação disponível.",
+      "NoCounters": "Nenhum dado de talento ativo.",
       "ApplyTarget": "Aplicar no Alvo",
       "Active": "ATIVO",
       "ApplySelf": "Aplicar a si mesmo"
     },
+
     "Utilities": {
       "Overcharge": {
         "Name": "Sobrecarga",

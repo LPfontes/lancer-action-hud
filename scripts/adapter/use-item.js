@@ -45,6 +45,121 @@ export async function useItem(actor, itemId, event = null) {
     }
     if (!actor) return;
 
+    if (itemId.startsWith("counter-delta:") || itemId.startsWith("counter-set:") || itemId.startsWith("counter-reset:")) {
+        let targetActor = actor;
+        if (actor.type === "mech") {
+            const pilotActorObj = actor.system.pilot?.value;
+            if (pilotActorObj) targetActor = pilotActorObj;
+            else {
+                const pilotId = actor.system.pilot?.id || actor.system.pilot_id || actor.system.pilot;
+                if (pilotId && typeof pilotId === "string") {
+                    const pilotActor = game.actors.get(pilotId);
+                    if (pilotActor) targetActor = pilotActor;
+                }
+            }
+        }
+
+        const parts = itemId.split(":");
+        const action = parts[0];
+        const talentItemId = parts[1];
+        const counterId = parts[2];
+
+        const item = targetActor.items.get(talentItemId) || targetActor.items.find(i => i.id === talentItemId);
+        let min = 0;
+        let max = 99;
+        let defaultVal = 0;
+
+        const defaultsMap = {
+            ctr_brawler: { default: 6, min: 1, max: 6 },
+            ctr_brutal: { default: 0, min: 0, max: 6 },
+            ctr_duelist: { default: 0, min: 0, max: 3 },
+            ctr_gunslinger: { default: 6, min: 1, max: 6 },
+            ctr_leader: { default: 3, min: 0, max: 6 },
+            ctr_stormbringer: { default: 6, min: 1, max: 6 }
+        };
+
+        const normTarget = counterId.toLowerCase().replace(/_die$/, "").replace(/^ctr_/, "");
+        const matchedDefaultKey = Object.keys(defaultsMap).find(k => k === counterId || k.replace(/^ctr_/, "") === normTarget);
+        if (matchedDefaultKey) {
+            defaultVal = defaultsMap[matchedDefaultKey].default;
+            min = defaultsMap[matchedDefaultKey].min;
+            max = defaultsMap[matchedDefaultKey].max;
+            if (item && item.system.curr_rank >= 3 && matchedDefaultKey === "ctr_leader") {
+                defaultVal = 6;
+            }
+        }
+
+        if (item && item.system?.counters) {
+            const sysCounters = Array.isArray(item.system.counters)
+                ? item.system.counters
+                : Object.values(item.system.counters);
+            const match = sysCounters.find(c => {
+                if (!c) return false;
+                const cId = c.id || `ctr_${(c.name || '').toLowerCase().replace(/\s+/g, '_')}`;
+                const normC = cId.toLowerCase().replace(/_die$/, "").replace(/^ctr_/, "");
+                return c.id === counterId || c.name === counterId || normC === normTarget;
+            });
+            if (match) {
+                if (match.min !== undefined) min = match.min;
+                if (match.max !== undefined) max = match.max;
+                defaultVal = match.default_value ?? match.val ?? match.value ?? defaultVal;
+            }
+        }
+
+        const currentFlagVal = item?.getFlag("lancer-action-hud", `counter_${counterId}`)
+            ?? item?.getFlag("lancer-action-hud", `counter_ctr_${normTarget}`)
+            ?? targetActor.getFlag("lancer-action-hud", `counter_${counterId}`)
+            ?? targetActor.getFlag("lancer-action-hud", `counter_ctr_${normTarget}`)
+            ?? actor.getFlag("lancer-action-hud", `counter_${counterId}`);
+        const currentVal = currentFlagVal !== undefined ? Number(currentFlagVal) : defaultVal;
+
+        let newVal = currentVal;
+        if (action === "counter-delta") {
+            const delta = parseInt(parts[3], 10) || 0;
+            newVal = Math.clamp(currentVal + delta, min, max);
+        } else if (action === "counter-set") {
+            const val = parseInt(parts[3], 10);
+            if (!isNaN(val)) newVal = Math.clamp(val, min, max);
+        } else if (action === "counter-reset") {
+            newVal = defaultVal;
+        }
+
+        if (item) {
+            await item.setFlag("lancer-action-hud", `counter_${counterId}`, newVal);
+            await item.setFlag("lancer-action-hud", `counter_ctr_${normTarget}`, newVal);
+            if (item.system.counters) {
+                if (Array.isArray(item.system.counters)) {
+                    const countersCopy = foundry.utils.deepClone(item.system.counters);
+                    const idx = countersCopy.findIndex(c => {
+                        if (!c) return false;
+                        const cId = c.id || `ctr_${(c.name || '').toLowerCase().replace(/\s+/g, '_')}`;
+                        const normC = cId.toLowerCase().replace(/_die$/, "").replace(/^ctr_/, "");
+                        return c.id === counterId || c.name === counterId || normC === normTarget;
+                    });
+                    if (idx >= 0) {
+                        countersCopy[idx].val = newVal;
+                        countersCopy[idx].value = newVal;
+                        await item.update({ "system.counters": countersCopy });
+                    }
+                }
+            }
+        }
+        await targetActor.setFlag("lancer-action-hud", `counter_${counterId}`, newVal);
+        await targetActor.setFlag("lancer-action-hud", `counter_ctr_${normTarget}`, newVal);
+        if (actor !== targetActor) {
+            await actor.setFlag("lancer-action-hud", `counter_${counterId}`, newVal);
+            await actor.setFlag("lancer-action-hud", `counter_ctr_${normTarget}`, newVal);
+        }
+
+        const { instance } = getActiveHUD();
+        if (instance) {
+            instance.render(false);
+        }
+        return;
+    }
+
+
+
     const deductAction = async (isFull = false) => {
         const current = actor.getFlag('lancer-action-hud', 'actionTracker') || {};
         const updates = { ...current };

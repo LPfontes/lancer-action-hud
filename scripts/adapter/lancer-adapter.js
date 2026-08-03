@@ -7,6 +7,7 @@ import { getCoreData } from "./data-core.js";
 import { getTechData } from "./data-tech.js";
 import { getSystemData } from "./data-system.js";
 import { getTalentData } from "./data-talent.js";
+import { getCountersData } from "./data-counters.js";
 import { getUtilityData } from "./data-utility.js";
 import { getImplementosData } from "./data-implementos.js";
 import { getStatusData } from "./data-status.js";
@@ -145,6 +146,13 @@ export class LancerSystemAdapter extends BaseSystemAdapter {
                 useSidebar: true,
             },
             {
+                systemId: "dice",
+                label: `${game.i18n.localize("STYLISH_HUD.Tabs.Dice") || "Dados"}<span class="material-symbols-outlined" style="margin-left: 15px;"></span>`,
+                icon: "",
+                type: "submenu",
+                useSidebar: false,
+            },
+            {
                 systemId: "implementos",
                 label: `${game.i18n.localize("STYLISH_HUD.Tabs.Implementos")}<span class="material-symbols-outlined" style="margin-left: 15px;"></span>`,
                 icon: "",
@@ -185,6 +193,9 @@ export class LancerSystemAdapter extends BaseSystemAdapter {
                 return { ...getCoreData(actor), title: menuData.label };
             case "talent":
                 return { ...getTalentData(actor), title: menuData.label };
+            case "dice":
+            case "counters":
+                return { ...getCountersData(actor), title: menuData.label };
             case "implementos":
                 return { ...getImplementosData(actor), title: menuData.label };
             case "utility":
@@ -235,7 +246,9 @@ function _isHandledByLancer(itemId) {
     const prefixes = [
         "tracker:", "attack:", "damage:", "tech:", "core-active:", "activate:",
         "deploy:", "util:", "basic:", "test:", "status:", "target-status:",
-        "change-profile:", "system-action:", "talent-rank-action:", "destroy-toggle:", "stats-roll:"
+        "change-profile:", "system-action:", "talent-rank-action:", "destroy-toggle:", "stats-roll:",
+        "counter-set:", "counter-delta:", "counter-reset:"
     ];
     return prefixes.some(p => itemId.startsWith(p));
 }
+

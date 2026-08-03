@@ -330,6 +330,7 @@ export class LancerActionHUD extends Application {
         const isStatsTab = this.activeTab === "stats";
         const isTalentTab = this.activeTab === "talent";
         const isImplementosTab = this.activeTab === "implementos";
+        const isDiceTab = this.activeTab === "dice" || this.activeTab === "counters";
         const coreAvailable = (actor.system.core_energy ?? 0) > 0;
         const actionTracker = actor.getFlag('lancer-action-hud', 'actionTracker') || {
             move: false,
@@ -355,6 +356,7 @@ export class LancerActionHUD extends Application {
             burnPath: burnPath,
             overshieldPath: overshieldPath,
             isStatsTab: isStatsTab,
+            isDiceTab: isDiceTab,
             actionTracker: actionTracker,
             mechGridStats: mechGridStats,
             hp: {
@@ -392,6 +394,45 @@ export class LancerActionHUD extends Application {
 
     activateListeners(html) {
         super.activateListeners(html);
+
+        html.find(".hud-counter-val-input").change(async event => {
+            const input = $(event.currentTarget);
+            const itemId = input.data("item-id");
+            const counterId = input.data("counter-id");
+            const val = parseInt(input.val(), 10);
+            if (!isNaN(val)) {
+                await window.StylishAction.useItem(`counter-set:${itemId}:${counterId}:${val}`);
+            }
+        });
+
+        html.find(".hud-counter-btn").click(async event => {
+            event.preventDefault();
+            event.stopPropagation();
+            const btn = $(event.currentTarget);
+            if (btn.hasClass("btn-info")) {
+                const card = btn.closest(".hud-counter-card");
+                const talentName = btn.attr("data-talent-name") || card.find(".hud-counter-talent-name").text() || "Talento";
+                const counterTitle = btn.attr("data-counter-title") || card.find(".hud-counter-title").text() || "Dado";
+                const img = card.find(".hud-counter-talent-img").attr("src") || "systems/lancer/assets/icons/generic_item.svg";
+                const desc = btn.attr("data-tooltip") || "Sem descrição disponível.";
+
+                new LancerItemPopup({
+                    id: "counter-info-popup",
+                    name: `${talentName} — ${counterTitle}`,
+                    img: img,
+                    description: `<div style="font-size:1.05em; line-height:1.5; padding: 4px;">${desc}</div>`,
+                    tags: [{ label: "Dado / Contador de Talento", class: "blue" }],
+                    cost: ""
+                }, { title: `${talentName} — ${counterTitle}` }).render(true);
+                return;
+            }
+            const action = btn.data("action");
+            if (action) {
+                await window.StylishAction.useItem(action);
+            }
+        });
+
+
 
         // Apply width percentages dynamically to bypass HTML/CSS linter errors
         const hpFill = html.find(".hp-fill");

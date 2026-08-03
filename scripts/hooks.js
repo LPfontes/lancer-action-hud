@@ -14,12 +14,21 @@ Hooks.on("controlToken", (token, controlled) => {
 // Update Actor Stats Hook
 Hooks.on("updateActor", (actor, diff, options, userId) => {
     const { instance } = getActiveHUD();
-    if (instance && instance.activeToken?.actor?.id === actor.id) {
+    if (instance && (instance.activeToken?.actor?.id === actor.id || instance.activeToken?.actor?.system?.pilot?.value?.id === actor.id)) {
         instance.render(false);
     }
 });
 
-// Create/Delete Item Hooks
+// Create/Update/Delete Item Hooks
+Hooks.on("updateItem", (item) => {
+    const { instance } = getActiveHUD();
+    const activeActorId = instance?.activeToken?.actor?.id;
+    const activePilotId = instance?.activeToken?.actor?.system?.pilot?.value?.id;
+    if (instance && (item.parent?.id === activeActorId || item.parent?.id === activePilotId)) {
+        instance.render(false);
+    }
+});
+
 Hooks.on("createItem", (item) => {
     const { instance } = getActiveHUD();
     if (instance && instance.activeToken?.actor.id === item.parent?.id) {
@@ -33,6 +42,7 @@ Hooks.on("deleteItem", (item) => {
         instance.render(false);
     }
 });
+
 
 // Ouve renderização de cards no Chat para capturar cliques nos botões
 Hooks.on("renderChatMessage", (message, html, data) => {

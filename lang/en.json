@@ -25,6 +25,7 @@
       "Systems": "Systems",
       "Core": "Core",
       "Talents": "Talents",
+      "Dice": "Dice",
       "Implementos": "Implements",
       "Utilities": "Utilities",
       "Statuses": "Statuses",
@@ -47,10 +48,12 @@
       "ActiveMech": "Active Mech",
       "SearchPlaceholder": "Search all...",
       "NoActions": "No actions available.",
+      "NoCounters": "No active talent dice.",
       "ApplyTarget": "Apply Target",
       "Active": "ACTIVE",
       "ApplySelf": "Apply to Self"
     },
+
     "Utilities": {
       "Overcharge": {
         "Name": "Overcharge",
